@@ -1,0 +1,42 @@
+// Функция для получения всех значений формы внутри div
+function getFormValues(rootElement) {
+  let formValues = {};
+  const inputs = rootElement.querySelectorAll('input, textarea, select');
+  
+  inputs.forEach(input => {
+    if(input.type === 'checkbox' || input.type === 'radio') {
+      formValues[input.name] = input.checked;
+    } else {
+      formValues[input.name] = input.value;
+    }
+  });
+
+  return formValues;
+}
+
+// Функция для установки всех значений формы
+function setFormValues(rootElement, formValues) {
+  Object.keys(formValues).forEach(key => {
+    const input = rootElement.querySelector(`[name="${key}"]`);
+    if(input) {
+      if(input.type === 'checkbox' || input.type === 'radio') {
+        input.checked = formValues[key];
+      } else {
+        input.value = formValues[key];
+      }
+    }
+  });
+}
+
+// Сохранение значений формы
+const divElement = document.getElementById('yourDivId');
+const formValues = getFormValues(divElement);
+localStorage.setItem('formValues', JSON.stringify(formValues));
+localStorage.setItem('divContent', divElement.innerHTML);
+
+// Восстановление значения
+const savedFormValues = JSON.parse(localStorage.getItem('formValues'));
+const savedDivContent = localStorage.getItem('divContent');
+
+divElement.innerHTML = savedDivContent;
+setFormValues(divElement, savedFormValues);

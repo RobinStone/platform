@@ -1,0 +1,1 @@
+.window.app-wrapper h4 {    padding-left: 45px;}.window.app-wrapper .content {    display: flex;    flex-direction: column;    margin: 5px;    max-width: calc(100% - 10px);    max-height: calc(100% - 40px);    padding-right: 4px;}

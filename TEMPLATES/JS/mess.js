@@ -1,0 +1,1 @@
+console.log('mess - OK');function swipe_panel() {    const scrollContainer = document.querySelector('.profil');    scrollContainer.scrollTo({        left: 6000,        behavior: 'smooth'    });}function mobile_back_row() {    const scrollContainer = document.querySelector('.profil');    scrollContainer.scrollTo({        left: 0,        behavior: 'smooth'    });}

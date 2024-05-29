@@ -1,0 +1,280 @@
+.item-info {
+    flex-grow: 2;
+}
+.filter-buttons-wraper {
+    position: relative;
+    z-index: 2;
+}
+.filter-buttons-wraper button {
+    z-index: 5;
+}
+.filter-buttons-content {
+    position: absolute;
+    left: 0;
+    top: 43px;
+    width: 100%;
+    border: 1px solid #0F9640;
+    border-top: none;
+    background-color: #fff;
+    z-index: 1;
+    box-sizing: border-box;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.17);
+    display: flex;
+    flex-direction: column;
+    padding: 25px 15px 15px;
+    gap: 20px;
+    min-height: 0;
+    transition: 0.4s;
+    transform: translateY(-30px);
+    opacity: 0;
+    overflow: hidden;
+}
+.filter-buttons-wraper button.round-btn {
+    font-size: 14px;
+    padding: 6px 15px;
+}
+.filter-buttons-content.open {
+    padding: 25px 15px 15px;
+    min-height: 145px;
+    transform: translateY(0);
+    opacity: 1;
+}
+.filter-buttons-content * {
+    color: #1F1A1A;
+    font-size: 12px;
+    font-family: Inter;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.filter-input-row {
+    cursor: pointer;
+}
+.filter-input-row input[type="radio"] {
+    display: inline-block;
+    min-width: 15px;
+    min-height: 15px;
+    pointer-events: none;
+}
+.swiper-slide {
+    aspect-ratio: 1;
+    box-sizing: border-box;
+    padding: 10px;
+}
+.swiper-slide a {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+.swiper-slide a:before {
+    content: '';
+    z-index: -1;
+    opacity: 0.4;
+    pointer-events: none;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: -25px;
+    width: 100%;
+    height: 90%;
+    background-image: url("/DOWNLOAD/20231128-134020_id-2-600956.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-position: center;
+}
+.swiper-slide a img {
+    transition: 0.4s;
+    position: absolute;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    transform: translate(-50%, 0);
+    object-fit: contain;
+}
+.swiper-slide:hover a img {
+    transition: 0.00001s;
+    transform: translate(-50%, 0) scale(1.05);
+}
+.swiper-slide a span {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 14px);
+    width: calc(100% - 10px);
+    min-height: 50px;
+    font-weight: 900;
+    font-size: 1.2em;
+    line-height: 1em;
+    max-width: 100%;
+    display: inline-block;
+    text-align: center;
+    color: #000000;
+    background: linear-gradient(90deg, #ffffff00, #ffffff);
+    padding: 5px;
+    z-index: 5;
+}
+.circle-arrows {
+    position: absolute;
+    top: calc(50% - 50px);
+    border-radius: 50%!important;
+    width: 50px;
+    min-width: 43px;
+    height: 50px;
+}
+.circle-arrows:after {
+    display: none;
+}
+.right-arrow {
+    right: 4px;
+}
+.left-arrow {
+    left: 4px;
+}
+.left-arrow svg {
+    transform: rotate(180deg);
+}
+body button.btn.circle-arrows:hover {
+    transform: scale(1.02);
+}
+body button.btn.circle-arrows:active {
+    transform: scale(0.98);
+}
+body .swiper-button-prev svg {
+    transform: rotate(180deg);
+}
+.product .swiper-grid-column>.swiper-wrapper {
+    flex-direction: row;
+}
+.vertical-list .columns .filter {
+    flex: 0.7;
+    font-size: 12px;
+}
+.vertical-list .columns .filter * {
+    font-size: 12px;
+}
+.vertical-list .columns .vertical-list-products {
+    flex: 3;
+}
+.vertical-list .columns {
+    padding: 1em 0;
+}
+#mobile-side-menu {
+    display: none;
+}
+.item-info .banner {
+    width: 100%;
+}
+.item-info .banners-list li {
+    width: 100%!important;
+}
+.item-info .banners-list li a:before {
+    display: none;
+}
+.banner-item:before {
+    display: none!important;
+}
+.swiper-scrollbar {
+    display: none;
+}
+.banner-item {
+    border: none!important;
+}
+
+@media screen and (max-width: 950px) {
+    button[onclick="create_my_order()"] {
+        display: none!important;
+    }
+    #mobile-side-menu {
+        display: block;
+    }
+    .swiper-wrapper {
+        min-width: 100%;
+    }
+    .filter-row {
+        flex-wrap: wrap;
+    }
+    .filter-row > div:nth-child(3) {
+        gap: 4px!important;
+        margin-left: unset!important;
+        width: 100%;
+        z-index: 10;
+    }
+    #banner .banners-list {
+        flex-direction: column!important;
+    }
+    .round-btn {
+        padding: 10px 10px;
+    }
+    .filter-row > div:nth-child(3) button {
+        flex-grow: 2;
+        justify-content: space-around;
+    }
+    .menu-items {
+        margin-bottom: 18px;
+        align-items: stretch;
+    }
+    .menu-items li {
+        position: relative;
+    }
+    .menu-items li img {
+        position: absolute;
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        right: 3px;
+        bottom: 0;
+        pointer-events: none;
+    }
+    .btn.btn-paddinger a {
+        padding: 3px 3px 40px!important;
+        max-width: min-content;
+        border-radius: 4px;
+        z-index: 3;
+        text-shadow: -1px -1px 1px #fff,
+        0 -1px 1px #fff,
+        1px -1px 1px #fff,
+        1px 0 1px #fff,
+        1px 1px 1px #fff,
+        0 1px 1px #fff,
+        0 1px 1px #fff,
+        -1px 1px 1px #fff,
+        -1px 0 1px #fff;
+    }
+    .btn.border-btn {
+        justify-content: center;
+    }
+    .swiper-slide a span {
+        font-size: 0.9em;
+        color: #000000;
+        background-color: #ffffff!important;
+    }
+    .swiper-slide a img {
+        transform: translate(-50%, -22%);
+    }
+    .swiper-slide:hover a img {
+        transform: translate(-50%, -22%) scale(1.05);
+    }
+    .filter.grey-panel {
+        display: none;
+        flex: 0;
+    }
+    .likes {
+        min-width: 38px;
+    }
+    .product .banner {
+        margin: 0;
+    }
+    .product .banner .banner-wrapper .banners-list {
+        height: 140px;
+    }
+    .product .filter-buttons-wraper {
+        width: 100%;
+        justify-content: space-around;
+        margin-bottom: 20px;
+    }
+}
+

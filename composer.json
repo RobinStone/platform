@@ -1,0 +1,11 @@
+{
+    "require": {
+        "predis/predis": "^2.2",
+        "workerman/workerman": "^4.1",
+        "phpmailer/phpmailer": "^6.8",
+        "yoomoney/yookassa-sdk-php": "^3.1",
+        "james-heinrich/getid3": "^1.9",
+      "ext-mbstring": "*",
+      "ext-mysqli": "*"
+    }
+}

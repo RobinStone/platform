@@ -1,0 +1,13 @@
+#indicator {
+    position: relative;
+    display: block;
+    height: 100px;
+    border: 1px solid green;
+}
+.stolb {
+    position: absolute;
+    bottom: 0;
+    display: inline-block;
+    width: 1px;
+    background-color: green;
+}

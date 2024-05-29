@@ -1,0 +1,67 @@
+.menu-left-profil {
+    margin-top: 0!important;
+}
+.menu-left-profil .phone-book,
+.column-right .main-chat {
+    position: relative;
+    left: unset!important;
+    top: unset!important;
+    transform: unset!important;
+    padding: 0!important;
+    box-shadow: none!important;
+    background-color: #ffffff00!important;
+}
+.menu-left-profil .phone-book h4,
+.column-right .main-chat h4 {
+    display: none;
+}
+.menu-left-profil .phone-book ul {
+    margin-top: 0;
+}
+.menu-left-profil .phone-book .static-chat {
+    background-color: rgba(15, 150, 64, 0);
+}
+.column-right .main-chat,
+.column-right .main-chat .content {
+    min-width: 100%!important;
+}
+.column-right .main-chat .resizer {
+    display: none!important;
+}
+.column-right .main-chat .content {
+    top: 0;
+    height: 100%;
+}
+.column-left .liver-avatar {
+    display: inline-block;
+    width: 50px!important;
+    height: 50px!important;
+}
+.phone-book-list li {
+    gap: 10px!important;
+}
+.phone-book-list li .count-lines-1.action-btn {
+    padding: 4px;
+    -webkit-line-clamp: 3;
+    font-size: 16px;
+    display: inline-block;
+    min-height: 50px;
+    flex-grow: 2;
+    max-width: unset;
+    cursor:pointer;
+}
+.phone-book-list li .count-lines-1.action-btn:hover {
+    background-color: rgba(3, 77, 0, 0.14);
+}
+.sell-li {
+    outline: 1px dotted rgba(0, 128, 0, 0.5);
+    background-color: rgba(15, 150, 64, 0.19)!important;
+    border-radius: 5px;
+}
+
+@media screen and (max-width: 950px) {
+    .column-right .main-chat-wrapper {
+        box-sizing: border-box;
+        height: calc(100% - 250px);
+    }
+}

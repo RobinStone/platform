@@ -1,0 +1,1 @@
+<?php$ans = shell_exec("php ".__DIR__."/../soc_s.php restart -d");echo $ans;

@@ -1,0 +1,1 @@
+<?php$all = $red->group_all('CONNECTED');say($all);say($clients);say($rooms);echo 'cmd-ans|Команда в разработке...';

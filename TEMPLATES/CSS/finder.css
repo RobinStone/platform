@@ -1,0 +1,9 @@
+
+@media screen and (max-width: 950px) {
+    .products-list h2.h2 {
+        display: none!important;
+    }
+    button[onclick="create_my_order()"] {
+        display: none!important;
+    }
+}

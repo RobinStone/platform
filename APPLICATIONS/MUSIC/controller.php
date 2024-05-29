@@ -1,0 +1,1 @@
+<?php//$shops = new SHOP();//TELE::send_at_user_name('robin', 'ok');// этот блок возвращает табицу по колонкам$db = new SUBD();//$db->enabledTable('shops');//$arr = $db->createTableFromDB('shops', 1, 'name', 'ASC', false, '', true);//say($arr);

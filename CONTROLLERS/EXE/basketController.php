@@ -1,0 +1,1 @@
+<?phpinclude_CSS('profil');$B = new BASKET($_SESSION['basket'] ?? '');$arr = $B->get_basket();foreach($arr as $k=>$v) {    if(empty($v['SHOP'])) {        $B->change_count($k, 0, false);        unset($arr[$k]);    }    $B->save();}$shops = [];foreach($arr as $k=>$v) {    $shops[$v['shop_id']][$k] = $v;}//wtf($info, 1);//say($info);

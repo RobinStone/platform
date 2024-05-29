@@ -1,0 +1,36 @@
+.user-micro-card {
+    background: #F8F7F7;
+    border-radius: 10px;
+    padding: 15px 17px;
+    margin: 20px 0;
+}
+.user-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+.user-card-name {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 20px;
+    color: #018536;
+}
+.on-site-from {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 19px;
+    color: #1F1A1A;
+}
+.rewiews-block {
+    width: 100%;
+}
+.rewiews-block * {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #1F1A1A;
+}

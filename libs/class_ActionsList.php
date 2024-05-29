@@ -1,0 +1,1 @@
+<?phpclass ActionsList {    public const TELEGRAMM = 'сообщение telegram';    public const EMAIL = 'отправка email';    public const SCRIPT = 'скрипт';    public const PERMISSION = 'разрешение';    public const REG = 'регистрация';    public const COM_TO_FRONT = 'команда для front';    public const AUTH = 'авторизация';    public const VALUE = 'значение';}

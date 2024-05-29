@@ -1,0 +1,121 @@
+.carusel {
+    height: 600px;
+    width: 60vw;
+    overflow: hidden;
+}
+.carusel .swiper-scrollbar {
+    display: none!important;
+}
+.swiper-slide {
+    height: 50vh!important;
+    padding: 3px;
+    box-sizing: border-box;
+}
+.swiper-slide img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    object-fit: contain;
+    transition: 1s;
+}
+.swiper-slide-active img {
+    /*border-radius: 19em 0 0 0;*/
+}
+.swiper-slide-active .slide-card {
+    transform: translate(-50%, -30%);
+}
+.swiper-slide-next img {
+    /*border-radius: 0 0 19em 0;*/
+}
+.swiper-slide-next .slide-card {
+    transform: translate(-50%, -70%);
+}
+.slide-card {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translate(-50%, 0);
+    background-color: rgba(255, 255, 255, 0.88);
+    padding: 10px 15px;
+    width: 90%;
+    text-align: center;
+    z-index: 10;
+    text-decoration: none;
+    transition: 1s;
+}
+.slide-card .title {
+    font-weight: 800;
+    font-size: 2.3em;
+    max-width: 90%;
+}
+.slide-card:hover .title {
+    text-decoration: underline;
+    color: #0028a7;
+}
+.slide-card:active .title {
+    transform: scale(0.95);
+}
+.slide-card .descr {
+    padding-top: 1.5em;
+    text-align: right;
+    font-weight: 600;
+    font-size: 1em;
+    max-width: 90%;
+    margin-left: auto;
+}
+.swiper-button-next,
+.swiper-button-prev {
+    display: none!important;
+}
+
+@media screen and (max-width: 1400px) {
+    .slide-card .title {
+        font-weight: 800;
+        font-size: 1.5em;
+    }
+    .slide-card .descr {
+        padding-top: 1em;
+        font-weight: 800;
+        font-size: 0.8em;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .slide-card {
+        width: 90%;
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 950px) {
+    section.slider-cats {
+        margin: 10px auto 1em!important;
+    }
+    .swiper-slide img {
+        object-fit: contain;
+    }
+    .swiper-slide-active img {
+        border-radius: 0;
+    }
+    .slide-card {
+        background-color: rgba(255, 255, 255, 0.75);
+        bottom: 40px;
+    }
+    .title.text-border-white {
+        font-size: 1.3em!important;
+        font-weight: 800!important;
+    }
+    .text-border-white {
+        font-size: 15px!important;
+    }
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: inline-block!important;
+    }
+    .title.cursive {
+        font-size: 24px!important;
+        font-weight: 800!important;
+    }
+}

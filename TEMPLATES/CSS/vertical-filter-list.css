@@ -1,0 +1,130 @@
+.vertical-list-item {
+    display: flex;
+    gap: 5px;
+    overflow: hidden;
+    padding: 3px 5px 9px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid rgba(0, 128, 0, 0.16);
+}
+.vertical-list-item:hover {
+    background-color: rgba(255, 255, 0, 0.18);
+}
+.vertical-list-item:last-child {
+    border-bottom: none;
+}
+.vertical-list-item .img-wrapper {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+.vertical-list-item .text-block {
+    flex: 5;
+    padding: 3px 0 0 5px;
+    max-width: 58%;
+}
+.vertical-list-item .text-block .product-name a {
+    font-weight: 600;
+    font-size: 18px;
+    color: #0F9640;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    min-height: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.vertical-list-item .text-block .product-name a:hover {
+    text-decoration: underline;
+}
+.vertical-list-item .text-block .location {
+    font-size: 14px;
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    color: #000;
+    min-height: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    margin-bottom: 12px;
+}
+.vertical-list-item .text-block .descr {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    color: #000;
+    line-height: unset;
+    font-weight: 100;
+    font-style: italic;
+    min-height: 47px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.vertical-list-item .text-block .descr * {
+    font-style: italic;
+    font-weight: 600;
+    margin: 0;
+}
+.vertical-list-item .controls {
+    flex: 1;
+    align-items: flex-start;
+}
+.vertical-list-item .controls .price {
+    font-size: 18px;
+    padding: 0;
+    line-height: 30px;
+}
+.vertical-list-item .controls .btn {
+    padding: 5px;
+}
+.vertical-list-item .likes {
+    flex: 0.5;
+    padding-top: 5px;
+}
+.vertical-list-item .likes button.like,
+.vertical-list-item .likes button.basket {
+    background: none;
+    border: none;
+}
+.vertical-list-item .likes button.like {
+    margin-left: 2px;
+}
+.vertical-list-item .likes button.basket svg {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+}
+.vertical-list-item .likes button.basket img {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+}
+
+@media screen and (max-width: 950px) {
+    .vertical-list-products {
+        max-width: 100%;
+    }
+    .vertical-list-item .img-wrapper {
+        padding-top: 7px;
+        min-width: 90px;
+        height: 90px;
+    }
+    .vertical-list-item .text-block {
+        flex: none;
+        max-width: 41%;
+    }
+    .vertical-list-item .controls {
+        flex: none;
+    }
+}

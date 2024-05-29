@@ -1,0 +1,197 @@
+.seo-panel {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 10px;
+    max-width: 690px;
+    z-index: 999999;
+    background-color: #F4FAFFFF;
+    box-shadow: 10px 0 10px rgba(0, 0, 0, 0.28);
+    transform: translateX(calc(-100% - 15px));
+    transition: 0.3s;
+    max-height: 100vh;
+    min-width: 610px;
+}
+.title-seo-panel {
+    font-size: 1.7em;
+    font-weight: 800;
+    text-align: center;
+    padding: 0 20px 10px;
+}
+.show-hiden {
+    position: absolute;
+    right: -55px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 10px;
+    font-weight: 800;
+    background-color: #f4faff;
+    border-radius: 0 10px 10px 0;
+    border: none;
+    box-shadow: 10px 3px 10px rgba(0, 0, 0, 0.2);
+    opacity: 0.2;
+}
+.show-hiden:hover {
+    opacity: 1;
+}
+.opender {
+    transform: translateX(0);
+}
+.opender .show-hiden {
+    transform: rotate(180deg);
+    right: -40px;
+    border-radius: 10px 0 0 10px;
+    box-shadow: -10px -3px 10px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+}
+.seo-panel fieldset {
+    font-family: 'My_text', sans-serif;
+    border: 1px dotted rgba(0, 0, 0, 0.33);
+    border-radius: 5px;
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+.seo-panel fieldset div {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 3px 5px;
+}
+.seo-panel fieldset div:hover {
+    outline: 1px dotted rgba(0, 0, 0, 0.2);
+}
+.seo-panel fieldset legend {
+    background-color: #fff;
+    border-top: 1px dotted rgba(0, 0, 0, 0.3);
+    border-radius: 70px;
+    font-family: 'My_text', sans-serif;
+    padding: 0 10px;
+    font-size: 16px;
+    font-weight: 100;
+}
+.encoder {
+    margin-top: 20px;
+    border: 1px dotted rgba(0, 0, 0, 0.23);
+    border-radius: 5px;
+    padding: 10px;
+}
+.meta-local {
+    position: relative;
+    padding-right: 30px;
+}
+.meta-local:after {
+    content: "\1F4CC";
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 1.2em;
+}
+.seo-panel .editor-panel {
+    flex-grow: 2;
+}
+.seo-panel .editor-panel div {
+    color: #fff;
+}
+.seo-panel .editor-panel .edited-field {
+    background-color: #000000;
+    color: #ffffff!important;
+    font-size: 1em;
+    padding: 10px 15px;
+    flex-grow: 2;
+}
+.seo-panel .editor-panel br {
+    color: #ffffff;
+}
+span.inpt {
+    border-radius: 2px;
+    display: inline-block;
+    text-align: center;
+    background: none;
+    padding: 0 2px 3px;
+    color: lime;
+    border: 1px dotted rgb(255 255 255 / 35%);
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+}
+.meta-panel button.presser {
+    padding: 3px 7px!important;
+}
+.meta-panel h4 {
+    font-family: 'My_text', sans-serif;
+}
+.meta-panel * {
+    font-family: 'My_text', sans-serif;
+}
+.meta-panel .presser {
+    width: 326px!important;
+    font-size: 16px;
+    border-radius: 2px!important;
+}
+.meta-panel .presser .meta-item span:first-child {
+    font-size: 18px;
+    text-transform: uppercase;
+    text-align: left;
+}
+.meta-panel .presser .meta-item span:last-child {
+    padding-top: 5px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: right;
+}
+.seo-btns {
+    width: 30px;
+    height: 30px;
+}
+.yellow-marker {
+    background-color: #ffffc8;
+}
+.control-panel {
+    justify-content: right;
+}
+#local-meta-creator-btn,
+#save-btn {
+    background-color: #c0ffc0;
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    width: unset;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+}
+.meta-panel button.presser:hover {
+    background-color: #000000;
+    color: #ffffff!important;
+}
+.meta-panel button.presser:hover * {
+    color: #ffffff!important;
+}
+.info-panel-message {
+    color: #000000!important;
+    font-size: 14px;
+    padding: 0 0 10px;
+}
+.info-panel-message a {
+    font-size: 20px;
+}
+.for-all {
+    display: inline-block;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+@media screen and (max-width: 950px) {
+    button.show-hiden {
+        top: 20%;
+    }
+    .opender button.show-hiden {
+        right: unset;
+        left: 0;
+        top: 0;
+    }
+    
+}

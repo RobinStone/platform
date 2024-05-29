@@ -1,0 +1,1 @@
+<section class="settings">    <h2 class="h2">Настройки</h2>    <button onclick="send_mail()">SENDER</button></section><script>    function send_mail() {        SENDER('coords', global_pos, function(mess) {            mess_executer(mess, function(mess) {                console.dir(mess);            })        })    }</script>

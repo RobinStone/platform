@@ -1,0 +1,1 @@
+#products-list li {    align-items: flex-start;}.one-order .center-block {    align-self: unset;    gap: 10px;}@media screen and (max-width: 900px) {    #products-list .img-wrapper {        height: calc(50vw + 30px)!important;    }}

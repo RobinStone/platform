@@ -1,0 +1,51 @@
+#body-s.site-pages .ballance > span {
+    font-weight: 600!important;
+    font-size: 20px!important;
+}
+#body-s.site-pages .ballance span#summ {
+    font-weight: 700;
+    font-size: 20px;
+    color: #068638;
+}
+.ballance {
+    margin: 25px 0;
+}
+.table-wrapper {
+    margin-top: 30px;
+    width: 100%;
+    max-height: calc(100vh - 378px);
+    overflow-y: auto;
+}
+.table-wrapper table {
+    width: 100%;
+}
+.bank-btns .btn-border {
+    color: #000!important;
+}
+.table-wrapper table th {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 27px;
+    color: #1F1A1A;
+}
+.my-orders {
+    max-width: 100%!important;
+}
+#table-bank tr:first-child {
+    background: #fff;
+    z-index: 5;
+    position: sticky;
+    top: 0;
+}
+#table-bank td {
+    text-align: center;
+    padding: 4px 5px;
+}
+#table-bank td.price {
+    font-weight: 600;
+    text-align: right;
+}
+
+@media screen and (max-width: 950px) {
+
+}
