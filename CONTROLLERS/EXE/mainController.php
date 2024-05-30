@@ -55,6 +55,10 @@ if(isset($_POST['reg-r'])) {
         if(mb_strlen($_POST['phone-r']) < 7) {
             error('Номер телефона необходимо вводить в соответствии с правилами (никаких букв и определённая длинна)');
         }
+        $phone = VALUES::decodePhone($_POST['phone-r']);
+        if(is_array(SUBD::getLineDB('users', 'phone', $phone))) {
+            error('Пользователь с таким номером телефона уже присутствует в системе...<br>');
+        }
         $email = SUBD::getLineDB('users', 'email', $_POST['email-r']);
         if(is_array($email)) {
             error('Пользователь с таким E-Mail уже присутствует в системе...');
