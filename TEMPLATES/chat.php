@@ -1,6 +1,9 @@
 <?php
 include_CSS('profil');
 ?>
+<div class="wrapper">
+    <?php echo "<div id='alerts'>" . render('alerts') . "</div>"?>
+</div>
 <section class="wrapper profil">
     <div class="columns column-left">
         <div class="menu-left-profil flex column gap-10">

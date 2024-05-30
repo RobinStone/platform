@@ -23,6 +23,9 @@ class USERS {
             return false;
         }
         $id = SUBD::get_last_id();
+        $P = new PROFIL($id);
+        $P->add_alert(ALERT_TYPE::WARNING, ['text'=>'Необходимо сменить имя, для того, что бы вы могли размещать объявления на этом сайте.', 'link'=>'/profil?title=account'], 'change_name');
+        $P->add_alert(ALERT_TYPE::WARNING, ['text'=>'Необходимо сменить пароль, для того, что бы в следующий раз вы могли бы войти в свой аккаунт. Сейчас ваш пароль - это код, который вы получили в СМС', 'link'=>'/profil?title=account'], 'change_pass');
         t('created - '.$id);
         return $id;
     }

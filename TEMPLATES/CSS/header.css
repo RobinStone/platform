@@ -147,6 +147,7 @@ li .phone-book ul {
     }
     .find-field.trans-up.showed {
         transform: translateY(0);
+        opacity: 1;
     }
     .up-row-header:before {
         /*content: '';*/

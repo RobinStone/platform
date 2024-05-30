@@ -84,7 +84,9 @@
             </div>
         </div>
     </div>
-    <div class="columns column-right"></div>
+    <div class="columns column-right">
+        <?php echo "<div id='alerts'>" . render('alerts') . "</div>"?>
+    </div>
 </section>
 
 <?php //echo render('chat_m', ['style'=>'user_page', 'call_room'=>'self', 'auto_start'=>true]); ?>
