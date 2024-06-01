@@ -1,5 +1,5 @@
 <?php
-$txt = $txt ?? 'Пусто';
+$txt = $text ?? 'Пусто';
 ?>
 <style>
     .circle {
@@ -38,10 +38,10 @@ $txt = $txt ?? 'Пусто';
 </style>
 
 <section class="message">
-    <h2 style="padding-right: 30px" class="h2">Сообщение</h2>
+    <h2 style="padding-right: 30px; margin-bottom: 0.5em" class="h2">Сообщение</h2>
     <div class="circle"></div>
     <div class="circle blue"></div>
-    <div>
+    <div style="font-weight: 600; ">
         <?php echo $txt; ?>
     </div>
 </section>

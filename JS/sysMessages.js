@@ -252,7 +252,7 @@ function delOvelay() {
     $('.qest-modul').remove();
     conf = 0;
     buff = null;
-    $('body').css('overflow', 'auto');
+    $('body').css('overflow', '');
 }
 
 function createTextPanel($txt, $functonOk) {
