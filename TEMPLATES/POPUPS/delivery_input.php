@@ -57,6 +57,19 @@ if(!isset($delivery['comment'])) {
         left: 65%;
         top: 10%;
     }
+    .form fieldset {
+        box-sizing: border-box;
+        display: inline-block;
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.24);
+    }
+    .form fieldset legend {
+        font-size: 14px;
+        padding: 3px 7px;
+        background-color: #fff;
+        border-radius: 40px;
+    }
 </style>
 
 <div class="form flex gap-5 column">
@@ -64,13 +77,29 @@ if(!isset($delivery['comment'])) {
     <div class="circle"></div>
     <div class="circle blue"></div>
     <div class="flex column align-top gap-5 delivery-form">
-        <input class="delivery-field fields" type="text" placeholder="ФИО *" name="fio" value="<?=@$delivery['fio']?>">
-        <input class="delivery-field fields" type="tel" placeholder="Номер телефона *" name="phone" value="<?=@$delivery['phone']?>">
-        <input class="delivery-field fields" type="text" list="citys" placeholder="Город *" name="city" value="<?=$city?>">
-        <textarea class="delivery-field fields" placeholder="Адрес доставки *" name="address-dell"><?=@$delivery['address-dell']?></textarea>
-        <textarea class="fields" placeholder="Коментарий к заказу" name="comment"><?=@$delivery['comment']?></textarea>
+        <fieldset data-num-id="1">
+            <legend>ФИО</legend>
+            <input class="delivery-field fields" type="text" placeholder="ФИО" name="fio" value="<?=@$delivery['fio']?>">
+        </fieldset>
+        <fieldset data-num-id="2">
+            <legend>Номер телефона</legend>
+            <input class="delivery-field fields" type="tel" placeholder="Номер телефона" name="phone" value="<?=@$delivery['phone']?>">
+        </fieldset>
+        <fieldset data-num-id="3">
+            <legend>Город</legend>
+            <input class="delivery-field fields" type="text" list="citys" placeholder="Город" name="city" value="<?=$city?>">
+        </fieldset>
+        <fieldset data-num-id="4">
+            <legend>Адрес доставки</legend>
+            <textarea class="delivery-field fields" placeholder="Адрес доставки" name="address-dell"><?=@$delivery['address-dell']?></textarea>
+        </fieldset>
+        <fieldset data-num-id="5">
+            <legend>Коментарий к заказу</legend>
+            <textarea class="fields" placeholder="Коментарий к заказу" name="comment"><?=@$delivery['comment']?></textarea>
+        </fieldset>
+
         <div class="flex" style="width: 100%; margin-top: 1em; justify-content: right">
-            <button onclick="save_delivery(this)" class="btn-just disabled" type="button">Подтвердить</button>
+            <button onclick="save_delivery(this)" class="btn-just disabled" type="button">Сохранить</button>
         </div>
     </div>
 </div>

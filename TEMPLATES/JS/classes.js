@@ -14,4 +14,7 @@ class VALUES {
             return 'login';
         }
     }
+    static clear_phone(str_number) {
+        return str_number.replace(/\D/g, '');
+    }
 }

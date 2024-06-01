@@ -4,7 +4,7 @@ $type = $type ?? '';
 
 $options = [
     'phone'=>'номеру телефона',
-    'login'=>'логину',
+    'login'=>'телеграму',
     'email'=>'почте',
 ];
 ?>
@@ -72,12 +72,14 @@ $options = [
             <input placeholder="<?=$type?>" name="field" type="text" value="<?=$text?>">
         </div>
         <div class="flex" style="width: 100%">
-            <button id="reset-btn" style="margin-left: auto" class="btn-just"></button>
+            <button onclick="reset_pass()" id="reset-btn" style="margin-left: auto" class="btn-just"></button>
         </div>
     </div>
 </section>
 
 <script>
+    let mode_pass = 'telegramm';
+
     setTimeout(function() {
         change_type_reset('-');
     }, 100);
@@ -99,16 +101,55 @@ $options = [
                 inpt.attr('placeholder', 'ваш номер телефона');
                 inpt.focus();
                 btn.text('отправить СМС с кодом');
+                mode_pass = 'sms';
                 break;
             case 'login':
-                inpt.attr('placeholder', 'ваш логин');
-                inpt.focus();
-                btn.text('...');
+                inpt.attr('placeholder', '');
+                inpt.addClass('diabled');
+                btn.text('Вход через телеграм');
+                mode_pass = 'telegram';
                 break;
             case 'email':
                 inpt.attr('placeholder', 'ваша почта');
                 inpt.focus();
                 btn.text('отправить КОД на Email');
+                mode_pass = 'email';
+                break;
+        }
+    }
+
+    function reset_pass() {
+        let field = $('input[name="field"]').val();
+        switch(mode_pass) {
+            case 'telegram':
+                tele_reg_auth();
+                say('tele');
+                break;
+            case 'sms':
+                if(VALUES.email_phone_string(field) !== 'phone') {
+                    say('Введите корректный номер телефона');
+                    return false;
+                } else {
+                    sms_reg(field);
+                    $('#auth-form').addClass('open');
+                    close_popup('forgot_pass');
+                    setTimeout(function() {
+                        setOverlayJust();
+                    }, 500);
+                }
+                break;
+            case 'email':
+                if(VALUES.email_phone_string(field) !== 'email') {
+                    say('Введите корректную почту, привязанную к вашему аккаунту');
+                    return false;
+                } else {
+                    email_code_auth(field);
+                    $('#auth-form').addClass('open');
+                    close_popup('forgot_pass');
+                    setTimeout(function() {
+                        setOverlayJust();
+                    }, 500);
+                }
                 break;
         }
     }
