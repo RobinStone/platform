@@ -1,0 +1,15 @@
+Array
+(
+)
+Array
+(
+    [route] => chat
+    [sysauth] => 1d95792b86fe5271bcca084208c963bc
+)
+Array
+(
+    [auth] => true
+)
+Array
+(
+)

@@ -315,3 +315,22 @@ function del_banner(id) {
 function toggle_action(name_action) {
 
 }
+
+function support_chat() {
+    BACK('profil', 'get_support_users', {}, function(mess) {
+        mess_executer(mess, function(mess) {
+            console.dir(mess.body);
+            if(mess.body.length > 0) {
+                let r = rnd(0, (mess.body.length-1));
+                console.dir(mess.body[r]);
+                say('Оператор службы поддержки: '+mess.body[r]['NAME']);
+                begin_chat_with(mess.body[r]['ID']);
+                BACK('chat_service', 'call', {user_id: mess.body[r]['ID']}, function(mess) {
+                    mess_executer(mess, function(mess) {
+
+                    });
+                })
+            }
+        });
+    });
+}

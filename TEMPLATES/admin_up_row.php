@@ -7,11 +7,10 @@
         </th>
         <th style="width: 100%">
             <div class="minimaze-panel" style="justify-content: left; gap: 3px">
-                <?$apps->render_menu_apps();?>
+                <?php $apps->render_menu_apps();?>
             </div>
         </th>
         <th id="menu-support">
-           <? SUPPORT::render_menu_support($alerts); ?>
         </th>
         <th>
             <div class="flex gap-5 align-center mess-container">

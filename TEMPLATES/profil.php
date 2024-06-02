@@ -60,7 +60,7 @@
                 <span class="svg-wrapper"><?=RBS::SVG('hart')?></span>
                 <span>Избранное (<?=$favorite_count?>)</span>
             </button>
-            <button class="action-btn flex align-center gap-10 not-border">
+            <button onclick="support_chat()" class="action-btn flex align-center gap-10 not-border">
                 <span class="svg-wrapper"><?=RBS::SVG('tech_help')?></span>
                 <span>Обратиться в поддержку</span>
             </button>

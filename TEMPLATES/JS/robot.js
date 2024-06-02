@@ -325,16 +325,20 @@ function set_new_room(obj_btn, room) {
     header_footer_set(false);
     show_main_chat();
     obj_btn = $(obj_btn).closest('li');
-    if(!obj_btn.hasClass('saved')) {
-        console.log(obj_btn);
-        save_new_contact($(obj_btn).attr('data-liver'), $(obj_btn).attr('data-room'));
+    if(obj_btn.length > 0) {
+        if (!obj_btn.hasClass('saved')) {
+            console.log(obj_btn);
+            save_new_contact($(obj_btn).attr('data-liver'), $(obj_btn).attr('data-room'));
+        } else {
+            consol('Этот контакт уже сохранён');
+        }
+        if (obj_btn.hasAttr('data-login')) {
+            obj_btn.find('span').text(obj_btn.attr('data-login'));
+        }
+        $(obj_btn).find('.ring').remove();
     } else {
-        consol('Этот контакт уже сохранён');
+        say('Тут обращение на определённый номер = ['+room+']');
     }
-    if(obj_btn.hasAttr('data-login')) {
-        obj_btn.find('span').text(obj_btn.attr('data-login'));
-    }
-    $(obj_btn).find('.ring').remove();
     target_room = room;
     get_room(room);
 }
@@ -883,7 +887,7 @@ function chat_in_down() {
         update_livers_parameters();
     }, 10);
 }
-function begin_chat_with(id_user) {
+function begin_chat_with(id_user, params={}) {
     header_footer_set(false);
     sender_com('close_session');
     show_main_chat();

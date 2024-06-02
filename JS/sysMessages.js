@@ -483,6 +483,24 @@ function SENDER(com, $array, $fReturn, $error=function(m) { console.log(m); }) {
     });
 }
 
+function BACK(back_control_name, com, $array, $fReturn, $error=function(m) { console.log(m); }) {
+    $array['com'] = com;
+    $array['back'] = back_control_name;
+    $.ajax({
+        url: '/',
+        type: "POST",
+        cache: false,
+        timeout: 15000,
+        data: $array,
+        success: function (msg) {
+            $fReturn(msg);
+        },
+        error: function (x, t, m) {
+            $error(m);
+        }
+    });
+}
+
 function SENDER_APP(com, $array, $fReturn, $error=function(m) { console.log(m); }) {
     $array['com'] = com;
     $array['app'] = buffer_app;
