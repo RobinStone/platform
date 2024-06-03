@@ -1,15 +1,10 @@
 Array
 (
-)
-Array
-(
-    [route] => chat
-    [sysauth] => 1d95792b86fe5271bcca084208c963bc
-)
-Array
-(
-    [auth] => true
-)
-Array
-(
+    [com] => files
+    [table] => file
+    [column] => none
+    [change_cataloger_image] => undercat
+    [cataloger_id] => 39
+    [id] => -1
+    [executer] => loader-in-file
 )

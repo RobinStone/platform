@@ -25,6 +25,21 @@ switch($type) {
             $user_params = $post;
 //            q("UPDATE file SET params='".$_POST['long']."' WHERE id=".(int)$last_id);
         }
+        if(isset($post['change_cataloger_image'])) {
+            $type = $post['change_cataloger_image'];
+            $id = (int)$_POST['cataloger_id'];
+            switch($type) {
+                case 'maincat':
+                    q("UPDATE `shops_categorys` SET `logo_img` = '".$sys_name."' WHERE `id`=".$id);
+                    break;
+                case 'undercat':
+                    q("UPDATE `shops_undercats` SET `logo_img` = '".$sys_name."' WHERE `id`=".$id);
+                    break;
+                case 'actionlist':
+                    q("UPDATE `shops_lists` SET `logo_img` = '".$sys_name."' WHERE `id`=".$id);
+                    break;
+            }
+        }
         $ans = [        // ВАЖНЫЙ !!!
             'status'=>'ok',
             'type'=>'load',
