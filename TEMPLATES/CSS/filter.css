@@ -60,10 +60,13 @@
 .swiper {
     margin-bottom: 20px;
 }
+.swiper .swiper-wrapper {
+    padding: 10px 0 45px;
+}
 .swiper-slide {
     aspect-ratio: 1;
     box-sizing: border-box;
-    padding: 10px;
+    /*padding: 10px;*/
 }
 .swiper-slide a {
     position: relative;
@@ -92,10 +95,11 @@
     transition: 0.4s;
     position: absolute;
     left: 50%;
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    border-radius: 10px;
     transform: translate(-50%, 0);
-    object-fit: contain;
+    object-fit: cover;
 }
 .swiper-slide:hover a img {
     transition: 0.00001s;
@@ -105,19 +109,20 @@
     position: absolute;
     bottom: 0;
     left: 50%;
-    transform: translate(-50%, 14px);
-    width: calc(100% - 10px);
+    transform: translate(-50%, 100%);
+    width: fit-content;
     min-height: 0;
     font-weight: 900;
-    font-size: 0.9em;
+    font-size: 1em;
     line-height: 1em;
-    max-width: 100%;
+    max-width: max-content;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: #000000;
-    /*background: linear-gradient(90deg, #ffffff00, #ffffff);*/
+    background: #ffffffb0;
+    border-radius: 5px;
     padding: 5px;
     z-index: 5;
 }
@@ -253,12 +258,14 @@ body .swiper-button-prev svg {
         justify-content: center;
     }
     .swiper-slide a span {
-        font-size: 0.9em;
+        font-size: 13px!important;
         color: #000000;
-        background-color: #ffffff!important;
+        background-color: #ffffffba!important;
+        transform: translate(-50%, 13%);
+        font-weight: 400;
     }
     .swiper-slide a img {
-        transform: translate(-50%, -22%);
+        transform: translate(-50%, 0);
     }
     .swiper-slide:hover a img {
         transform: translate(-50%, -22%) scale(1.05);

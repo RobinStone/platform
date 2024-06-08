@@ -8,3 +8,47 @@ Array
     [id] => -1
     [executer] => loader-in-file
 )
+Array
+(
+    [cash] => 0
+    [about] => ---
+    [city] => not set
+    [blaster] => oleg
+    [phone] => 
+)
+Array
+(
+    [cash] => 0
+    [about] => ---
+    [city] => not set
+    [blaster] => oleg
+    [phone] => 
+)
+Array
+(
+    [param] => 121
+)
+Array
+(
+    [cash] => 121
+)
+Array
+(
+    [cash] => 0
+    [about] => ---
+    [city] => not set
+    [blaster] => oleg
+    [phone] => 
+)
+Array
+(
+    [cash] => 121
+)
+Array
+(
+    [cash] => 0
+    [about] => ---
+    [city] => not set
+    [blaster] => oleg
+    [phone] => 
+)

@@ -219,12 +219,12 @@ div[contenteditable="true"] {
 .count-lines-3,
 .count-lines-4,
 .count-lines-5 {
-    display: -webkit-box;
+    display: -webkit-box!important;
     -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: normal;
+    -webkit-box-orient: vertical!important;
+    overflow: hidden!important;
+    text-overflow: ellipsis!important;
+    white-space: normal!important;
 }
 .count-lines-1 {
     -webkit-line-clamp: 1;

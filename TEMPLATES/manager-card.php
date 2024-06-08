@@ -1,3 +1,7 @@
+<?php
+$params = $_POST['params'] ?? [];
+//wtf($params, 1);
+?>
 <style>
     .manager-card {
         padding: 5px 10px;
@@ -15,7 +19,7 @@
     switch($action) {
         case 'разрешение': ?>
             <div class="flex align-center gap-5">
-                <input type="text" placeholder="user ID">
+                <input type="text" placeholder="<?php if(!empty($params['target'][1])) { echo $params['target'][1]; } ?>">
             </div>
             <div class="flex" style="padding-bottom: 15px">
                 <button onclick="access_to_del_complite(this)" class="margin-left-auto btn-just" style="padding: 2px 10px; font-weight: 100; font-size: 16px">Установить</button>
@@ -62,7 +66,7 @@
         let arr = {
             action: 'разрешение',
             id: parseInt(obj.find('input[type="text"]').val()),
-            key: 'access_to_complite_remoove',
+            key: '<?=$params['key']?>',
         };
         console.dir(arr);
         obj.closest('.window').find('.close-window-btn').click();
