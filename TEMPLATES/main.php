@@ -28,7 +28,7 @@
                     <?php } ?>
                     <div class="name-cat count-lines-2"><?=$v['category']?></div>
                 </div>
-            <? } ?>
+            <?php } ?>
         </div>
         <div class="swiper-pagination"></div>
 

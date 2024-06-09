@@ -145,13 +145,13 @@ $count = (int)$count;
 </div>
 <table class="set-to_bottom">
     <tr class="gray-box">
-        <? if(isset($_GET['com']) && $_GET['com'] === 'edit') { ?>
+        <?php if(isset($_GET['com']) && $_GET['com'] === 'edit') { ?>
             <td><button onclick="save_product()" class="btn-just btn" style="background-color: #adffad; padding: 2px 10px">Сохранить изменения</button></td>
-        <? } else { ?>
+        <?php } else { ?>
         <td><button onclick="save_product()" class="btn-just btn" style="background-color: #adffad; padding: 2px 10px">Создать товар</button></td>
         <td><button id="cleator" onclick="clear_all_forms()" class="btn-just btn big-paddings" style="background-color: #adffad; padding: 2px 10px; display: none">Очистить всё</button></td>
 <!--        <td><button onclick="load_buff()" class="btn-just btn" style="background-color: #adffad; padding: 2px 10px">востановить</button></td>-->
-        <? } ?>
+        <?php } ?>
         <td></td>
         <td style="text-align: right">
             <button onclick="add_properties()" class="btn-just" style="padding: 2px 10px">+ Добавить свойство</button>

@@ -219,6 +219,7 @@ class SHOP {
             ");
 
             SEARCH::set_finder_index($shop_id, $product_id, $product_name, $city_id);
+            SEARCH::set_categories_parameters($shop_id, $product_id, $main_cat_id, $under_cat_id, $action_list_id);
             DISTANCE::change_product_coords($lat, $lng, $country_id, $city_id, $shop_id, $product_id);
 
             $create = false;
@@ -241,6 +242,7 @@ class SHOP {
             $product_id = (int)$product_id;
 
             SEARCH::set_finder_index($shop_id, $product_id, $product_name, $city_id);
+            SEARCH::set_categories_parameters($shop_id, $product_id, $main_cat_id, $under_cat_id, $action_list_id);
             DISTANCE::create_new_product_coords($lat, $lng, $country_id, $city_id, $shop_id, $product_id);
 
             $create = true;
