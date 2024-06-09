@@ -55,6 +55,7 @@ function append_permission(obj) {
         action: $(obj).find('td[data-name="name"]').text(),
         target: $(obj).find('td[data-name="target"]').text().split('|'),
         key: $(obj).find('td[data-name="key"]').text(),
+        limit: parseInt($(obj).find('td[data-name="secs"]').text()),
     };
     console.dir(card);
     let win = create_window(undefined, 'УСТАНОВКА ПАРАМЕТРА');

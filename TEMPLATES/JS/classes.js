@@ -22,18 +22,58 @@ class VALUES {
 class PROFIL {
     static errors = [];
 
-    static set_list(param_argum_list, call_back=function() {}) {
-        BACK('profil', 'profil', {'set': param_argum_list}, function(mess) {
-            mess_executer(mess, function(mess) {
-                call_back(mess.params);
-            })
+    /**
+     * Удаляет список параметров, если эти поля разрешены для изменения или
+     * есть параметр access_change_profil_sys
+     * @param params_array
+     */
+    static delete(params_array) {
+        let params = {};
+        for(let i in params_array) {
+            params[params_array[i]] = '<-->';
+        }
+        this.set_list(params, function() {
+
         });
     }
 
-    static set(param, argum, call_back=function() {}) {
+    /**
+     * Передаём объект с парами
+     * {
+     * ключ: значение,
+     * ключ: значение,
+     * }
+     * если поля закрытые, то система их не установит, если же
+     * нужно всёравно установить - в админ-панели нужно установить access_change_profil_sys
+     * @param param_argum_list
+     * @param call_back
+     */
+    static set_list(param_argum_list, call_back=function() {}) {
         BACK('profil', 'profil', {'set': param_argum_list}, function(mess) {
             mess_executer(mess, function(mess) {
-                call_back(mess.params);
+                call_back(mess.params.response);
+                if(mess.params.errors.length > 0) {
+                    console.dir(mess.params.errors);
+                }
+            });
+        });
+    }
+
+    /**
+     * Установит в PROFIL значение
+     * 'param', 'argum'
+     * @param param
+     * @param argum
+     * @param call_back
+     */
+    static set(param, argum, call_back=function() {}) {
+        let param_argum_list = {[param]: argum};
+        BACK('profil', 'profil', {'set': param_argum_list}, function(mess) {
+            mess_executer(mess, function(mess) {
+                call_back(mess.params.response);
+                if(mess.params.errors.length > 0) {
+                    console.dir(mess.params.errors);
+                }
             })
         });
     }
@@ -60,7 +100,10 @@ class PROFIL {
             mess_executer(mess, function(mess) {
                 let response = mess.params;
                 if(response !== '') {
-                    call_back(response);
+                    call_back(response.response);
+                    if(response.errors.length > 0) {
+                        console.dir(response.errors);
+                    }
                 }
             })
         });
@@ -79,8 +122,13 @@ class PROFIL {
         BACK('profil', 'profil', {'get': param}, function(mess) {
             mess_executer(mess, function(mess) {
                 let response = mess.params;
-                if(response !== '') {
-                    call_back(response[buff_param]);
+                if(response.response !== '') {
+                    call_back(response.response[buff_param]);
+                } else {
+                    call_back(if_not_exists);
+                }
+                if(response.errors.length > 0) {
+                    console.dir(response.errors);
                 }
             })
         });

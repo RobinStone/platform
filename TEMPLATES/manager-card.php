@@ -67,7 +67,9 @@ $params = $_POST['params'] ?? [];
             action: 'разрешение',
             id: parseInt(obj.find('input[type="text"]').val()),
             key: '<?=$params['key']?>',
+            limit: <?=$params['limit']?>,
         };
+        console.log('-------------');
         console.dir(arr);
         obj.closest('.window').find('.close-window-btn').click();
         SENDER('set_sys_mess', {params: arr}, function(mess) {
