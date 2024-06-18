@@ -864,6 +864,14 @@ function md5(input) {
         return hashHex;
     });
 }
+// Функция для вычисления MD5 хеша
+async function md6(input) {
+    const msgUint8 = new TextEncoder().encode(input);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex.slice(0, 32);
+}
 function show_popap(obj) {
     $('#body-s').append(obj);
     $(obj).addClass('former');
