@@ -58,6 +58,12 @@
     background-color: rgba(15, 150, 64, 0.19)!important;
     border-radius: 5px;
 }
+.profil .column-right {
+    min-height: calc(100vh - 300px);
+}
+.profil .column-right .final {
+    height: 100%;
+}
 
 @media screen and (max-width: 950px) {
     .column-right .main-chat-wrapper {

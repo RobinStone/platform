@@ -56,7 +56,7 @@ class API {
             print_response_status(Response::STATUS_UNAUTHORIZED);
         }
 
-        $api_request_array = explode("/", ($server['REQUEST_URI'] ?? ""));
+        $api_request_array = explode("/", explode("?", ($server['REQUEST_URI'] ?? ""), 2)[0]);
         if(count($api_request_array) < 3) {
             print_response_status(Response::STATUS_BAD_REQUEST);
         }
@@ -65,7 +65,7 @@ class API {
 
         switch($server['REQUEST_METHOD']) {
             case 'GET':
-                $dt = explode('/?', $server['REQUEST_URI']);
+                $dt = explode('?', $server['REQUEST_URI']);
                 if(count($dt) === 2) {
                     $dt = explode('&', $dt[1]);
                 } else {
@@ -83,6 +83,7 @@ class API {
                 break;
             case 'POST':
             case 'PUT':
+            case 'DELETE':
                 $rawData = file_get_contents('php://input');
                 $data = json_decode($rawData, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
@@ -98,9 +99,9 @@ class API {
                 if($_SERVER['REQUEST_METHOD'] === 'PUT') {
                     $method = 'update';
                 }
-                break;
-            case 'DELETE':
-                $method = 'delete';
+                if($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+                    $method = 'delete';
+                }
                 break;
         }
 

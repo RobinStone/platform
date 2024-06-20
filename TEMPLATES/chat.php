@@ -1,5 +1,9 @@
 <?php
 include_CSS('profil');
+$only_chat = false;
+if(isset($_GET['only_chat'])) {
+    $only_chat = true;
+}
 ?>
 <div class="wrapper">
     <?php echo "<div id='alerts'>" . render('alerts') . "</div>"?>
@@ -24,3 +28,13 @@ include_CSS('profil');
     'type_room'=>'personal',
     'params'=>[]
 ]); ?>
+
+<script>
+    <?php if($only_chat) { ?>
+    $('#body-s header.header').css('display', 'none');
+    setTimeout(function() {
+        $('footer.footer-wrapper').css('display', 'none');
+        $('#admin-panel').css('display', 'none');
+    }, 10);
+    <?php } ?>
+</script>

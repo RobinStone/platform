@@ -6,6 +6,7 @@
         "yoomoney/yookassa-sdk-php": "^3.1",
         "james-heinrich/getid3": "^1.9",
       "ext-mbstring": "*",
-      "ext-mysqli": "*"
+      "ext-mysqli": "*",
+      "ext-curl": "*"
     }
 }

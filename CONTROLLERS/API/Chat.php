@@ -8,9 +8,8 @@ class Chat {
         $status = Response::STATUS_BAD_REQUEST;
         $data = [];
 
-        wtf($params);
-
-        $status = Response::STATUS_OK;
+        $data['PARAMS'] = $params;
+        $data['method'] = 'INDEX';
 
         print_response([
             'status' => $status,
@@ -23,7 +22,24 @@ class Chat {
         $status = Response::STATUS_BAD_REQUEST;
         $data = [];
 
-        $data['method'] = 'CREATE';
+//        if(isset($params['DATA']['user_id'], $params['DATA']['login'])) {
+//            if($row = SQL_ONE_ROW(q("
+//            SELECT `id` FROM `users` WHERE
+//            `id`=".(int)$params['DATA']['user_id']." AND
+//            `login`='".db_secur($params['DATA']['login'])."'
+//            "))) {
+//                $id_user = (int)$row['id'];
+//                PROFIL::AUTH_LOGIN($id_user);
+//                $data['LINK'] = Access::create_access_link('chat', $id_user);
+//            }
+//        }
+
+        $data['PARAMS'] = $params;
+        $data['method'] = 'POST';
+
+        if(!empty($data)) {
+            $status = Response::STATUS_OK;
+        }
 
         print_response([
             'status' => $status,
@@ -37,6 +53,7 @@ class Chat {
         $data = [];
 
         $data['method'] = 'UPDATE';
+        $data['PARAMS'] = $params;
 
         print_response([
             'status' => $status,
@@ -50,6 +67,7 @@ class Chat {
         $data = [];
 
         $data['method'] = 'DELETE';
+        $data['PARAMS'] = $params;
 
         print_response([
             'status' => $status,
