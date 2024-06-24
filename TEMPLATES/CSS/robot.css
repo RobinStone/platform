@@ -221,6 +221,8 @@
     transition: 0.4s;
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
+    width: 350px;
+    height: 550px;
 }
 .phone-book-list li button {
     display: flex;

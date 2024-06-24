@@ -50,4 +50,12 @@ class USERS {
         q("DELETE FROM `users` WHERE `id`=".$id_user);
         return true;
     }
+
+    public static function isset_user_login(string $login): bool|array
+    {
+        if($row = SQL_ONE_ROW(q("SELECT `id` FROM `users` WHERE `login`='".db_secur($login)."' LIMIT 1"))) {
+            return $row;
+        }
+        return false;
+    }
 }

@@ -1,0 +1,38 @@
+#body-s .header {
+    display: none;
+}
+#body-s .footer-wrapper {
+    display: none;
+}
+#body-s .wrapper.profil {
+    min-height: 100dvh;
+}
+#admin-panel {
+    display: none;
+}
+#body-s .window {
+    max-height: unset!important;
+}
+#body-s .profil .column-left {
+    max-width: 300px;
+}
+#body-s .liver-avatar {
+    width: 30px!important;
+    height: 30px!important;
+}
+#body-s .phone-book-list li .count-lines-1.action-btn {
+    min-height: unset;
+    font-size: 12px;
+}
+
+@media screen and (max-width: 950px) {
+    #body-s {
+        overflow-y: hidden;
+    }
+    #body-s .column-right .main-chat-wrapper {
+        height: calc(100dvh - 25px)!important;
+    }
+    #body-s .quick_access {
+        display: none;
+    }
+}

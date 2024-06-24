@@ -17,7 +17,7 @@ use JetBrains\PhpStorm\NoReturn;
     http_response_code((int)$response_codes['CODE']);
 
     header('Content-Type: application/json');
-    echo json_encode($params['data']);
+    echo json_encode(['message'=>$response_codes['CODE'], 'data'=>$params['data']]);
     exit;
 }
 
