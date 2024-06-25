@@ -36,3 +36,7 @@
     line-height: 16px;
     color: #1F1A1A;
 }
+.user-card-name a {
+    text-decoration: none;
+    display: inline-block;
+}

@@ -1,3 +1,4 @@
+logs
 logs/*
 CONTROLLERS/config.php
-
+RESURSES/SQL/*

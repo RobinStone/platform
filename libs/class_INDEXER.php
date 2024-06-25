@@ -1,5 +1,10 @@
 <?php
 class INDEXER {
+
+    /**
+     * Полностью пересматривает таблицу INDEXER изменяя категории и хозяина того или иного лота
+     * @return void
+     */
     public static function update() {
         $rows = SUBD::getAllDB('indexer');
         foreach($rows as $k=>$v) {
@@ -7,7 +12,8 @@ class INDEXER {
             UPDATE `indexer` SET 
             `shops_categorys` = (SELECT `main_cat` FROM `products_".$v['shop_id']."` WHERE `id`=".$v['prod_id']."),
             `shops_undercats` = (SELECT `under_cat` FROM `products_".$v['shop_id']."` WHERE `id`=".$v['prod_id']."),
-            `shops_lists` = (SELECT `action_list` FROM `products_".$v['shop_id']."` WHERE `id`=".$v['prod_id'].")
+            `shops_lists` = (SELECT `action_list` FROM `products_".$v['shop_id']."` WHERE `id`=".$v['prod_id']."),
+            `owner_id` = (SELECT `owner` FROM `shops` WHERE `id`=".$v['shop_id']." LIMIT 1)
             WHERE `id` = ".$v['id']."
             ");
         }

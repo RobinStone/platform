@@ -2,7 +2,7 @@
     <img src="<?=$img?>" width="50" height="50" style="display: inline-block; border-radius: 50%; object-fit: cover">
     <div class="user-card-content">
         <div class="user-card-name">
-            <a style="color: #0F9640;" href="/owner?o=<?=$P->get_field('login')?>">
+            <a target="_blank" class="action-btn" style="color: #0F9640;" href="/owner?o=<?=$P->get_field('login')?>">
                 <?=$saler_name?>
             </a>
         </div>
