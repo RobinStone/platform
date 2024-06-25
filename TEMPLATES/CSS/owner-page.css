@@ -1,0 +1,22 @@
+.line {
+    margin: 15px 0;
+    background-color: #0F9640;
+}
+#txt-2 {
+    display: none;
+}
+.back .shops a {
+    max-width: 380px;
+}
+.user-card-content div:nth-child(4) {
+    display: none;
+}
+
+@media screen and (max-width: 950px) {
+    .back {
+        padding: 10px;
+    }
+    .back .gradient {
+        padding: 0!important;
+    }
+}

@@ -89,6 +89,8 @@ function open_tab(name, params={}, call_back=function() {}) {
         case 'bank':
         case 'account':
         case 'my_shops':
+        case 'subscribes':
+        case 'subscribes_mans':
         case 'messenger':
         case 'banners':
         case 'purchases': // покупки

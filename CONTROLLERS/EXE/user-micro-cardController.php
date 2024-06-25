@@ -54,3 +54,9 @@ $reviews = count($rows);
 if($reviews > 0) {
     $stars = round($stars / $reviews, 2);
 }
+
+$subs_count = SQL_ONE_ROW(q("SELECT COUNT(*) FROM subscriptions WHERE subscr_id = ".$P->get_field('id')))['COUNT(*)'];
+
+if(empty($my_subscr_count)) {
+    $my_subscr_count = SQL_ONE_ROW(q("SELECT COUNT(*) FROM subscriptions WHERE self_id = ".$P->get_field('id')))['COUNT(*)'];
+}

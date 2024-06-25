@@ -21,6 +21,8 @@
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
+    display: inline-block;
+    max-width: fit-content;
     line-height: 19px;
     color: #1F1A1A;
 }
