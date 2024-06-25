@@ -9,6 +9,9 @@
     ?>
 </section>
 
+<div class="wrapper">
+    <?php echo render('list_cards_product', ['preview_cards_product'=>[]]); ?>
+</div>
 <!-- При рендаре robot ОБЯЗАТЕЛЬНО ПЕРЕДАЁМ room, type_room, params-->
 
 
@@ -18,4 +21,3 @@
     'type_room'=>'personal',
     'params'=>[]
 ]); ?>
-

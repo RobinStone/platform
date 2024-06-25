@@ -58,4 +58,11 @@ class USERS {
         }
         return false;
     }
+
+    public static function login_to_id(string $login):int {
+        if($row = SQL_ONE_ROW(q("SELECT id FROM users WHERE login='".db_secur($login)."' LIMIT 1"))) {
+            return (int)$row['id'];
+        }
+        return 0;
+    }
 }
