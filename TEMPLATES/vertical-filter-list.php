@@ -26,7 +26,7 @@ if(isset($basket) && $basket !== '') {
         ?>
     <li class="vertical-list-item">
         <div class="flex center img-wrapper">
-            <img loading="lazy" src="/IMG/img100x100/<?=$v['FILES'][0]?>" width="100" height="100">
+            <img loading="lazy" src="/IMG/img300x300/<?=$v['FILES'][0]?>" width="200" height="150">
         </div>
         <div class="text-block">
             <div class="product-name">
@@ -37,9 +37,10 @@ if(isset($basket) && $basket !== '') {
             <div class="location"><?=$v['PLACE']?></div>
             <div class="descr"><?=$v['DESCR']?></div>
         </div>
-        <div class="controls flex between column">
+        <div class="controls flex between column" style="gap: 3px">
             <div class="price"><?=VALUES::price_format($v['PRICE'])?> P</div>
-            <a href="<?=$link?>" class="btn action-btn">Подробнее</a>
+            <button style="margin-top: auto" class="btn round-btn">Показать телефон</button>
+            <button class="btn round-btn">Написать</button>
         </div>
         <div class="likes">
             <?php

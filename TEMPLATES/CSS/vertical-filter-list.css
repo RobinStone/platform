@@ -13,11 +13,14 @@
     border-bottom: none;
 }
 .vertical-list-item .img-wrapper {
-    width: 100px;
-    height: 100px;
+    width: 200px;
+    height: 150px;
     overflow: hidden;
     border-radius: 8px;
     background-color: #ffffff;
+}
+.vertical-list-item .img-wrapper img {
+    object-fit: cover;
 }
 .vertical-list-item .text-block {
     flex: 5;

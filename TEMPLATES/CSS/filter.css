@@ -100,6 +100,8 @@
     border-radius: 10px;
     transform: translate(-50%, 0);
     object-fit: cover;
+    max-width: 200px;
+    max-height: 200px;
 }
 .swiper-slide:hover a img {
     transition: 0.00001s;
