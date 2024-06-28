@@ -13,6 +13,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/workerman/workerman" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/james-heinrich/getid3" />
+      <excludeFolder url="file://$MODULE_DIR$/logs/Cache" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
