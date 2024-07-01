@@ -10,7 +10,7 @@
             Заходите прямо сейчас, чтобы открыть для себя удивительный мир возможностей!</p>
         <div class="flex center gap-15 flex-wrap">
             <?php foreach($shops as $v) { ?>
-                <a target="_blank" href="/<?=$v['domain']?>" class="flex gap-10 action-btn">
+                <a target="_blank" href="/<?=$v['domain']?>" class="flex gap-10">
                     <div class="round-shore"></div>
                     <img width="70" height="70" src="/IMG/img100x100/<?=$v['logo']?>">
                     <div class="flex column gap-5">
