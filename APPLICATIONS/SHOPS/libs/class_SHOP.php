@@ -537,10 +537,10 @@ class SHOP {
         $cities = SQL_ROWS_FIELD(q("SELECT * FROM `cities`"), 'id');
         $querys = [];
         $arr = [];
-        if($city_id !== -1) { $arr[] = " `city`=".(int)$city_id." "; }
-        if($main_cat_id !== -1) { $arr[] = " `main_cat`=".(int)$main_cat_id." "; }
-        if($under_cat_id !== -1) { $arr[] = " `under_cat`=".(int)$under_cat_id." "; }
-        if($action_list_id !== -1) { $arr[] = " `action_list`=".(int)$action_list_id." "; }
+        if($city_id !== -1) { $arr[] = " `city`=".$city_id." "; }
+        if($main_cat_id !== -1) { $arr[] = " `main_cat`=".$main_cat_id." "; }
+        if($under_cat_id !== -1) { $arr[] = " `under_cat`=".$under_cat_id." "; }
+        if($action_list_id !== -1) { $arr[] = " `action_list`=".$action_list_id." "; }
 
         if($only_active === true) {
             $dt_now = date('Y-m-d H:i:s');
@@ -580,7 +580,6 @@ class SHOP {
 
         $rows = SQL_ROWS($ask);
 
-//        say($rows);
 
         $sh = [];
         foreach($rows as $v) {

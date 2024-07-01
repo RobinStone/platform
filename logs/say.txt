@@ -1,7 +1,0 @@
-Array
-(
-    [owner_login] => kamran
-    [count] => 8
-    [com] => get_next_cards
-    [app] => SHOPS
-)
