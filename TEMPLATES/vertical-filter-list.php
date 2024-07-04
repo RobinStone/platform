@@ -33,7 +33,7 @@ if(isset($basket) && $basket !== '') {
         </div>
         <div class="text-block">
             <div class="product-name">
-                <a class="action-btn" href="<?=$link?>">
+                <a class="" href="<?=$link?>">
                     <?=$v['name']?>
                 </a>
             </div>

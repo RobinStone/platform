@@ -68,6 +68,10 @@
                 <span class="svg-wrapper"><?=RBS::SVG('docs')?></span>
                 <span>Добавить документы</span>
             </button>
+            <button class="action-btn flex align-center gap-10 not-border">
+                <span class="svg-wrapper green-svg" style="width: 28px; height: 28px"><?=RBS::SVG('API')?></span>
+                <span>API</span>
+            </button>
             <?php if(isMobile()) { ?>
                 <button onclick="location.href='/auth/exit'" class="action-btn flex align-center gap-10 not-border">
                     <span class="svg-wrapper green-svg" style="width: 28px; height: 28px"><?=RBS::SVG('20230508-120328_id-2-455995.svg')?></span>
