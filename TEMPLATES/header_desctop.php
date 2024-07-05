@@ -11,6 +11,9 @@ $my_place = SITE::$my_place;
             <a href="/" class="svg-wrapper" style="display: inline-block; height: 26px"><?=RBS::SVG('20230814-102825_id-2-423088.svg')?></a>
         </div>
         <ul class="action-menu flex align-center gap-20">
+            <li class="action-btn" onclick="theme_checker()">
+                <img width="30" height="30" src="/DOWNLOAD/20240705-121447_id-2-736237.svg">
+            </li>
             <?php if(Access::scanLevel() > 0) { ?>
 <!--            <li onclick="$(this).toggleClass('show-phone-book')" class="flex align-center gap-10 action-btn li-phone-book" style="position: relative">-->
             <li onclick="location.href='/chat'" class="flex align-center gap-10 action-btn li-phone-book" style="position: relative">
@@ -78,4 +81,13 @@ $my_place = SITE::$my_place;
     $(document).on('click', '.overlay-gray.glass', function(e) {
         show_hide_menu();
     });
+
+    function theme_checker() {
+        if($('#body-s').hasClass('dark')) {
+            setCookies('theme', '');
+        } else {
+            setCookies('theme', 'dark');
+        }
+        $('#body-s').toggleClass('dark');
+    }
 </script>

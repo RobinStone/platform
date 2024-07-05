@@ -62,7 +62,7 @@
 
     <title><?=Core::$title?></title>
 </head>
-    <body id="body-s" class="site-pages">
+    <body id="body-s" class="site-pages <?=SITE::$theme?>">
         <main>
             <?php
             if(isMobile()) {
@@ -109,7 +109,6 @@
                 }, 400);
                 }
             }
-
             <?php
             global $JS_VARS;
             foreach($JS_VARS as $k=>$v) {

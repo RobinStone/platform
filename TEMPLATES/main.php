@@ -63,53 +63,51 @@ echo render('player');
 ]); ?>
 
 <script>
-    $(document).ready(function() {
-        $(document).ready(function () {
-            let swiper = new Swiper('.cats', {
-                direction: 'horizontal',
-                loop: false,
-                slidesPerView: 3,
-                slidesPerGroup: 3,
-                grid: {
-                    rows: 2,
-                },
-                breakpoints: {
-                    1390: {
-                        slidesPerView: 10,
-                        slidesPerGroup: 10,
-                        grid: {
-                            rows: 1,
-                        },
-                    },
-                    1200: {
-                        slidesPerView: 8,
-                        slidesPerGroup: 8,
-                        grid: {
-                            rows: 1,
-                        },
-                    },
-                    1000: {
-                        slidesPerView: 6,
-                        slidesPerGroup: 6,
-                        grid: {
-                            rows: 1,
-                        },
-                    },
-                    950: {
-                        slidesPerView: 3,
-                        slidesPerGroup: 3,
-                        grid: {
-                            rows: 2,
-                        },
+    $(document).ready(function () {
+        let swiper = new Swiper('.cats', {
+            direction: 'horizontal',
+            loop: false,
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+            grid: {
+                rows: 2,
+            },
+            breakpoints: {
+                1390: {
+                    slidesPerView: 10,
+                    slidesPerGroup: 10,
+                    grid: {
+                        rows: 1,
                     },
                 },
+                1200: {
+                    slidesPerView: 8,
+                    slidesPerGroup: 8,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+                1000: {
+                    slidesPerView: 6,
+                    slidesPerGroup: 6,
+                    grid: {
+                        rows: 1,
+                    },
+                },
+                950: {
+                    slidesPerView: 3,
+                    slidesPerGroup: 3,
+                    grid: {
+                        rows: 2,
+                    },
+                },
+            },
 
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
 
-            });
         });
     });
 </script>

@@ -33,4 +33,18 @@
         <span id="count-alert"></span>
     </a>
     <a id="q-profil" href="/profil" class="quick-btn svg-wrapper action-btn"><?=RBS::SVG('q-profil.svg')?></a>
+    <a class="action-btn" onclick="theme_checker()">
+        <img width="30" height="30" src="/DOWNLOAD/20240705-121447_id-2-736237.svg">
+    </a>
 </div>
+
+<script>
+    function theme_checker() {
+        if($('#body-s').hasClass('dark')) {
+            setCookies('theme', '');
+        } else {
+            setCookies('theme', 'dark');
+        }
+        $('#body-s').toggleClass('dark');
+    }
+</script>
