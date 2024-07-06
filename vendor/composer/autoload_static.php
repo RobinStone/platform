@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInitacfd77b194d7309715588bc31e04cf20
 {
     public static $prefixLengthsPsr4 = array (
+        'Z' => 
+        array (
+            'ZipStream\\' => 10,
+        ),
         'Y' => 
         array (
             'YooKassa\\Validator\\' => 19,
@@ -18,17 +22,34 @@ class ComposerStaticInitacfd77b194d7309715588bc31e04cf20
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Message\\' => 17,
+            'Psr\\Http\\Client\\' => 16,
             'Predis\\' => 7,
+            'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'M' => 
+        array (
+            'MyCLabs\\Enum\\' => 13,
+            'Matrix\\' => 7,
         ),
         'D' => 
         array (
             'Ds\\' => 3,
         ),
+        'C' => 
+        array (
+            'Complex\\' => 8,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'ZipStream\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
+        ),
         'YooKassa\\Validator\\' => 
         array (
             0 => __DIR__ . '/..' . '/yoomoney/yookassa-sdk-validator/src',
@@ -41,21 +62,50 @@ class ComposerStaticInitacfd77b194d7309715588bc31e04cf20
         array (
             0 => __DIR__ . '/..' . '/workerman/workerman',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+        ),
+        'Psr\\Http\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-client/src',
         ),
         'Predis\\' => 
         array (
             0 => __DIR__ . '/..' . '/predis/predis/src',
         ),
+        'PhpOffice\\PhpSpreadsheet\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
+        'MyCLabs\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
+        ),
+        'Matrix\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
+        ),
         'Ds\\' => 
         array (
             0 => __DIR__ . '/..' . '/php-ds/php-ds/src',
+        ),
+        'Complex\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
     );
 
@@ -65,6 +115,7 @@ class ComposerStaticInitacfd77b194d7309715588bc31e04cf20
         'AVCSequenceParameterSetReader' => __DIR__ . '/..' . '/james-heinrich/getid3/getid3/module.audio-video.flv.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Image_XMP' => __DIR__ . '/..' . '/james-heinrich/getid3/getid3/module.tag.xmp.php',
+        'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
         'getID3' => __DIR__ . '/..' . '/james-heinrich/getid3/getid3/getid3.php',
         'getID3_cached_dbm' => __DIR__ . '/..' . '/james-heinrich/getid3/getid3/extension.cache.dbm.php',
         'getID3_cached_mysql' => __DIR__ . '/..' . '/james-heinrich/getid3/getid3/extension.cache.mysql.php',

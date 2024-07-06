@@ -6,11 +6,19 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'ZipStream\\' => array($vendorDir . '/maennchen/zipstream-php/src'),
     'YooKassa\\Validator\\' => array($vendorDir . '/yoomoney/yookassa-sdk-validator/src'),
     'YooKassa\\' => array($vendorDir . '/yoomoney/yookassa-sdk-php/lib'),
     'Workerman\\' => array($vendorDir . '/workerman/workerman'),
+    'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
+    'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src', $vendorDir . '/psr/http-factory/src'),
+    'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'Predis\\' => array($vendorDir . '/predis/predis/src'),
+    'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'MyCLabs\\Enum\\' => array($vendorDir . '/myclabs/php-enum/src'),
+    'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),
     'Ds\\' => array($vendorDir . '/php-ds/php-ds/src'),
+    'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
 );

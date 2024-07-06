@@ -14,6 +14,15 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/workerman/workerman" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/james-heinrich/getid3" />
       <excludeFolder url="file://$MODULE_DIR$/logs/Cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/php-enum" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/maennchen/zipstream-php" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/markbaker/complex" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/markbaker/matrix" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-factory" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpoffice/phpspreadsheet" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
