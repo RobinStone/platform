@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,14 +26,14 @@
 
 namespace YooKassa\Request\PersonalData;
 
+use DateTime;
 use YooKassa\Common\AbstractRequestBuilder;
 use YooKassa\Common\AbstractRequestInterface;
-use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
-use YooKassa\Common\Exceptions\InvalidRequestException;
 use YooKassa\Model\Metadata;
+use YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest;
 
 /**
- * Класс, представляющий модель CreatePersonalDataRequestBuilder.
+ * Класс, представляющий модель CreatePayoutStatementRecipientPersonalDataRequestBuilder.
  *
  * Класс билдера объектов запросов к API на создание платежа.
  *
@@ -44,28 +44,14 @@ use YooKassa\Model\Metadata;
  * @author   cms@yoomoney.ru
  * @link     https://yookassa.ru/developers/api
  */
-class CreatePersonalDataRequestBuilder extends AbstractRequestBuilder
+class CreateSbpPayoutRecipientPersonalDataRequestBuilder extends AbstractRequestBuilder
 {
     /**
      * Собираемый объект запроса.
      *
-     * @var CreatePersonalDataRequest|null
+     * @var SbpPayoutRecipientPersonalDataRequest|null
      */
     protected ?AbstractRequestInterface $currentObject = null;
-
-    /**
-     * Устанавливает тип персональных данных.
-     *
-     * @param string $value Тип персональных данных
-     *
-     * @return self Инстанс билдера запросов
-     */
-    public function setType(string $value): self
-    {
-        $this->currentObject->setType($value);
-
-        return $this;
-    }
 
     /**
      * Устанавливает фамилию пользователя.
@@ -108,9 +94,9 @@ class CreatePersonalDataRequestBuilder extends AbstractRequestBuilder
      *
      * @param null|array|Metadata $value Метаданные платежа, устанавливаемые мерчантом
      *
-     * @return CreatePersonalDataRequestBuilder Инстанс текущего билдера
+     * @return self Инстанс текущего билдера
      */
-    public function setMetadata(mixed $value): CreatePersonalDataRequestBuilder
+    public function setMetadata(mixed $value): self
     {
         $this->currentObject->setMetadata($value);
 
@@ -122,7 +108,7 @@ class CreatePersonalDataRequestBuilder extends AbstractRequestBuilder
      *
      * @param null|array $options Массив параметров для установки в объект запроса
      *
-     * @return CreatePersonalDataRequestInterface|AbstractRequestInterface Инстанс объекта запроса
+     * @return AbstractRequestInterface|SbpPayoutRecipientPersonalDataRequest Инстанс объекта запроса
      */
     public function build(array $options = null): AbstractRequestInterface
     {
@@ -132,10 +118,10 @@ class CreatePersonalDataRequestBuilder extends AbstractRequestBuilder
     /**
      * Инициализирует объект запроса, который в дальнейшем будет собираться билдером
      *
-     * @return CreatePersonalDataRequest Инстанс собираемого объекта запроса к API
+     * @return SbpPayoutRecipientPersonalDataRequest Инстанс собираемого объекта запроса к API
      */
-    protected function initCurrentObject(): CreatePersonalDataRequest
+    protected function initCurrentObject(): SbpPayoutRecipientPersonalDataRequest
     {
-        return new CreatePersonalDataRequest();
+        return new SbpPayoutRecipientPersonalDataRequest();
     }
 }

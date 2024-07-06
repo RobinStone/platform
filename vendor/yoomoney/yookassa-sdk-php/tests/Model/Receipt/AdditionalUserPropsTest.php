@@ -1,171 +1,175 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
 use Exception;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use TypeError;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
-use YooKassa\Helpers\Random;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Receipt\AdditionalUserProps;
 
 /**
- * @internal
+ * AdditionalUserPropsTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class AdditionalUserPropsTest extends TestCase
+class AdditionalUserPropsTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validArrayDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testConstructor($options): void
-    {
-        $instance = self::getInstance($options);
+    protected AdditionalUserProps $object;
 
-        self::assertEquals($options['value'], $instance->getValue());
-        self::assertEquals($options['name'], $instance->getName());
+    /**
+     * @return AdditionalUserProps
+     */
+    protected function getTestInstance(): AdditionalUserProps
+    {
+        return new AdditionalUserProps();
     }
 
     /**
-     * @dataProvider validArrayDataProvider
+     * @return void
      */
-    public function testGetSetValue(array $options): void
+    public function testAdditionalUserPropsClassExists(): void
     {
-        $expected = $options['value'];
-
-        $instance = self::getInstance();
-
-        $instance->setValue($expected);
-        self::assertEquals($expected, $instance->getValue());
-        self::assertEquals($expected, $instance->value);
-
-        $instance = self::getInstance();
-        $instance->value = $expected;
-        self::assertEquals($expected, $instance->getValue());
-        self::assertEquals($expected, $instance->value);
+        $this->object = $this->getMockBuilder(AdditionalUserProps::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(AdditionalUserProps::class));
+        $this->assertInstanceOf(AdditionalUserProps::class, $this->object);
     }
 
     /**
-     * @dataProvider invalidValueDataProvider
-     *
+     * Test property "name"
+     * @dataProvider validNameDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidValue($value, string $exceptionClassName): void
+    public function testName(mixed $value): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
+        $instance->setName($value);
+        self::assertNotNull($instance->getName());
+        self::assertNotNull($instance->name);
+        self::assertEquals($value, is_array($value) ? $instance->getName()->toArray() : $instance->getName());
+        self::assertEquals($value, is_array($value) ? $instance->name->toArray() : $instance->name);
+        self::assertLessThanOrEqual(64, is_string($instance->getName()) ? mb_strlen($instance->getName()) : $instance->getName());
+        self::assertLessThanOrEqual(64, is_string($instance->name) ? mb_strlen($instance->name) : $instance->name);
+    }
 
-        self::expectException($exceptionClassName);
+    /**
+     * Test invalid property "name"
+     * @dataProvider invalidNameDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidName(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setName($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_name'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_name'));
+    }
+
+    /**
+     * Test property "value"
+     * @dataProvider validValueDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testValue(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setValue($value);
+        self::assertNotNull($instance->getValue());
+        self::assertNotNull($instance->value);
+        self::assertEquals($value, is_array($value) ? $instance->getValue()->toArray() : $instance->getValue());
+        self::assertEquals($value, is_array($value) ? $instance->value->toArray() : $instance->value);
+        self::assertLessThanOrEqual(234, is_string($instance->getValue()) ? mb_strlen($instance->getValue()) : $instance->getValue());
+        self::assertLessThanOrEqual(234, is_string($instance->value) ? mb_strlen($instance->value) : $instance->value);
+    }
+
+    /**
+     * Test invalid property "value"
+     * @dataProvider invalidValueDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidValue(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setValue($value);
     }
 
     /**
-     * @dataProvider invalidValueDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidValue($value, string $exceptionClassName): void
+    public function validValueDataProvider(): array
     {
-        $instance = self::getInstance();
-
-        self::expectException($exceptionClassName);
-        $instance->value = $value;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_value'));
     }
 
     /**
-     * @dataProvider validArrayDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetName(array $options): void
+    public function invalidValueDataProvider(): array
     {
-        $instance = self::getInstance();
-
-        $instance->setName($options['name']);
-        self::assertEquals($options['name'], $instance->getName());
-        self::assertEquals($options['name'], $instance->name);
-    }
-
-    /**
-     * @dataProvider invalidNameDataProvider
-     */
-    public function testSetInvalidName(mixed $name, string $exceptionClassName): void
-    {
-        $instance = self::getInstance();
-
-        self::expectException($exceptionClassName);
-        $instance->setName($name);
-    }
-
-    /**
-     * @dataProvider invalidNameDataProvider
-     */
-    public function testSetterInvalidName(mixed $name, string $exceptionClassName): void
-    {
-        $instance = self::getInstance();
-
-        self::expectException($exceptionClassName);
-        $instance->name = $name;
-    }
-
-    public static function validArrayDataProvider()
-    {
-        $result = [];
-        foreach (range(1, 10) as $i) {
-            $result[$i][] = [
-                'value' => Random::str(1, AdditionalUserProps::VALUE_MAX_LENGTH),
-                'name' => Random::str(1, AdditionalUserProps::NAME_MAX_LENGTH),
-            ];
-        }
-
-        return $result;
-    }
-
-    public static function invalidValueDataProvider()
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            ['', EmptyPropertyValueException::class],
-            [Random::str(AdditionalUserProps::VALUE_MAX_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
-    }
-
-    public static function invalidNameDataProvider()
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            ['', EmptyPropertyValueException::class],
-            [Random::str(AdditionalUserProps::NAME_MAX_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
-    }
-
-    public function invalidIncreaseDataProvider()
-    {
-        return [
-            [1, null],
-            [1.01, ''],
-            [1.00, true],
-            [0.99, false],
-            [0.99, []],
-            [0.99, new stdClass()],
-            [0.99, 'test'],
-            [0.99, -1.0],
-            [0.99, -0.99],
-        ];
-    }
-
-    /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testJsonSerialize(array $options): void
-    {
-        $instance = self::getInstance($options);
-        $expected = $options;
-        self::assertEquals($expected, $instance->jsonSerialize());
-    }
-
-    protected static function getInstance($options = [])
-    {
-        return new AdditionalUserProps($options);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_value'));
     }
 }

@@ -20,13 +20,19 @@
 ### Properties
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
+| public | [$created_at_gt](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_created_at_gt) |  | Время создания, от (не включая) |
+| public | [$created_at_gte](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_created_at_gte) |  | Время создания, от (включительно) |
+| public | [$created_at_lt](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_created_at_lt) |  | Время создания, до (не включая) |
+| public | [$created_at_lte](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_created_at_lte) |  | Время создания, до (включительно) |
 | public | [$createdAtGt](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_createdAtGt) |  | Время создания, от (не включая) |
 | public | [$createdAtGte](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_createdAtGte) |  | Время создания, от (включительно) |
 | public | [$createdAtLt](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_createdAtLt) |  | Время создания, до (не включая) |
 | public | [$createdAtLte](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_createdAtLte) |  | Время создания, до (включительно) |
 | public | [$cursor](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_cursor) |  | Токен для получения следующей страницы выборки |
 | public | [$limit](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_limit) |  | Ограничение количества объектов возврата, отображаемых на одной странице выдачи |
+| public | [$payment_id](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_payment_id) |  | Идентификатор платежа |
 | public | [$paymentId](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_paymentId) |  | Идентификатор платежа |
+| public | [$refund_id](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_refund_id) |  | Идентификатор возврата |
 | public | [$refundId](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_refundId) |  | Идентификатор возврата |
 | public | [$status](../classes/YooKassa-Request-Receipts-ReceiptsRequest.md#property_status) |  | Статус возврата |
 
@@ -135,6 +141,54 @@ LENGTH_REFUND_ID = 36
 
 ---
 ## Properties
+<a name="property_created_at_gt"></a>
+#### public $created_at_gt : \DateTime
+---
+***Description***
+
+Время создания, от (не включая)
+
+**Type:** \DateTime
+
+**Details:**
+
+
+<a name="property_created_at_gte"></a>
+#### public $created_at_gte : \DateTime
+---
+***Description***
+
+Время создания, от (включительно)
+
+**Type:** \DateTime
+
+**Details:**
+
+
+<a name="property_created_at_lt"></a>
+#### public $created_at_lt : \DateTime
+---
+***Description***
+
+Время создания, до (не включая)
+
+**Type:** \DateTime
+
+**Details:**
+
+
+<a name="property_created_at_lte"></a>
+#### public $created_at_lte : \DateTime
+---
+***Description***
+
+Время создания, до (включительно)
+
+**Type:** \DateTime
+
+**Details:**
+
+
 <a name="property_createdAtGt"></a>
 #### public $createdAtGt : \DateTime
 ---
@@ -207,12 +261,36 @@ LENGTH_REFUND_ID = 36
 **Details:**
 
 
+<a name="property_payment_id"></a>
+#### public $payment_id : string
+---
+***Description***
+
+Идентификатор платежа
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
 <a name="property_paymentId"></a>
 #### public $paymentId : string
 ---
 ***Description***
 
 Идентификатор платежа
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
+<a name="property_refund_id"></a>
+#### public $refund_id : string
+---
+***Description***
+
+Идентификатор возврата
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -1158,10 +1236,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

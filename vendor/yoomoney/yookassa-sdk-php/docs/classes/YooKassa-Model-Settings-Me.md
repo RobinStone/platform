@@ -774,7 +774,7 @@ public setFiscalization(\YooKassa\Model\Settings\FiscalizationData|array|null $f
 #### (deprecated) - public setFiscalizationEnabled() : self
 
 ```php
-public setFiscalizationEnabled(bool|array|null $fiscalization_enabled = null) : self
+public setFiscalizationEnabled(bool|null $fiscalization_enabled = null) : self
 ```
 
 **Summary**
@@ -789,7 +789,7 @@ DeprecatedУстарел.
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">bool OR array OR null</code> | fiscalization_enabled  | Признак включенной фискализации. |
+| <code lang="php">bool OR null</code> | fiscalization_enabled  | Признак включенной фискализации. |
 
 **Returns:** self - 
 
@@ -798,7 +798,7 @@ DeprecatedУстарел.
 #### public setItn() : self
 
 ```php
-public setItn(string|array|null $itn = null) : self
+public setItn(string|null $itn = null) : self
 ```
 
 **Summary**
@@ -811,7 +811,7 @@ public setItn(string|array|null $itn = null) : self
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">string OR array OR null</code> | itn  | ИНН магазина (10 или 12 цифр). |
+| <code lang="php">string OR null</code> | itn  | ИНН магазина (10 или 12 цифр). |
 
 **Returns:** self - 
 
@@ -1014,10 +1014,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

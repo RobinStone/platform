@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,7 @@ class BaseClient
     public const SELF_EMPLOYED_PATH = '/self_employed';
 
     /** Имя HTTP заголовка, используемого для передачи idempotence key */
-    public const IDEMPOTENCY_KEY_HEADER = 'Idempotence-Key';
+    public const IDEMPOTENCE_KEY_HEADER = 'Idempotence-Key';
 
     /**
      * Значение по умолчанию времени ожидания между запросами при отправке повторного запроса в случае получения

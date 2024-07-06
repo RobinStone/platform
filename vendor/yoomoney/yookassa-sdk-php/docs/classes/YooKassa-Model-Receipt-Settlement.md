@@ -226,10 +226,10 @@ public fromArray(array|\Traversable $sourceArray) : void
 
 
 <a name="method_getAmount" class="anchor"></a>
-#### public getAmount() : \YooKassa\Model\AmountInterface
+#### public getAmount() : \YooKassa\Model\AmountInterface|null
 
 ```php
-public getAmount() : \YooKassa\Model\AmountInterface
+public getAmount() : \YooKassa\Model\AmountInterface|null
 ```
 
 **Summary**
@@ -239,7 +239,7 @@ public getAmount() : \YooKassa\Model\AmountInterface
 **Details:**
 * Inherited From: [\YooKassa\Model\Receipt\Settlement](../classes/YooKassa-Model-Receipt-Settlement.md)
 
-**Returns:** \YooKassa\Model\AmountInterface - Размер оплаты
+**Returns:** \YooKassa\Model\AmountInterface|null - Размер оплаты
 
 
 <a name="method_getType" class="anchor"></a>
@@ -379,10 +379,10 @@ public offsetUnset(string $offset) : void
 
 
 <a name="method_setAmount" class="anchor"></a>
-#### public setAmount() : void
+#### public setAmount() : self
 
 ```php
-public setAmount(\YooKassa\Model\AmountInterface|array|null $value) : void
+public setAmount(\YooKassa\Model\AmountInterface|array|null $amount = null) : self
 ```
 
 **Summary**
@@ -395,9 +395,9 @@ public setAmount(\YooKassa\Model\AmountInterface|array|null $value) : void
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">\YooKassa\Model\AmountInterface OR array OR null</code> | value  | Сумма платежа |
+| <code lang="php">\YooKassa\Model\AmountInterface OR array OR null</code> | amount  | Сумма платежа |
 
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setType" class="anchor"></a>
@@ -488,10 +488,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

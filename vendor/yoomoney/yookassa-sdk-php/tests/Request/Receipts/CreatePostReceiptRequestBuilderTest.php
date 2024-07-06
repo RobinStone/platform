@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Receipts;
 
 use Exception;
@@ -22,7 +46,11 @@ use YooKassa\Model\Receipt\SettlementType;
 use YooKassa\Request\Receipts\CreatePostReceiptRequestBuilder;
 
 /**
- * @internal
+ * CreatePostReceiptRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class CreatePostReceiptRequestBuilderTest extends TestCase
 {
@@ -31,7 +59,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetItems($options): void
+    public function testSetItems(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -49,7 +77,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetSettlements($options): void
+    public function testSetSettlements(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -69,7 +97,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetCustomer($options): void
+    public function testSetCustomer(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -91,7 +119,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidCustomer($value): void
+    public function testSetInvalidCustomer(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -103,7 +131,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetType($options): void
+    public function testSetType(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
 
@@ -122,7 +150,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetObjectId($options): void
+    public function testSetObjectId(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
 
@@ -148,7 +176,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidType($value): void
+    public function testSetInvalidType(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -160,7 +188,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetSend($options): void
+    public function testSetSend(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
 
@@ -179,7 +207,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidSend($value): void
+    public function testSetInvalidSend(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -191,7 +219,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetTaxSystemCode($options): void
+    public function testSetTaxSystemCode(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
 
@@ -210,7 +238,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidTaxSystemId($value): void
+    public function testSetInvalidTaxSystemId(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -224,7 +252,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetAdditionalUserProps($options): void
+    public function testSetAdditionalUserProps(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -246,7 +274,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidAdditionalProps($value): void
+    public function testSetInvalidAdditionalProps(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -260,7 +288,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptIndustryDetails($options): void
+    public function testSetReceiptIndustryDetails(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -278,7 +306,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceiptIndustryDetails($value): void
+    public function testSetInvalidReceiptIndustryDetails(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -292,7 +320,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptOperationalDetails($options): void
+    public function testSetReceiptOperationalDetails(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -314,7 +342,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceiptOperationalDetails($value): void
+    public function testSetInvalidReceiptOperationalDetails(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePostReceiptRequestBuilder();
@@ -327,7 +355,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      * @param $value
      * @param mixed $options
      */
-    public function testSetOnBehalfOf($options): void
+    public function testSetOnBehalfOf(mixed $options): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $instance = $builder->build($options);
@@ -345,7 +373,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetCurrency($value): void
+    public function testSetCurrency(mixed $value): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
         $builder->setItems($value['items']);
@@ -359,7 +387,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testAddItem($value): void
+    public function testAddItem(mixed $value): void
     {
         $builder = new CreatePostReceiptRequestBuilder();
 
@@ -370,7 +398,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         }
     }
 
-    public static function setAmountDataProvider()
+    public static function setAmountDataProvider(): array
     {
         return [
             [
@@ -389,7 +417,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function validDataProvider()
+    public static function validDataProvider(): array
     {
         $type = Random::value(ReceiptType::getEnabledValues());
         $result = [
@@ -500,7 +528,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         return $result;
     }
 
-    public function invalidAmountDataProvider()
+    public function invalidAmountDataProvider(): array
     {
         return [
             [-1],
@@ -511,7 +539,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidCustomerDataProvider()
+    public static function invalidCustomerDataProvider(): array
     {
         return [
             [true],
@@ -520,7 +548,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidVatIdDataProvider()
+    public static function invalidVatIdDataProvider(): array
     {
         return [
             [false],
@@ -531,7 +559,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidTypeDataProvider()
+    public static function invalidTypeDataProvider(): array
     {
         return [
             [true],
@@ -543,14 +571,14 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidBooleanDataProvider()
+    public static function invalidBooleanDataProvider(): array
     {
         return [
             ['test'],
         ];
     }
 
-    public static function invalidAdditionalUserPropsDataProvider()
+    public static function invalidAdditionalUserPropsDataProvider(): array
     {
         return [
             [new stdClass()],
@@ -566,7 +594,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidReceiptOperationalDetailsDataProvider()
+    public static function invalidReceiptOperationalDetailsDataProvider(): array
     {
         return [
             [new stdClass()],
@@ -575,7 +603,7 @@ class CreatePostReceiptRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidReceiptIndustryDetailsDataProvider()
+    public static function invalidReceiptIndustryDetailsDataProvider(): array
     {
         return [
             [new stdClass()],

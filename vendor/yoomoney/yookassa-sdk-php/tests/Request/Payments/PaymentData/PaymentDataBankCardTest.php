@@ -1,122 +1,121 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments\PaymentData;
 
-use InvalidArgumentException;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\Payment\PaymentMethodType;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Request\Payments\PaymentData\PaymentDataBankCard;
-use YooKassa\Request\Payments\PaymentData\PaymentDataBankCardCard;
 
 /**
- * @internal
+ * PaymentDataBankCardTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class PaymentDataBankCardTest extends AbstractTestPaymentData
+class PaymentDataBankCardTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validCardDataProvider
-     */
-    public function testGetSetBankCard(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setCard($value);
-        if (null === $value || '' === $value || [] === $value) {
-            self::assertNull($instance->getCard());
-            self::assertNull($instance->card);
-        } else {
-            if (is_array($value)) {
-                $expected = new PaymentDataBankCardCard();
-                foreach ($value as $property => $val) {
-                    $expected->offsetSet($property, $val);
-                }
-            } else {
-                $expected = $value;
-            }
-            self::assertEquals($expected, $instance->getCard());
-            self::assertEquals($expected, $instance->card);
-        }
-
-        $instance = $this->getTestInstance();
-        $instance->card = $value;
-        if (null === $value || '' === $value || [] === $value) {
-            self::assertNull($instance->getCard());
-            self::assertNull($instance->card);
-        } else {
-            if (is_array($value)) {
-                $expected = new PaymentDataBankCardCard();
-                foreach ($value as $property => $val) {
-                    $expected->offsetSet($property, $val);
-                }
-            } else {
-                $expected = $value;
-            }
-            self::assertEquals($expected, $instance->getCard());
-            self::assertEquals($expected, $instance->card);
-        }
-    }
+    protected PaymentDataBankCard $object;
 
     /**
-     * @dataProvider invalidCardDataProvider
-     *
-     * @param mixed $value
+     * @return PaymentDataBankCard
      */
-    public function testSetInvalidCard($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setCard($value);
-    }
-
-    /**
-     * @dataProvider invalidCardDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidCard($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->card = $value;
-    }
-
-    public static function validCardDataProvider()
-    {
-        return [
-            [null],
-            [new PaymentDataBankCardCard([
-                'number' => Random::str(16, '0123456789'),
-                'expiry_year' => (string) Random::int(2023, 2025),
-                'expiry_month' => str_pad((string) Random::int(1, 12), 2, '0', STR_PAD_LEFT),
-            ])],
-            [[]],
-            [''],
-            [[
-                'number' => Random::str(16, '0123456789'),
-                'expiry_year' => (string) Random::int(2023, 2025),
-                'expiry_month' => str_pad((string) Random::int(1, 12), 2, '0', STR_PAD_LEFT),
-            ]],
-        ];
-    }
-
-    public static function invalidCardDataProvider()
-    {
-        return [
-            [0],
-            [1],
-            [-1],
-            ['5'],
-            [true],
-            [new stdClass()],
-        ];
-    }
-
     protected function getTestInstance(): PaymentDataBankCard
     {
         return new PaymentDataBankCard();
     }
 
-    protected function getExpectedType(): string
+    /**
+     * @return void
+     */
+    public function testPaymentDataBankCardClassExists(): void
     {
-        return PaymentMethodType::BANK_CARD;
+        $this->object = $this->getMockBuilder(PaymentDataBankCard::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(PaymentDataBankCard::class));
+        $this->assertInstanceOf(PaymentDataBankCard::class, $this->object);
+    }
+
+    /**
+     * Test property "card"
+     * @dataProvider validCardDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCard(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCard());
+        self::assertEmpty($instance->card);
+        $instance->setCard($value);
+        self::assertEquals($value, is_array($value) ? $instance->getCard()->toArray() : $instance->getCard());
+        self::assertEquals($value, is_array($value) ? $instance->card->toArray() : $instance->card);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCard());
+            self::assertNotNull($instance->card);
+        }
+    }
+
+    /**
+     * Test invalid property "card"
+     * @dataProvider invalidCardDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCard(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCard($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCardDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_card'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCardDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_card'));
     }
 }

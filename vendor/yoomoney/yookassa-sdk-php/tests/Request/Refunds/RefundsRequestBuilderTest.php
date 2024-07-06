@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Refunds;
 
 use PHPUnit\Framework\TestCase;
@@ -9,7 +33,11 @@ use YooKassa\Request\Refunds\RefundsRequest;
 use YooKassa\Request\Refunds\RefundsRequestBuilder;
 
 /**
- * @internal
+ * RefundsRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class RefundsRequestBuilderTest extends TestCase
 {
@@ -18,7 +46,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetPaymentId($options): void
+    public function testSetPaymentId(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -39,7 +67,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCreateAtGte($options): void
+    public function testSetCreateAtGte(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -60,7 +88,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCreateAtGt($options): void
+    public function testSetCreateAtGt(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -81,7 +109,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCreateAtLte($options): void
+    public function testSetCreateAtLte(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -102,7 +130,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCreateAtLt($options): void
+    public function testSetCreateAtLt(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -123,7 +151,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetStatus($options): void
+    public function testSetStatus(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -144,7 +172,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCursor($options): void
+    public function testSetCursor(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -165,7 +193,7 @@ class RefundsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetLimit($options): void
+    public function testSetLimit(mixed $options): void
     {
         $builder = new RefundsRequestBuilder();
 
@@ -181,7 +209,7 @@ class RefundsRequestBuilderTest extends TestCase
         }
     }
 
-    public function validDataProvider()
+    public function validDataProvider(): array
     {
         $result = [
             [
@@ -212,7 +240,7 @@ class RefundsRequestBuilderTest extends TestCase
         $statuses = RefundStatus::getValidValues();
         for ($i = 0; $i < 10; $i++) {
             $request = [
-                'paymentId' => $this->randomString(36),
+                'paymentId' => $this->randomString(),
                 'createAtGte' => date(YOOKASSA_DATE, Random::int(1, time())),
                 'createAtGt' => date(YOOKASSA_DATE, Random::int(1, time())),
                 'createAtLte' => date(YOOKASSA_DATE, Random::int(1, time())),
@@ -227,12 +255,12 @@ class RefundsRequestBuilderTest extends TestCase
         return $result;
     }
 
-    private function randomString($length, $any = true)
+    private function randomString($any = true): string
     {
         static $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-+_.';
 
         $result = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < 36; $i++) {
             if ($any) {
                 $char = chr(Random::int(32, 126));
             } else {

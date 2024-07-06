@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,14 +42,23 @@ use YooKassa\Validator\Constraints as Assert;
  * @property null|string $cursor Страница выдачи результатов, которую необходимо отобразить
  * @property null|int $limit Ограничение количества объектов платежа, отображаемых на одной странице выдачи
  * @property null|DateTime $createdAtGte Время создания, от (включительно)
+ * @property null|DateTime $created_at_gte Время создания, от (включительно)
  * @property null|DateTime $createdAtGt Время создания, от (не включая)
+ * @property null|DateTime $created_at_gt Время создания, от (не включая)
  * @property null|DateTime $createdAtLte Время создания, до (включительно)
+ * @property null|DateTime $created_at_lte Время создания, до (включительно)
  * @property null|DateTime $createdAtLt Время создания, до (не включая)
+ * @property null|DateTime $created_at_lt Время создания, до (не включая)
  * @property null|DateTime $expiresAtGte Время автоматического закрытия, от (включительно)
+ * @property null|DateTime $expires_at_gte Время автоматического закрытия, от (включительно)
  * @property null|DateTime $expiresAtGt Время автоматического закрытия, от (не включая)
+ * @property null|DateTime $expires_at_gt Время автоматического закрытия, от (не включая)
  * @property null|DateTime $expiresAtLte Время автоматического закрытия, до (включительно)
+ * @property null|DateTime $expires_at_lte Время автоматического закрытия, до (включительно)
  * @property null|DateTime $expiresAtLt Время автоматического закрытия, до (не включая)
+ * @property null|DateTime $expires_at_lt Время автоматического закрытия, до (не включая)
  * @property null|string $fullTextSearch Фильтр по описанию сделки — параметру description
+ * @property null|string $full_text_search Фильтр по описанию сделки — параметру description
  * @property null|string $status Статус платежа
  */
 class DealsRequest extends AbstractRequest implements DealsRequestInterface

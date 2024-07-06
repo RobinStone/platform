@@ -23,15 +23,24 @@
 ### Properties
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
+| public | [$created_at_gt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_created_at_gt) |  | Время создания, от (не включая) |
+| public | [$created_at_gte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_created_at_gte) |  | Время создания, от (включительно) |
+| public | [$created_at_lt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_created_at_lt) |  | Время создания, до (не включая) |
+| public | [$created_at_lte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_created_at_lte) |  | Время создания, до (включительно) |
 | public | [$createdAtGt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_createdAtGt) |  | Время создания, от (не включая) |
 | public | [$createdAtGte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_createdAtGte) |  | Время создания, от (включительно) |
 | public | [$createdAtLt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_createdAtLt) |  | Время создания, до (не включая) |
 | public | [$createdAtLte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_createdAtLte) |  | Время создания, до (включительно) |
 | public | [$cursor](../classes/YooKassa-Request-Deals-DealsRequest.md#property_cursor) |  | Страница выдачи результатов, которую необходимо отобразить |
+| public | [$expires_at_gt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expires_at_gt) |  | Время автоматического закрытия, от (не включая) |
+| public | [$expires_at_gte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expires_at_gte) |  | Время автоматического закрытия, от (включительно) |
+| public | [$expires_at_lt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expires_at_lt) |  | Время автоматического закрытия, до (не включая) |
+| public | [$expires_at_lte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expires_at_lte) |  | Время автоматического закрытия, до (включительно) |
 | public | [$expiresAtGt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expiresAtGt) |  | Время автоматического закрытия, от (не включая) |
 | public | [$expiresAtGte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expiresAtGte) |  | Время автоматического закрытия, от (включительно) |
 | public | [$expiresAtLt](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expiresAtLt) |  | Время автоматического закрытия, до (не включая) |
 | public | [$expiresAtLte](../classes/YooKassa-Request-Deals-DealsRequest.md#property_expiresAtLte) |  | Время автоматического закрытия, до (включительно) |
+| public | [$full_text_search](../classes/YooKassa-Request-Deals-DealsRequest.md#property_full_text_search) |  | Фильтр по описанию сделки — параметру description |
 | public | [$fullTextSearch](../classes/YooKassa-Request-Deals-DealsRequest.md#property_fullTextSearch) |  | Фильтр по описанию сделки — параметру description |
 | public | [$limit](../classes/YooKassa-Request-Deals-DealsRequest.md#property_limit) |  | Ограничение количества объектов платежа, отображаемых на одной странице выдачи |
 | public | [$status](../classes/YooKassa-Request-Deals-DealsRequest.md#property_status) |  | Статус платежа |
@@ -144,6 +153,54 @@ MIN_LENGTH_DESCRIPTION = 4 : int
 
 ---
 ## Properties
+<a name="property_created_at_gt"></a>
+#### public $created_at_gt : null|\DateTime
+---
+***Description***
+
+Время создания, от (не включая)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_created_at_gte"></a>
+#### public $created_at_gte : null|\DateTime
+---
+***Description***
+
+Время создания, от (включительно)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_created_at_lt"></a>
+#### public $created_at_lt : null|\DateTime
+---
+***Description***
+
+Время создания, до (не включая)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_created_at_lte"></a>
+#### public $created_at_lte : null|\DateTime
+---
+***Description***
+
+Время создания, до (включительно)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
 <a name="property_createdAtGt"></a>
 #### public $createdAtGt : null|\DateTime
 ---
@@ -204,6 +261,54 @@ MIN_LENGTH_DESCRIPTION = 4 : int
 **Details:**
 
 
+<a name="property_expires_at_gt"></a>
+#### public $expires_at_gt : null|\DateTime
+---
+***Description***
+
+Время автоматического закрытия, от (не включая)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_expires_at_gte"></a>
+#### public $expires_at_gte : null|\DateTime
+---
+***Description***
+
+Время автоматического закрытия, от (включительно)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_expires_at_lt"></a>
+#### public $expires_at_lt : null|\DateTime
+---
+***Description***
+
+Время автоматического закрытия, до (не включая)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_expires_at_lte"></a>
+#### public $expires_at_lte : null|\DateTime
+---
+***Description***
+
+Время автоматического закрытия, до (включительно)
+
+**Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
 <a name="property_expiresAtGt"></a>
 #### public $expiresAtGt : null|\DateTime
 ---
@@ -248,6 +353,18 @@ MIN_LENGTH_DESCRIPTION = 4 : int
 Время автоматического закрытия, до (включительно)
 
 **Type:** <a href="../null|\DateTime"><abbr title="null|\DateTime">DateTime</abbr></a>
+
+**Details:**
+
+
+<a name="property_full_text_search"></a>
+#### public $full_text_search : null|string
+---
+***Description***
+
+Фильтр по описанию сделки — параметру description
+
+**Type:** <a href="../null|string"><abbr title="null|string">null|string</abbr></a>
 
 **Details:**
 
@@ -1371,10 +1488,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

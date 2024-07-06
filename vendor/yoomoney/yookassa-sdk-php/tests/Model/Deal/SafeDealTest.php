@@ -1,593 +1,699 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Deal;
 
-use DateTime;
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Model\MonetaryAmount;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\Deal\DealBalanceAmount;
-use YooKassa\Model\Deal\DealStatus;
-use YooKassa\Model\Deal\DealType;
-use YooKassa\Model\Deal\FeeMoment;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
 use YooKassa\Model\Deal\SafeDeal;
 use YooKassa\Model\Metadata;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
 
 /**
- * @internal
+ * SafeDealTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class SafeDealTest extends TestCase
+class SafeDealTest extends AbstractTestCase
 {
+    protected SafeDeal $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return SafeDeal
      */
-    public function testGetSetId(array $options): void
+    protected function getTestInstance(): SafeDeal
     {
-        $instance = new SafeDeal();
-
-        $instance->setId($options['id']);
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
-
-        $instance = new SafeDeal();
-        $instance->id = $options['id'];
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
+        return new SafeDeal();
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return void
      */
-    public function testGetSetType(array $options): void
+    public function testSafeDealClassExists(): void
     {
-        $instance = new SafeDeal();
-
-        $instance->setType($options['type']);
-        self::assertEquals($options['type'], $instance->getType());
-        self::assertEquals($options['type'], $instance->type);
-
-        $instance = new SafeDeal();
-        $instance->type = $options['type'];
-        self::assertEquals($options['type'], $instance->getType());
-        self::assertEquals($options['type'], $instance->type);
+        $this->object = $this->getMockBuilder(SafeDeal::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(SafeDeal::class));
+        $this->assertInstanceOf(SafeDeal::class, $this->object);
     }
 
     /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetStatus(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setStatus($options['status']);
-        self::assertEquals($options['status'], $instance->getStatus());
-        self::assertEquals($options['status'], $instance->status);
-
-        $instance = new SafeDeal();
-        $instance->status = $options['status'];
-        self::assertEquals($options['status'], $instance->getStatus());
-        self::assertEquals($options['status'], $instance->status);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetBalance(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setBalance($options['balance']);
-        self::assertSame($options['balance'], $instance->getBalance());
-        self::assertSame($options['balance'], $instance->balance);
-
-        $instance = new SafeDeal();
-        $instance->balance = $options['balance'];
-        self::assertSame($options['balance'], $instance->getBalance());
-        self::assertSame($options['balance'], $instance->balance);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test property "id"
+     * @dataProvider validIdDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidBalance($value): void
+    public function testId(mixed $value): void
     {
-        if (empty($value['balance'])) {
-            $this->expectException(EmptyPropertyValueException::class);
-            $instance = new SafeDeal();
-            $instance->setBalance($value['balance']);
-        } elseif (!is_array($value['balance']) && !($value['balance'] instanceof DealBalanceAmount)) {
-            $this->expectException(InvalidPropertyValueTypeException::class);
-            $instance = new SafeDeal();
-            $instance->setBalance($value['balance']);
+        $instance = $this->getTestInstance();
+        $instance->setId($value);
+        self::assertNotNull($instance->getId());
+        self::assertNotNull($instance->id);
+        self::assertEquals($value, is_array($value) ? $instance->getId()->toArray() : $instance->getId());
+        self::assertEquals($value, is_array($value) ? $instance->id->toArray() : $instance->id);
+        self::assertLessThanOrEqual(50, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertLessThanOrEqual(50, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+        self::assertGreaterThanOrEqual(36, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertGreaterThanOrEqual(36, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+    }
+
+    /**
+     * Test invalid property "id"
+     * @dataProvider invalidIdDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidId(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setId($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * Test property "type"
+     * @dataProvider validTypeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testType(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setType($value);
+        self::assertNotNull($instance->getType());
+        self::assertNotNull($instance->type);
+        self::assertEquals($value, is_array($value) ? $instance->getType()->toArray() : $instance->getType());
+        self::assertEquals($value, is_array($value) ? $instance->type->toArray() : $instance->type);
+        self::assertContains($instance->getType(), ['safe_deal']);
+        self::assertContains($instance->type, ['safe_deal']);
+    }
+
+    /**
+     * Test invalid property "type"
+     * @dataProvider invalidTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidType(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setType($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
+
+    /**
+     * Test property "fee_moment"
+     * @dataProvider validFeeMomentDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testFeeMoment(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setFeeMoment($value);
+        self::assertNotNull($instance->getFeeMoment());
+        self::assertNotNull($instance->fee_moment);
+        self::assertEquals($value, is_array($value) ? $instance->getFeeMoment()->toArray() : $instance->getFeeMoment());
+        self::assertEquals($value, is_array($value) ? $instance->fee_moment->toArray() : $instance->fee_moment);
+    }
+
+    /**
+     * Test invalid property "fee_moment"
+     * @dataProvider invalidFeeMomentDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidFeeMoment(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setFeeMoment($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validFeeMomentDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_fee_moment'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidFeeMomentDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_fee_moment'));
+    }
+
+    /**
+     * Test property "description"
+     * @dataProvider validDescriptionDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testDescription(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getDescription());
+        self::assertEmpty($instance->description);
+        $instance->setDescription($value);
+        self::assertEquals($value, is_array($value) ? $instance->getDescription()->toArray() : $instance->getDescription());
+        self::assertEquals($value, is_array($value) ? $instance->description->toArray() : $instance->description);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getDescription());
+            self::assertNotNull($instance->description);
+            self::assertLessThanOrEqual(128, is_string($instance->getDescription()) ? mb_strlen($instance->getDescription()) : $instance->getDescription());
+            self::assertLessThanOrEqual(128, is_string($instance->description) ? mb_strlen($instance->description) : $instance->description);
         }
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "description"
+     * @dataProvider invalidDescriptionDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidBalance($value): void
-    {
-        if (empty($value['balance'])) {
-            $this->expectException(EmptyPropertyValueException::class);
-            $instance = new SafeDeal();
-            $instance->balance = $value['balance'];
-        } elseif (!is_array($value['balance']) && !($value['balance'] instanceof DealBalanceAmount)) {
-            $this->expectException(InvalidPropertyValueTypeException::class);
-            $instance = new SafeDeal();
-            $instance->balance = $value['balance'];
-        }
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetPayoutBalance(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setPayoutBalance($options['payout_balance']);
-        self::assertSame($options['payout_balance'], $instance->getPayoutBalance());
-        self::assertSame($options['payout_balance'], $instance->payout_balance);
-        self::assertSame($options['payout_balance'], $instance->payoutBalance);
-
-        $instance = new SafeDeal();
-        $instance->payout_balance = $options['payout_balance'];
-        self::assertSame($options['payout_balance'], $instance->getPayoutBalance());
-        self::assertSame($options['payout_balance'], $instance->payout_balance);
-        self::assertSame($options['payout_balance'], $instance->payoutBalance);
-
-        $instance = new SafeDeal();
-        $instance->payoutBalance = $options['payout_balance'];
-        self::assertSame($options['payout_balance'], $instance->getPayoutBalance());
-        self::assertSame($options['payout_balance'], $instance->payout_balance);
-        self::assertSame($options['payout_balance'], $instance->payoutBalance);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidPayoutBalance($value): void
+    public function testInvalidDescription(mixed $value, string $exceptionClass): void
     {
-        if (empty($value['payout_balance'])) {
-            $this->expectException(EmptyPropertyValueException::class);
-            $instance = new SafeDeal();
-            $instance->setPayoutBalance($value['payout_balance']);
-        } elseif (!is_array($value['payout_balance']) && !($value['payout_balance'] instanceof DealBalanceAmount)) {
-            $this->expectException(InvalidPropertyValueTypeException::class);
-            $instance = new SafeDeal();
-            $instance->setPayoutBalance($value['payout_balance']);
-        }
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setDescription($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validDescriptionDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_description'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidDescriptionDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_description'));
+    }
+
+    /**
+     * Test property "balance"
+     * @dataProvider validBalanceDataProvider
+     * @param mixed $value
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidPayoutBalance($value): void
+    public function testBalance(mixed $value): void
     {
-        if (empty($value['payout_balance'])) {
-            $this->expectException(EmptyPropertyValueException::class);
-            $instance = new SafeDeal();
-            $instance->payout_balance = $value['payout_balance'];
-        } elseif (!is_array($value['payout_balance']) && !($value['payout_balance'] instanceof DealBalanceAmount)) {
-            $this->expectException(InvalidPropertyValueTypeException::class);
-            $instance = new SafeDeal();
-            $instance->payout_balance = $value['payout_balance'];
-        }
+        $instance = $this->getTestInstance();
+        $instance->setBalance($value);
+        self::assertNotNull($instance->getBalance());
+        self::assertNotNull($instance->balance);
+        self::assertEquals($value, is_array($value) ? $instance->getBalance()->toArray() : $instance->getBalance());
+        self::assertEquals($value, is_array($value) ? $instance->balance->toArray() : $instance->balance);
     }
 
     /**
-     * @dataProvider invalidMetaDataProvider
+     * Test invalid property "balance"
+     * @dataProvider invalidBalanceDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidMetadata($value): void
+    public function testInvalidBalance(mixed $value, string $exceptionClass): void
     {
-        if (!is_array($value) && !($value instanceof Metadata)) {
-            $this->expectException(InvalidPropertyValueTypeException::class);
-            $instance = new SafeDeal();
-            $instance->setMetadata($value);
-        }
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setBalance($value);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetDescription(array $options): void
+    public function validBalanceDataProvider(): array
     {
-        $instance = new SafeDeal();
-        $instance->setDescription($options['description']);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_balance'));
+    }
 
-        if (is_null($options['description']) && ('0' !== $options['description'])) {
-            self::assertNull($instance->getDescription());
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidBalanceDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_balance'));
+    }
+
+    /**
+     * Test property "payout_balance"
+     * @dataProvider validPayoutBalanceDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPayoutBalance(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setPayoutBalance($value);
+        self::assertNotNull($instance->getPayoutBalance());
+        self::assertNotNull($instance->payout_balance);
+        self::assertEquals($value, is_array($value) ? $instance->getPayoutBalance()->toArray() : $instance->getPayoutBalance());
+        self::assertEquals($value, is_array($value) ? $instance->payout_balance->toArray() : $instance->payout_balance);
+    }
+
+    /**
+     * Test invalid property "payout_balance"
+     * @dataProvider invalidPayoutBalanceDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidPayoutBalance(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPayoutBalance($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPayoutBalanceDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_payout_balance'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPayoutBalanceDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_payout_balance'));
+    }
+
+    /**
+     * Test property "status"
+     * @dataProvider validStatusDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testStatus(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setStatus($value);
+        self::assertNotNull($instance->getStatus());
+        self::assertNotNull($instance->status);
+        self::assertEquals($value, is_array($value) ? $instance->getStatus()->toArray() : $instance->getStatus());
+        self::assertEquals($value, is_array($value) ? $instance->status->toArray() : $instance->status);
+    }
+
+    /**
+     * Test invalid property "status"
+     * @dataProvider invalidStatusDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidStatus(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setStatus($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * Test property "created_at"
+     * @dataProvider validCreatedAtDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCreatedAt(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setCreatedAt($value);
+        self::assertNotNull($instance->getCreatedAt());
+        self::assertNotNull($instance->created_at);
+        if ($value instanceof Datetime) {
+            self::assertEquals($value, $instance->getCreatedAt());
+            self::assertEquals($value, $instance->created_at);
         } else {
-            self::assertEquals($options['description'], $instance->getDescription());
+            self::assertEquals(new Datetime($value), $instance->getCreatedAt());
+            self::assertEquals(new Datetime($value), $instance->created_at);
         }
     }
 
-    public function testSetInvalidLengthDescription(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $description = Random::str(SafeDeal::MAX_LENGTH_DESCRIPTION + 1);
-        $instance->setDescription($description);
-    }
-
     /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetFeeMoment(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setFeeMoment($options['fee_moment']);
-        self::assertEquals($options['fee_moment'], $instance->getFeeMoment());
-        self::assertEquals($options['fee_moment'], $instance->fee_moment);
-        self::assertEquals($options['fee_moment'], $instance->feeMoment);
-
-        $instance = new SafeDeal();
-        $instance->fee_moment = $options['fee_moment'];
-        self::assertEquals($options['fee_moment'], $instance->getFeeMoment());
-        self::assertEquals($options['fee_moment'], $instance->fee_moment);
-        self::assertEquals($options['fee_moment'], $instance->feeMoment);
-
-        $instance = new SafeDeal();
-        $instance->feeMoment = $options['fee_moment'];
-        self::assertEquals($options['fee_moment'], $instance->getFeeMoment());
-        self::assertEquals($options['fee_moment'], $instance->fee_moment);
-        self::assertEquals($options['fee_moment'], $instance->feeMoment);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetCreatedAt(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setCreatedAt($options['created_at']);
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-
-        $instance = new SafeDeal();
-        $instance->createdAt = $options['created_at'];
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-
-        $instance = new SafeDeal();
-        $instance->created_at = $options['created_at'];
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "created_at"
+     * @dataProvider invalidCreatedAtDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidCreatedAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $instance->setCreatedAt($value['created_at']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetterInvalidCreatedAt($value): void
+    public function testInvalidCreatedAt(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $instance->createdAt = $value['created_at'];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCreatedAt($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCreatedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCreatedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
+
+    /**
+     * Test property "expires_at"
+     * @dataProvider validExpiresAtDataProvider
+     * @param mixed $value
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidSnakeCreatedAt($value): void
+    public function testExpiresAt(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $instance->created_at = $value['created_at'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetExpiresAt(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setExpiresAt($options['expires_at']);
-        if (null === $options['expires_at'] || '' === $options['expires_at']) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expiresAt);
-            self::assertNull($instance->expires_at);
+        $instance = $this->getTestInstance();
+        $instance->setExpiresAt($value);
+        self::assertNotNull($instance->getExpiresAt());
+        self::assertNotNull($instance->expires_at);
+        if ($value instanceof Datetime) {
+            self::assertEquals($value, $instance->getExpiresAt());
+            self::assertEquals($value, $instance->expires_at);
         } else {
-            self::assertSame($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expiresAt->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expires_at->format(YOOKASSA_DATE));
-        }
-
-        $instance = new SafeDeal();
-        $instance->expiresAt = $options['expires_at'];
-        if (null === $options['expires_at'] || '' === $options['expires_at']) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expiresAt);
-            self::assertNull($instance->expires_at);
-        } else {
-            self::assertSame($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expiresAt->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expires_at->format(YOOKASSA_DATE));
-        }
-
-        $instance = new SafeDeal();
-        $instance->expires_at = $options['expires_at'];
-        if (null === $options['expires_at'] || '' === $options['expires_at']) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expiresAt);
-            self::assertNull($instance->expires_at);
-        } else {
-            self::assertSame($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expiresAt->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expires_at->format(YOOKASSA_DATE));
+            self::assertEquals(new Datetime($value), $instance->getExpiresAt());
+            self::assertEquals(new Datetime($value), $instance->expires_at);
         }
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "expires_at"
+     * @dataProvider invalidExpiresAtDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidExpiresAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $instance->setExpiresAt($value['expires_at']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetterInvalidExpiresAt($value): void
+    public function testInvalidExpiresAt(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $instance->expiresAt = $value['expires_at'];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setExpiresAt($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validExpiresAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_expires_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidExpiresAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_expires_at'));
+    }
+
+    /**
+     * Test property "metadata"
+     * @dataProvider validMetadataDataProvider
+     * @param mixed $value
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidSnakeExpiresAt($value): void
+    public function testMetadata(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SafeDeal();
-        $instance->expires_at = $value['expires_at'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetTest(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setTest($options['test']);
-        self::assertSame($options['test'], $instance->getTest());
-        self::assertSame($options['test'], $instance->test);
-
-        $instance = new SafeDeal();
-        $instance->test = $options['test'];
-        self::assertSame($options['test'], $instance->getTest());
-        self::assertSame($options['test'], $instance->test);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetMetadata(array $options): void
-    {
-        $instance = new SafeDeal();
-
-        $instance->setMetadata($options['metadata']);
-        self::assertSame($options['metadata'], $instance->getMetadata());
-        self::assertSame($options['metadata'], $instance->metadata);
-
-        $instance = new SafeDeal();
-        $instance->metadata = $options['metadata'];
-        self::assertSame($options['metadata'], $instance->getMetadata());
-        self::assertSame($options['metadata'], $instance->metadata);
-    }
-
-    /**
-     * @dataProvider fromArrayDataProvider
-     */
-    public function testFromArray(array $source, SafeDeal $expected): void
-    {
-        $dealArray = $expected->toArray();
-
-        if (!empty($source)) {
-            foreach ($source as $property => $value) {
-                self::assertEquals($value, $dealArray[$property]);
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMetadata());
+        self::assertEmpty($instance->metadata);
+        $instance->setMetadata($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMetadata());
+            self::assertNotNull($instance->metadata);
+            foreach ($value as $key => $element) {
+                if (!empty($element)) {
+                    self::assertEquals($element, $instance->getMetadata()[$key]);
+                    self::assertEquals($element, $instance->metadata[$key]);
+                    self::assertIsObject($instance->getMetadata());
+                    self::assertIsObject($instance->metadata);
+                }
+            }
+            self::assertCount(count($value), $instance->getMetadata());
+            self::assertCount(count($value), $instance->metadata);
+            if ($instance->getMetadata() instanceof Metadata) {
+                self::assertEquals($value, $instance->getMetadata()->toArray());
+                self::assertEquals($value, $instance->metadata->toArray());
+                self::assertCount(count($value), $instance->getMetadata());
+                self::assertCount(count($value), $instance->metadata);
             }
         }
     }
 
     /**
-     * @return array
-     * @throws Exception
+     * Test invalid property "metadata"
+     * @dataProvider invalidMetadataDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public static function validDataProvider(): array
+    public function testInvalidMetadata(mixed $value, string $exceptionClass): void
     {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $payment = [
-                'id' => Random::str(36),
-                'type' => Random::value(DealType::getValidValues()),
-                'fee_moment' => Random::value(FeeMoment::getValidValues()),
-                'status' => Random::value(DealStatus::getValidValues()),
-                'balance' => new DealBalanceAmount(Random::int(1, 10000), 'RUB'),
-                'payout_balance' => new DealBalanceAmount(Random::int(1, 10000), 'RUB'),
-                'description' => (0 === $i ? null : (1 === $i ? '' : (2 === $i ? Random::str(SafeDeal::MAX_LENGTH_DESCRIPTION)
-                    : Random::str(1, SafeDeal::MAX_LENGTH_DESCRIPTION)))),
-                'created_at' => date(YOOKASSA_DATE, Random::int(1000000, time())),
-                'expires_at' => date(YOOKASSA_DATE, Random::int(1111111, time())),
-                'test' => (bool) ($i % 2),
-                'metadata' => (($i % 2) ? null : new Metadata()),
-            ];
-            $result[] = [$payment];
-        }
+        $instance = $this->getTestInstance();
 
-        return $result;
+        $this->expectException($exceptionClass);
+        $instance->setMetadata($value);
     }
 
     /**
-     * @return \array[][]
+     * @return array[]
      * @throws Exception
      */
-    public static function invalidDataProvider(): array
+    public function validMetadataDataProvider(): array
     {
-        $result = [
-            [
-                [
-                    'id' => null,
-                    'status' => null,
-                    'balance' => null,
-                    'payout_balance' => null,
-                    'test' => null,
-                    'created_at' => null,
-                    'expires_at' => null,
-                    'metadata' => new stdClass(),
-                ],
-            ],
-            [
-                [
-                    'id' => '',
-                    'status' => '',
-                    'balance' => '',
-                    'payout_balance' => '',
-                    'test' => '',
-                    'created_at' => '23423-234-234',
-                    'expires_at' => '23423-234-234',
-                    'metadata' => true,
-                ],
-            ],
-        ];
-        $invalidDateTimeData = [
-            null,
-            '',
-            'invalid_value',
-            Random::str(5, 10),
-        ];
-        $invalidData = [
-            null,
-            '',
-            new stdClass(),
-            'invalid_value',
-            new Metadata(),
-            Random::str(5, 10),
-        ];
-        $invalidObjectData = [
-            null,
-            '',
-            new stdClass(),
-            new Metadata(),
-            new DateTime(),
-            new MonetaryAmount(['value' => Random::float(0.01, 99.99)])
-        ];
-        for ($i = 0; $i < 6; $i++) {
-            $payment = [
-                'id' => Random::str($i < 5 ? Random::int(1, 35) : Random::int(37, 64)),
-                'status' => $invalidData[$i],
-                'balance' => $invalidObjectData[$i],
-                'payout_balance' => $invalidObjectData[$i],
-                'test' => $invalidData[$i],
-                'created_at' => $invalidDateTimeData[Random::int(0, 3)],
-                'expires_at' => $invalidDateTimeData[Random::int(0, 3)],
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_metadata'));
     }
 
     /**
-     * @return array
+     * @return array[]
      * @throws Exception
      */
-    public static function fromArrayDataProvider(): array
+    public function invalidMetadataDataProvider(): array
     {
-        $customer = new SafeDeal();
-        $customer->setId('dl-285e5ee7-0022-5000-8000-01516a44b147');
-        $customer->setStatus(DealStatus::OPENED);
-        $customer->setBalance(new DealBalanceAmount(1000, 'RUB'));
-        $customer->setPayoutBalance(new DealBalanceAmount(1000, 'RUB'));
-        $customer->setDescription('Выплата по заказу №17');
-        $customer->setCreatedAt(new DateTime(date(YOOKASSA_DATE)));
-        $customer->setExpiresAt(date(YOOKASSA_DATE));
-        $customer->setTest(true);
-        $customer->setMetadata(['order_id' => 'Заказ №17']);
-        $customer->setType(DealType::SAFE_DEAL);
-
-        return [
-            [
-                [
-                    'id' => 'dl-285e5ee7-0022-5000-8000-01516a44b147',
-                    'type' => DealType::SAFE_DEAL,
-                    'status' => DealStatus::OPENED,
-                    'balance' => ['value' => 1000, 'currency' => 'RUB'],
-                    'payout_balance' => ['value' => 1000, 'currency' => 'RUB'],
-                    'description' => 'Выплата по заказу №17',
-                    'created_at' => date(YOOKASSA_DATE),
-                    'expires_at' => date(YOOKASSA_DATE),
-                    'test' => true,
-                    'metadata' => [
-                        'order_id' => 'Заказ №17',
-                    ],
-                ],
-                $customer,
-            ],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_metadata'));
     }
 
     /**
-     * @return array
+     * Test property "test"
+     * @dataProvider validTestDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public static function invalidMetaDataProvider(): array
+    public function testTest(mixed $value): void
     {
-        return [
-            [new stdClass()],
-            ['invalid_value'],
-            [0],
-            [3234],
-            [true],
-            [false],
-            [0.43],
-        ];
+        $instance = $this->getTestInstance();
+        $instance->setTest($value);
+        self::assertNotNull($instance->getTest());
+        self::assertNotNull($instance->test);
+        self::assertEquals($value, is_array($value) ? $instance->getTest()->toArray() : $instance->getTest());
+        self::assertEquals($value, is_array($value) ? $instance->test->toArray() : $instance->test);
+        self::assertIsBool($instance->getTest());
+        self::assertIsBool($instance->test);
+    }
+
+    /**
+     * Test invalid property "test"
+     * @dataProvider invalidTestDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidTest(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setTest($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validTestDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_test'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTestDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_test'));
     }
 }

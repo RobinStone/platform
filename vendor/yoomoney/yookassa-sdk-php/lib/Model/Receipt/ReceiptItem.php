@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -78,6 +78,7 @@ use YooKassa\Model\AmountInterface;
  * @property string $additional_payment_subject_props Дополнительный реквизит предмета расчета (тег в 54 ФЗ — 1191)
  * @property float $excise Сумма акциза товара с учетом копеек (тег в 54 ФЗ — 1229)
  * @property bool $isShipping Флаг доставки
+ * @property bool $is_shipping Флаг доставки
  */
 class ReceiptItem extends AbstractObject implements ReceiptItemInterface
 {
@@ -107,6 +108,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
      * @var string|null Мера количества предмета расчета (тег в 54 ФЗ — 2108) — единица измерения товара, например штуки, граммы.
      * Обязателен при использовании ФФД 1.2.
      */
+    #[Assert\Type('string')]
     #[Assert\Choice(callback: [ReceiptItemMeasure::class, 'getValidValues'])]
     private ?string $_measure = null;
 
@@ -197,9 +199,9 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
     /**
      * @var IndustryDetails[]|ListObjectInterface|null Отраслевой реквизит чека (тег в 54 ФЗ — 1260)
      */
-    #[Assert\Type(ListObject::class)]
-    #[Assert\AllType(IndustryDetails::class)]
     #[Assert\Valid]
+    #[Assert\AllType(IndustryDetails::class)]
+    #[Assert\Type(ListObject::class)]
     private ?ListObject $_payment_subject_industry_details = null;
 
     /**
@@ -227,6 +229,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
     /**
      * @var bool True если текущий айтем доставка, false если нет
      */
+    #[Assert\Type('bool')]
     #[Assert\NotNull]
     private bool $_shipping = false;
 
@@ -283,7 +286,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
      */
     public function getAmount(): int
     {
-        return (int) round($this->_amount->getIntegerValue() * $this->_quantity);
+        return (int) round($this->_amount?->getIntegerValue() * $this->_quantity);
     }
 
     /**
@@ -303,7 +306,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
      *
      * @return self
      */
-    public function setPrice(AmountInterface|array $amount): self
+    public function setPrice(mixed $amount): self
     {
         $this->_amount = $this->validatePropertyValue('_amount', $amount);
         return $this;
@@ -351,7 +354,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
      * @return self
      *
      */
-    public function setPaymentSubject(mixed $payment_subject = null): self
+    public function setPaymentSubject(?string $payment_subject = null): self
     {
         $this->_payment_subject = $this->validatePropertyValue('_payment_subject', $payment_subject);
         return $this;
@@ -374,7 +377,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
      *
      * @return self
      */
-    public function setPaymentMode(mixed $payment_mode = null): self
+    public function setPaymentMode(?string $payment_mode = null): self
     {
         $this->_payment_mode = $this->validatePropertyValue('_payment_mode', $payment_mode);
         return $this;
@@ -667,7 +670,7 @@ class ReceiptItem extends AbstractObject implements ReceiptItemInterface
      *
      * @return self
      */
-    public function setAgentType(mixed $agent_type = null): self
+    public function setAgentType(?string $agent_type = null): self
     {
         $this->_agent_type = $this->validatePropertyValue('_agent_type', $agent_type);
         return $this;

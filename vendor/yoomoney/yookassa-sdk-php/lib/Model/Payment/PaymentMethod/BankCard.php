@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +47,8 @@ use YooKassa\Validator\Constraints as Assert;
  * @property string $expiry_month Срок действия, месяц
  * @property string $cardType Тип банковской карты
  * @property string $card_type Тип банковской карты
+ * @property string $cardProduct Карточный продукт платежной системы, с которым ассоциирована банковская карта.
+ * @property string $card_product Карточный продукт платежной системы, с которым ассоциирована банковская карта.
  * @property string $issuerCountry Код страны, в которой выпущена карта
  * @property string $issuer_country Код страны, в которой выпущена карта
  * @property string $issuerName Тип банковской карты
@@ -108,6 +110,15 @@ class BankCard extends AbstractObject
     #[Assert\Type('string')]
     #[Assert\Choice(callback: [BankCardType::class, 'getValidValues'])]
     private ?string $_card_type = null;
+
+    /**
+     * Карточный продукт платежной системы, с которым ассоциирована банковская карта.
+     * Например, карточные продукты платежной системы Мир: `Mir Classic`, `Mir Classic Credit`, `MIR Privilege Plus` и другие.
+     *
+     * @var BankCardProduct|null
+     */
+    #[Assert\Type(BankCardProduct::class)]
+    private ?BankCardProduct $_card_product = null;
 
     /**
      * Код страны, в которой выпущена карта. Передается в формате [ISO-3166 alpha-2](https://www.iso.org/obp/ui/#iso:pub:PUB500001:en). Пример: ~`RU`.
@@ -244,9 +255,32 @@ class BankCard extends AbstractObject
      *
      * @return self
      */
-    public function setCardType(mixed $card_type = null): self
+    public function setCardType(?string $card_type = null): self
     {
         $this->_card_type = $this->validatePropertyValue('_card_type', $card_type);
+        return $this;
+    }
+
+    /**
+     * Возвращает карточный продукт платежной системы.
+     *
+     * @return BankCardProduct|null Карточный продукт платежной системы
+     */
+    public function getCardProduct(): ?BankCardProduct
+    {
+        return $this->_card_product;
+    }
+
+    /**
+     * Устанавливает карточный продукт платежной системы.
+     *
+     * @param BankCardProduct|array|null $card_product Карточный продукт платежной системы
+     *
+     * @return self
+     */
+    public function setCardProduct(mixed $card_product = null): self
+    {
+        $this->_card_product = $this->validatePropertyValue('_card_product', $card_product);
         return $this;
     }
 
@@ -313,7 +347,7 @@ class BankCard extends AbstractObject
      *
      * @return self
      */
-    public function setSource(mixed $source = null): self
+    public function setSource(?string $source = null): self
     {
         $this->_source = $this->validatePropertyValue('_source', $source);
         return $this;

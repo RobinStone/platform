@@ -21,12 +21,17 @@
 | ----------:| ---- | ---- | ------- |
 | public | [$account](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_account) |  | Номер счета организации |
 | public | [$address](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_address) |  | Адрес организации |
+| public | [$bank_bik](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_bank_bik) |  | БИК банка организации |
+| public | [$bank_branch](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_bank_branch) |  | Отделение банка организации |
+| public | [$bank_name](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_bank_name) |  | Наименование банка организации |
 | public | [$bankBik](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_bankBik) |  | БИК банка организации |
 | public | [$bankBranch](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_bankBranch) |  | Отделение банка организации |
 | public | [$bankName](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_bankName) |  | Наименование банка организации |
+| public | [$full_name](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_full_name) |  | Полное наименование организации |
 | public | [$fullName](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_fullName) |  | Полное наименование организации |
 | public | [$inn](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_inn) |  | ИНН организации |
 | public | [$kpp](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_kpp) |  | КПП организации |
+| public | [$short_name](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_short_name) |  | Сокращенное наименование организации |
 | public | [$shortName](../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-PayerBankDetails.md#property_shortName) |  | Сокращенное наименование организации |
 
 ---
@@ -113,6 +118,42 @@
 **Details:**
 
 
+<a name="property_bank_bik"></a>
+#### public $bank_bik : string
+---
+***Description***
+
+БИК банка организации
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
+<a name="property_bank_branch"></a>
+#### public $bank_branch : string
+---
+***Description***
+
+Отделение банка организации
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
+<a name="property_bank_name"></a>
+#### public $bank_name : string
+---
+***Description***
+
+Наименование банка организации
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
 <a name="property_bankBik"></a>
 #### public $bankBik : string
 ---
@@ -149,6 +190,18 @@
 **Details:**
 
 
+<a name="property_full_name"></a>
+#### public $full_name : string
+---
+***Description***
+
+Полное наименование организации
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
 <a name="property_fullName"></a>
 #### public $fullName : string
 ---
@@ -179,6 +232,18 @@
 ***Description***
 
 КПП организации
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
+<a name="property_short_name"></a>
+#### public $short_name : string
+---
+***Description***
+
+Сокращенное наименование организации
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -869,10 +934,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

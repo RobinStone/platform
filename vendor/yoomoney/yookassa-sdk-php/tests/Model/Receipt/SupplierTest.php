@@ -1,104 +1,237 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Receipt\Supplier;
 
 /**
- * @internal
+ * ReceiptItemSupplierTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class SupplierTest extends TestCase
+class SupplierTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetGetInn($value): void
-    {
-        $instance = new Supplier();
+    protected Supplier $object;
 
-        $instance->setInn($value['inn']);
-        self::assertEquals($value['inn'], $instance->getInn());
+    /**
+     * @return Supplier
+     */
+    protected function getTestInstance(): Supplier
+    {
+        return new Supplier();
     }
 
     /**
-     * @dataProvider invalidInnDataTest
-     *
-     * @param mixed $value
+     * @return void
      */
-    public function testInvalidInn($value): void
+    public function testReceiptItemSupplierClassExists(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Supplier();
+        $this->object = $this->getMockBuilder(Supplier::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(Supplier::class));
+        $this->assertInstanceOf(Supplier::class, $this->object);
+    }
+
+    /**
+     * Test property "name"
+     * @dataProvider validNameDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testName(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getName());
+        self::assertEmpty($instance->name);
+        $instance->setName($value);
+        self::assertEquals($value, is_array($value) ? $instance->getName()->toArray() : $instance->getName());
+        self::assertEquals($value, is_array($value) ? $instance->name->toArray() : $instance->name);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getName());
+            self::assertNotNull($instance->name);
+        }
+    }
+
+    /**
+     * Test invalid property "name"
+     * @dataProvider invalidNameDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidName(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setName($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_name'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_name'));
+    }
+
+    /**
+     * Test property "phone"
+     * @dataProvider validPhoneDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPhone(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPhone());
+        self::assertEmpty($instance->phone);
+        $instance->setPhone($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPhone()->toArray() : $instance->getPhone());
+        self::assertEquals($value, is_array($value) ? $instance->phone->toArray() : $instance->phone);
+        if (!empty($value)) {
+            self::assertMatchesRegularExpression("/[0-9]{4,15}/", $instance->getPhone());
+            self::assertMatchesRegularExpression("/[0-9]{4,15}/", $instance->phone);
+        }
+    }
+
+    /**
+     * Test invalid property "phone"
+     * @dataProvider invalidPhoneDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidPhone(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPhone($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPhoneDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_phone'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPhoneDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_phone'));
+    }
+
+    /**
+     * Test property "inn"
+     * @dataProvider validInnDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testInn(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getInn());
+        self::assertEmpty($instance->inn);
+        $instance->setInn($value);
+        self::assertEquals($value, is_array($value) ? $instance->getInn()->toArray() : $instance->getInn());
+        self::assertEquals($value, is_array($value) ? $instance->inn->toArray() : $instance->inn);
+        if (!empty($value)) {
+            self::assertMatchesRegularExpression("/\\d{10}|\\d{12}/", $instance->getInn());
+            self::assertMatchesRegularExpression("/\\d{10}|\\d{12}/", $instance->inn);
+        }
+    }
+
+    /**
+     * Test invalid property "inn"
+     * @dataProvider invalidInnDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidInn(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setInn($value);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetGetName($value): void
+    public function validInnDataProvider(): array
     {
-        $instance = new Supplier();
-        $instance->setName($value['name']);
-        self::assertEquals($value['name'], $instance->getName());
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_inn'));
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetGetPhone($value): void
+    public function invalidInnDataProvider(): array
     {
-        $instance = new Supplier();
-
-        $instance->setPhone($value['phone']);
-        self::assertEquals($value['phone'], $instance->getPhone());
-    }
-
-    public static function validDataProvider()
-    {
-        $result = [
-            [
-                [
-                    'name' => null,
-                    'phone' => null,
-                    'inn' => null,
-                ],
-            ],
-            [
-                [
-                    'name' => 'John Doe',
-                    'inn' => '6321341814',
-                    'phone' => '79000000000',
-                ],
-            ],
-        ];
-
-        for ($i = 0; $i < 7; $i++) {
-            $test = [
-                'name' => Random::str(1, 150),
-                'inn' => Random::str(12, 12, '1234567890'),
-                'phone' => Random::str(10, 10, '1234567890'),
-            ];
-
-            $result[] = [$test];
-        }
-
-        return $result;
-    }
-
-    public static function invalidInnDataTest()
-    {
-        return [
-            ['test'],
-            [true],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_inn'));
     }
 }

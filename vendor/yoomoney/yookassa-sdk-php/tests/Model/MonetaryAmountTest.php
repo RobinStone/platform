@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model;
 
 use Exception;
@@ -13,7 +37,11 @@ use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
 use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
 
 /**
- * @internal
+ * MonetaryAmountTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class MonetaryAmountTest extends TestCase
 {
@@ -44,7 +72,7 @@ class MonetaryAmountTest extends TestCase
      *
      * @param mixed $data
      */
-    public function testArrayConstructor($data): void
+    public function testArrayConstructor(mixed $data): void
     {
         $instance = new MonetaryAmount();
 
@@ -62,7 +90,7 @@ class MonetaryAmountTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testGetSetValue($value): void
+    public function testGetSetValue(mixed $value): void
     {
         $expected = number_format($value, 2, '.', '');
 
@@ -83,8 +111,9 @@ class MonetaryAmountTest extends TestCase
      * @dataProvider invalidValueDataProvider
      *
      * @param mixed $value
+     * @param string $exceptionClassName
      */
-    public function testSetInvalidValue($value, string $exceptionClassName): void
+    public function testSetInvalidValue(mixed $value, string $exceptionClassName): void
     {
         $instance = self::getInstance();
 
@@ -99,8 +128,9 @@ class MonetaryAmountTest extends TestCase
      * @dataProvider invalidValueDataProvider
      *
      * @param mixed $value
+     * @param string $exceptionClassName
      */
-    public function testSetterInvalidValue($value, string $exceptionClassName): void
+    public function testSetterInvalidValue(mixed $value, string $exceptionClassName): void
     {
         $instance = self::getInstance();
 
@@ -129,8 +159,9 @@ class MonetaryAmountTest extends TestCase
      * @dataProvider invalidCurrencyDataProvider
      *
      * @param mixed $currency
+     * @param string $exceptionClassName
      */
-    public function testSetInvalidCurrency($currency, string $exceptionClassName): void
+    public function testSetInvalidCurrency(mixed $currency, string $exceptionClassName): void
     {
         $instance = self::getInstance();
         $this->expectException($exceptionClassName);
@@ -236,7 +267,7 @@ class MonetaryAmountTest extends TestCase
      * @param mixed $coefficient
      * @param mixed $expected
      */
-    public function testMultiply($source, $coefficient, $expected): void
+    public function testMultiply(mixed $source, mixed $coefficient, mixed $expected): void
     {
         $instance = new MonetaryAmount($source);
         $instance->multiply($coefficient);
@@ -259,7 +290,7 @@ class MonetaryAmountTest extends TestCase
      * @param mixed $source
      * @param mixed $coefficient
      */
-    public function testInvalidMultiply($source, $coefficient): void
+    public function testInvalidMultiply(mixed $source, mixed $coefficient): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new MonetaryAmount($source);
@@ -284,7 +315,7 @@ class MonetaryAmountTest extends TestCase
      * @param mixed $amount
      * @param mixed $expected
      */
-    public function testIncrease($source, $amount, $expected): void
+    public function testIncrease(mixed $source, mixed $amount, mixed $expected): void
     {
         $instance = new MonetaryAmount($source);
         $instance->increase($amount);
@@ -304,7 +335,7 @@ class MonetaryAmountTest extends TestCase
      * @param mixed $source
      * @param mixed $amount
      */
-    public function testInvalidIncrease($source, $amount): void
+    public function testInvalidIncrease(mixed $source, mixed $amount): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new MonetaryAmount($source);
@@ -324,7 +355,7 @@ class MonetaryAmountTest extends TestCase
      * @param mixed $value
      * @param mixed $currency
      */
-    public function testJsonSerialize($value, $currency): void
+    public function testJsonSerialize(mixed $value, mixed $currency): void
     {
         $instance = new MonetaryAmount($value, $currency);
         $expected = [

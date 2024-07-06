@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,12 +27,10 @@
 namespace YooKassa\Request\Refunds;
 
 use DateTime;
-use Exception;
 use YooKassa\Common\AbstractRequest;
-use YooKassa\Common\Exceptions\InvalidPropertyValueException;
 use YooKassa\Common\Exceptions\InvalidPropertyValueTypeException;
-use YooKassa\Helpers\TypeCast;
 use YooKassa\Model\Refund\RefundStatus;
+use YooKassa\Validator\Constraints as Assert;
 
 /**
  * Класс, представляющий модель RefundsRequest.
@@ -45,10 +43,15 @@ use YooKassa\Model\Refund\RefundStatus;
  * @link     https://yookassa.ru/developers/api
  *
  * @property DateTime $createdAtGte Время создания, от (включительно)
+ * @property DateTime $created_at_gte Время создания, от (включительно)
  * @property DateTime $createdAtGt Время создания, от (не включая)
+ * @property DateTime $created_at_gt Время создания, от (не включая)
  * @property DateTime $createdAtLte Время создания, до (включительно)
+ * @property DateTime $created_at_lte Время создания, до (включительно)
  * @property DateTime $createdAtLt Время создания, до (не включая)
+ * @property DateTime $created_at_lt Время создания, до (не включая)
  * @property string $paymentId Идентификатор платежа
+ * @property string $payment_id Идентификатор платежа
  * @property string $status Статус возврата
  * @property null|int $limit Ограничение количества объектов возврата, отображаемых на одной странице выдачи
  * @property string $cursor Токен для получения следующей страницы выборки
@@ -61,41 +64,58 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     /**
      * @var DateTime|null Время создания, от (включительно)
      */
+    #[Assert\DateTime(format: YOOKASSA_DATE)]
+    #[Assert\Type('DateTime')]
     private ?DateTime $_createdAtGte = null;
 
     /**
      * @var DateTime|null Время создания, от (не включая)
      */
+    #[Assert\DateTime(format: YOOKASSA_DATE)]
+    #[Assert\Type('DateTime')]
     private ?DateTime $_createdAtGt = null;
 
     /**
      * @var DateTime|null Время создания, до (включительно)
      */
+    #[Assert\DateTime(format: YOOKASSA_DATE)]
+    #[Assert\Type('DateTime')]
     private ?DateTime $_createdAtLte = null;
 
     /**
      * @var DateTime|null Время создания, до (не включая)
      */
+    #[Assert\DateTime(format: YOOKASSA_DATE)]
+    #[Assert\Type('DateTime')]
     private ?DateTime $_createdAtLt = null;
 
     /**
      * @var string|null Идентификатор шлюза
      */
+    #[Assert\Type('string')]
+    #[Assert\Length(max: 36)]
+    #[Assert\Length(min: 36)]
     private ?string $_paymentId = null;
 
     /**
      * @var string|null Статус возврата
      */
+    #[Assert\Choice(callback: [RefundStatus::class, 'getValidValues'])]
+    #[Assert\Type('string')]
     private ?string $_status = null;
 
     /**
      * @var int|null Ограничение количества объектов платежа
      */
+    #[Assert\Type('int')]
+    #[Assert\GreaterThanOrEqual(value: 1)]
+    #[Assert\LessThanOrEqual(self::MAX_LIMIT_VALUE)]
     private ?int $_limit = null;
 
     /**
      * @var string|null Токен для получения следующей страницы выборки
      */
+    #[Assert\Type('string')]
     private ?string $_cursor = null;
 
     /**
@@ -123,32 +143,12 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @param null|string $value Идентификатор платежа
      *
-     * @throws InvalidPropertyValueException Выбрасывается если длина переданной строки не равна 36 символам
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
+     * @return self
      */
-    public function setPaymentId(?string $value): void
+    public function setPaymentId(?string $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_paymentId = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $length = mb_strlen((string) $value, 'utf-8');
-            if (36 != $length) {
-                throw new InvalidPropertyValueException(
-                    'Invalid payment id value in RefundsRequest',
-                    0,
-                    'RefundsRequest.paymentId',
-                    $value
-                );
-            }
-            $this->_paymentId = (string) $value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid payment id value type in RefundsRequest',
-                0,
-                'RefundsRequest.paymentId',
-                $value
-            );
-        }
+        $this->_paymentId = $this->validatePropertyValue('_paymentId', $value);
+        return $this;
     }
 
     /**
@@ -174,34 +174,14 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     /**
      * Устанавливает дату создания от которой выбираются возвраты.
      *
-     * @param null|DateTime|int|string $value Время создания, от (включительно) или null, чтобы удалить значение
+     * @param DateTime|string|null $value Время создания, от (включительно) или null, чтобы удалить значение
      *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     *                                       строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws Exception|InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     *                                                     строка, не число и не значение типа DateTime)
+     * @return self
      */
-    public function setCreatedAtGte(mixed $value): void
+    public function setCreatedAtGte(mixed $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_createdAtGte = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if (null === $dateTime) {
-                throw new InvalidPropertyValueException(
-                    'Invalid created_gte value in RefundsRequest',
-                    0,
-                    'RefundsRequest.createdAtGte'
-                );
-            }
-            $this->_createdAtGte = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid created_gte value type in RefundsRequest',
-                0,
-                'RefundsRequest.createdAtGte'
-            );
-        }
+        $this->_createdAtGte = $this->validatePropertyValue('_createdAtGte', $value);
+        return $this;
     }
 
     /**
@@ -227,34 +207,14 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     /**
      * Устанавливает дату создания от которой выбираются возвраты.
      *
-     * @param null|DateTime|int|string $value Время создания, от (не включая) или null, чтобы удалить значение
+     * @param DateTime|string|null $value Время создания, от (не включая) или null, чтобы удалить значение
      *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     *                                       строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws Exception|InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     *                                                     строка, не число и не значение типа DateTime)
+     * @return self
      */
-    public function setCreatedAtGt(mixed $value): void
+    public function setCreatedAtGt(mixed $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_createdAtGt = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if (null === $dateTime) {
-                throw new InvalidPropertyValueException(
-                    'Invalid created_gt value in RefundsRequest',
-                    0,
-                    'RefundsRequest.createdAtGt'
-                );
-            }
-            $this->_createdAtGt = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid created_gt value type in RefundsRequest',
-                0,
-                'RefundsRequest.createdAtGt'
-            );
-        }
+        $this->_createdAtGt = $this->validatePropertyValue('_createdAtGt', $value);
+        return $this;
     }
 
     /**
@@ -280,34 +240,14 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     /**
      * Устанавливает дату создания до которой выбираются возвраты.
      *
-     * @param null|DateTime|int|string $value Время создания, до (включительно) или null, чтобы удалить значение
+     * @param DateTime|string|null $value Время создания, до (включительно) или null, чтобы удалить значение
      *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     *                                       строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws Exception|InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     *                                                     строка, не число и не значение типа DateTime)
+     * @return self
      */
-    public function setCreatedAtLte(mixed $value): void
+    public function setCreatedAtLte(mixed $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_createdAtLte = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if (null === $dateTime) {
-                throw new InvalidPropertyValueException(
-                    'Invalid created_lte value in RefundsRequest',
-                    0,
-                    'RefundsRequest.createdLte'
-                );
-            }
-            $this->_createdAtLte = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid created_lte value type in RefundsRequest',
-                0,
-                'RefundsRequest.createdLte'
-            );
-        }
+        $this->_createdAtLte = $this->validatePropertyValue('_createdAtLte', $value);
+        return $this;
     }
 
     /**
@@ -333,34 +273,14 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
     /**
      * Устанавливает дату создания до которой выбираются возвраты.
      *
-     * @param null|DateTime|int|string $value Время создания, до (не включая) или null, чтобы удалить значение
+     * @param DateTime|string|null $value Время создания, до (не включая) или null, чтобы удалить значение
      *
-     * @throws InvalidPropertyValueException Генерируется если была передана дата в невалидном формате (была передана
-     *                                       строка или число, которые не удалось преобразовать в валидную дату)
-     * @throws Exception|InvalidPropertyValueTypeException Генерируется если была передана дата с не тем типом (передана не
-     *                                                     строка, не число и не значение типа DateTime)
-     */
-    public function setCreatedAtLt(mixed $value): void
+     * @return self
+ */
+    public function setCreatedAtLt(mixed $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_createdAtLt = null;
-        } elseif (TypeCast::canCastToDateTime($value)) {
-            $dateTime = TypeCast::castToDateTime($value);
-            if (null === $dateTime) {
-                throw new InvalidPropertyValueException(
-                    'Invalid created_lt value in RefundsRequest',
-                    0,
-                    'RefundsRequest.createdLt'
-                );
-            }
-            $this->_createdAtLt = $dateTime;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid created_lt value type in RefundsRequest',
-                0,
-                'RefundsRequest.createdLt'
-            );
-        }
+        $this->_createdAtLt = $this->validatePropertyValue('_createdAtLt', $value);
+        return $this;
     }
 
     /**
@@ -388,31 +308,12 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @param string|null $value Статус выбираемых платежей или null, чтобы удалить значение
      *
-     * @throws InvalidPropertyValueException Выбрасывается если переданное значение не является валидным статусом
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
+     * @return self
      */
-    public function setStatus(?string $value): void
+    public function setStatus(?string $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_status = null;
-        } elseif (TypeCast::canCastToEnumString($value)) {
-            if (!RefundStatus::valueExists((string) $value)) {
-                throw new InvalidPropertyValueException(
-                    'Invalid status value in RefundsRequest',
-                    0,
-                    'RefundsRequest.status',
-                    $value
-                );
-            }
-            $this->_status = $value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid status value in RefundsRequest',
-                0,
-                'RefundsRequest.status',
-                $value
-            );
-        }
+        $this->_status = $this->validatePropertyValue('_status', $value);
+        return $this;
     }
 
     /**
@@ -440,22 +341,11 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @param string|null $value Токен следующей страницы выборки или null, чтобы удалить значение
      *
-     * @throws InvalidPropertyValueTypeException Выбрасывается если в метод была передана не строка
      */
-    public function setCursor(?string $value): void
+    public function setCursor(?string $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_cursor = null;
-        } elseif (TypeCast::canCastToString($value)) {
-            $this->_cursor = (string) $value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid status value in RefundsRequest',
-                0,
-                'RefundsRequest.cursor',
-                $value
-            );
-        }
+        $this->_cursor = $this->validatePropertyValue('_cursor', $value);
+        return $this;
     }
 
     /**
@@ -485,28 +375,10 @@ class RefundsRequest extends AbstractRequest implements RefundsRequestInterface
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается, если в метод было передано не целое число
      */
-    public function setLimit(mixed $value): void
+    public function setLimit(mixed $value): self
     {
-        if (null === $value || '' === $value) {
-            $this->_limit = null;
-        } elseif (is_int($value)) {
-            if ($value < 0 || $value > self::MAX_LIMIT_VALUE) {
-                throw new InvalidPropertyValueException(
-                    'Invalid limit value in RefundsRequest',
-                    0,
-                    'RefundsRequest.limit',
-                    $value
-                );
-            }
-            $this->_limit = $value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid limit value type in RefundsRequest',
-                0,
-                'RefundsRequest.limit',
-                $value
-            );
-        }
+        $this->_limit = $this->validatePropertyValue('_limit', $value);
+        return $this;
     }
 
     /**

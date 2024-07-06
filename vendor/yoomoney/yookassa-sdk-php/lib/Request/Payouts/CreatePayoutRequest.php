@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ use YooKassa\Model\AmountInterface;
 use YooKassa\Model\Deal\PayoutDealInfo;
 use YooKassa\Model\Metadata;
 use YooKassa\Model\MonetaryAmount;
-use YooKassa\Model\Payout\AbstractPayoutDestination;
+use YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData;
 use YooKassa\Request\Payouts\PayoutDestinationData\PayoutDestinationDataFactory;
 use YooKassa\Validator\Constraints as Assert;
 
@@ -49,8 +49,8 @@ use YooKassa\Validator\Constraints as Assert;
  * @author   cms@yoomoney.ru
  * @link     https://yookassa.ru/developers/api
  * @property AmountInterface $amount Сумма создаваемой выплаты
- * @property AbstractPayoutDestination $payoutDestinationData Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token.
- * @property AbstractPayoutDestination $payout_destination_data Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token.
+ * @property AbstractPayoutDestinationData $payoutDestinationData Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token.
+ * @property AbstractPayoutDestinationData $payout_destination_data Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token.
  * @property string $payoutToken Токенизированные данные для выплаты. Например, синоним банковской карты. Обязательный параметр, если не передан payout_destination_data
  * @property string $payout_token Токенизированные данные для выплаты. Например, синоним банковской карты. Обязательный параметр, если не передан payout_destination_data
  * @property string $payment_method_id Идентификатор сохраненного способа оплаты, данные которого нужно использовать для проведения выплаты
@@ -61,8 +61,8 @@ use YooKassa\Validator\Constraints as Assert;
  * @property PayoutSelfEmployedInfo $selfEmployed Данные самозанятого, который получит выплату. Необходимо передавать, если вы делаете выплату [самозанятому](https://yookassa.ru/developers/payouts/scenario-extensions/self-employed). Только для обычных выплат.
  * @property IncomeReceiptData $receipt_data Данные для формирования чека в сервисе Мой налог. Необходимо передавать, если вы делаете выплату [самозанятому](https://yookassa.ru/developers/payouts/scenario-extensions/self-employed). Только для обычных выплат.
  * @property IncomeReceiptData $receiptData Данные для формирования чека в сервисе Мой налог. Необходимо передавать, если вы делаете выплату [самозанятому](https://yookassa.ru/developers/payouts/scenario-extensions/self-employed). Только для обычных выплат.
- * @property ListObjectInterface|PayoutPersonalData[] $personal_data Персональные данные получателя выплаты. Необходимо передавать, если вы делаете выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП).
- * @property ListObjectInterface|PayoutPersonalData[] $personalData Персональные данные получателя выплаты. Необходимо передавать, если вы делаете выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП).
+ * @property ListObjectInterface|PayoutPersonalData[] $personal_data Персональные данные получателя выплаты. Только для обычных выплат. Необходимо передавать в этих сценариях: - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП); - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send). В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных.
+ * @property ListObjectInterface|PayoutPersonalData[] $personalData Персональные данные получателя выплаты. Только для обычных выплат. Необходимо передавать в этих сценариях: - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП); - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send). В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных.
  * @property Metadata $metadata Метаданные привязанные к выплате
  */
 class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequestInterface
@@ -89,11 +89,11 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
     /**
      * Данные платежного средства, на которое нужно сделать выплату
      *
-     * @var AbstractPayoutDestination|null
+     * @var AbstractPayoutDestinationData|null
      */
     #[Assert\Valid]
-    #[Assert\Type(AbstractPayoutDestination::class)]
-    private ?AbstractPayoutDestination $_payout_destination_data = null;
+    #[Assert\Type(AbstractPayoutDestinationData::class)]
+    private ?AbstractPayoutDestinationData $_payout_destination_data = null;
 
     /**
      * Токенизированные данные для выплаты. Например, синоним банковской карты.
@@ -153,8 +153,13 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
     private ?IncomeReceiptData $_receipt_data = null;
 
     /**
-     * Персональные данные получателя выплаты. Необходимо передавать,
-     * если вы делаете выплаты с %[проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП).
+     * Персональные данные получателя выплаты. Только для обычных выплат.
+     *
+     * Необходимо передавать в этих сценариях:
+     * - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП);
+     * - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send).
+     *
+     * В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных.
      *
      * @var PayoutPersonalData[]|ListObjectInterface|null
      */
@@ -209,9 +214,9 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
     /**
      * Возвращает данные для создания метода оплаты.
      *
-     * @return AbstractPayoutDestination|null Данные используемые для создания метода оплаты
+     * @return AbstractPayoutDestinationData|null Данные используемые для создания метода оплаты
      */
-    public function getPayoutDestinationData(): ?AbstractPayoutDestination
+    public function getPayoutDestinationData(): ?AbstractPayoutDestinationData
     {
         return $this->_payout_destination_data;
     }
@@ -229,7 +234,7 @@ class CreatePayoutRequest extends AbstractRequest implements CreatePayoutRequest
     /**
      * Устанавливает объект с информацией для создания метода оплаты.
      *
-     * @param AbstractPayoutDestination|array|null $payout_destination_data Объект создания метода оплаты или null
+     * @param AbstractPayoutDestinationData|array|null $payout_destination_data Объект создания метода оплаты или null
      *
      * @return self
      */

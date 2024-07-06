@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Deals;
 
 use Exception;
@@ -11,7 +35,11 @@ use YooKassa\Request\Deals\DealsRequest;
 use YooKassa\Request\Deals\DealsRequestBuilder;
 
 /**
- * @internal
+ * DealsRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class DealsRequestBuilderTest extends TestCase
 {
@@ -20,7 +48,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCursor($options): void
+    public function testSetCursor(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -41,7 +69,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCreatedAtGte($options): void
+    public function testSetCreatedAtGte(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -64,7 +92,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetCreatedGt($options): void
+    public function testSetCreatedGt(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -87,7 +115,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetCreatedLte($options): void
+    public function testSetCreatedLte(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -108,7 +136,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetCreatedLt($options): void
+    public function testSetCreatedLt(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -129,7 +157,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetExpiresAtGte($options): void
+    public function testSetExpiresAtGte(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -152,7 +180,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetExpiresGt($options): void
+    public function testSetExpiresGt(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -175,7 +203,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetExpiresLte($options): void
+    public function testSetExpiresLte(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -196,7 +224,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetExpiresLt($options): void
+    public function testSetExpiresLt(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -217,7 +245,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetFullTextSearch($options): void
+    public function testSetFullTextSearch(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -238,7 +266,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetLimit($options): void
+    public function testSetLimit(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 
@@ -259,7 +287,7 @@ class DealsRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetStatus($options): void
+    public function testSetStatus(mixed $options): void
     {
         $builder = new DealsRequestBuilder();
 

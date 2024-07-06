@@ -21,7 +21,9 @@
 ### Properties
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
+| public | [$card_product](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#property_card_product) |  | Карточный продукт платежной системы, с которым ассоциирована банковская карта. |
 | public | [$card_type](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#property_card_type) |  | Тип банковской карты |
+| public | [$cardProduct](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#property_cardProduct) |  | Карточный продукт платежной системы, с которым ассоциирована банковская карта. |
 | public | [$cardType](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#property_cardType) |  | Тип банковской карты |
 | public | [$expiry_month](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#property_expiry_month) |  | Срок действия, месяц |
 | public | [$expiry_year](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#property_expiry_year) |  | Срок действия, год |
@@ -45,6 +47,7 @@
 | public | [__set()](../classes/YooKassa-Common-AbstractObject.md#method___set) |  | Устанавливает значение свойства. |
 | public | [__unset()](../classes/YooKassa-Common-AbstractObject.md#method___unset) |  | Удаляет свойство. |
 | public | [fromArray()](../classes/YooKassa-Common-AbstractObject.md#method_fromArray) |  | Устанавливает значения свойств текущего объекта из массива. |
+| public | [getCardProduct()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_getCardProduct) |  | Возвращает карточный продукт платежной системы. |
 | public | [getCardType()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_getCardType) |  | Возвращает тип банковской карты. |
 | public | [getExpiryMonth()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_getExpiryMonth) |  | Возвращает срок действия, месяц, MM. |
 | public | [getExpiryYear()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_getExpiryYear) |  | Возвращает срок действия, год, YYYY. |
@@ -59,6 +62,7 @@
 | public | [offsetGet()](../classes/YooKassa-Common-AbstractObject.md#method_offsetGet) |  | Возвращает значение свойства. |
 | public | [offsetSet()](../classes/YooKassa-Common-AbstractObject.md#method_offsetSet) |  | Устанавливает значение свойства. |
 | public | [offsetUnset()](../classes/YooKassa-Common-AbstractObject.md#method_offsetUnset) |  | Удаляет свойство. |
+| public | [setCardProduct()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_setCardProduct) |  | Устанавливает карточный продукт платежной системы. |
 | public | [setCardType()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_setCardType) |  | Устанавливает тип банковской карты. |
 | public | [setExpiryMonth()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_setExpiryMonth) |  | Устанавливает срок действия, месяц, MM. |
 | public | [setExpiryYear()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md#method_setExpiryYear) |  | Устанавливает срок действия, год, YYYY. |
@@ -101,12 +105,36 @@ ISO_3166_CODE_LENGTH = 2 : int
 
 ---
 ## Properties
+<a name="property_card_product"></a>
+#### public $card_product : string
+---
+***Description***
+
+Карточный продукт платежной системы, с которым ассоциирована банковская карта.
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
 <a name="property_card_type"></a>
 #### public $card_type : string
 ---
 ***Description***
 
 Тип банковской карты
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
+<a name="property_cardProduct"></a>
+#### public $cardProduct : string
+---
+***Description***
+
+Карточный продукт платежной системы, с которым ассоциирована банковская карта.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -393,6 +421,23 @@ public fromArray(array|\Traversable $sourceArray) : void
 **Returns:** void - 
 
 
+<a name="method_getCardProduct" class="anchor"></a>
+#### public getCardProduct() : \YooKassa\Model\Payment\PaymentMethod\BankCardProduct|null
+
+```php
+public getCardProduct() : \YooKassa\Model\Payment\PaymentMethod\BankCardProduct|null
+```
+
+**Summary**
+
+Возвращает карточный продукт платежной системы.
+
+**Details:**
+* Inherited From: [\YooKassa\Model\Payment\PaymentMethod\BankCard](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md)
+
+**Returns:** \YooKassa\Model\Payment\PaymentMethod\BankCardProduct|null - Карточный продукт платежной системы
+
+
 <a name="method_getCardType" class="anchor"></a>
 #### public getCardType() : string|null
 
@@ -648,6 +693,28 @@ public offsetUnset(string $offset) : void
 **Returns:** void - 
 
 
+<a name="method_setCardProduct" class="anchor"></a>
+#### public setCardProduct() : self
+
+```php
+public setCardProduct(\YooKassa\Model\Payment\PaymentMethod\BankCardProduct|array|null $card_product = null) : self
+```
+
+**Summary**
+
+Устанавливает карточный продукт платежной системы.
+
+**Details:**
+* Inherited From: [\YooKassa\Model\Payment\PaymentMethod\BankCard](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md)
+
+##### Parameters:
+| Type | Name | Description |
+| ---- | ---- | ----------- |
+| <code lang="php">\YooKassa\Model\Payment\PaymentMethod\BankCardProduct OR array OR null</code> | card_product  | Карточный продукт платежной системы |
+
+**Returns:** self - 
+
+
 <a name="method_setCardType" class="anchor"></a>
 #### public setCardType() : self
 
@@ -890,10 +957,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

@@ -8,7 +8,7 @@ use YooKassa\Common\AbstractObject;
 use YooKassa\Common\ListObject;
 use PHPUnit\Framework\TestCase;
 use YooKassa\Helpers\Random;
-use YooKassa\Model\Deal\BaseDeal;
+use YooKassa\Model\Deal\AbstractBaseDeal;
 use YooKassa\Request\Payments\Airline;
 use YooKassa\Request\Payments\Leg;
 use YooKassa\Request\Payments\Passenger;
@@ -186,7 +186,7 @@ class ListObjectTest extends TestCase
                 InvalidArgumentException::class
             ],
             [
-                BaseDeal::class,
+                AbstractBaseDeal::class,
                 [
                     [],
                 ],

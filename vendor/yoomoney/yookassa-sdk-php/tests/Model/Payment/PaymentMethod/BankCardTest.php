@@ -1,504 +1,579 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Payment\PaymentMethod;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Payment\PaymentMethod\BankCard;
-use YooKassa\Model\Payment\PaymentMethod\BankCardSource;
-use YooKassa\Model\Payment\PaymentMethod\BankCardType;
 
 /**
- * @internal
+ * BankCardTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class BankCardTest extends TestCase
+class BankCardTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validLast4DataProvider
-     */
-    public function testGetSetLast4(string $value): void
-    {
-        $this->getAndSetTest($value, 'last4');
-    }
+    protected BankCard $object;
 
     /**
-     * @dataProvider invalidLast4DataProvider
-     *
-     * @param mixed $value
+     * @return BankCard
      */
-    public function testSetInvalidLast4($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setLast4($value);
-    }
-
-    /**
-     * @dataProvider invalidLast4DataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidLast4($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->last4 = $value;
-    }
-
-    /**
-     * @dataProvider validFirst6DataProvider
-     */
-    public function testGetSetFirst6(string $value): void
-    {
-        $this->getAndSetTest($value, 'first6');
-    }
-
-    /**
-     * @dataProvider invalidFirst6DataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetFirst6Invalid($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setFirst6($value);
-    }
-
-    /**
-     * @dataProvider invalidFirst6DataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterFirst6Invalid($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->first6 = $value;
-    }
-
-    /**
-     * @dataProvider validExpiryYearDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetExpiryYear($value): void
-    {
-        $this->getAndSetTest($value, 'expiryYear', 'expiry_year');
-    }
-
-    /**
-     * @dataProvider invalidYearDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidYear($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setExpiryYear($value);
-    }
-
-    /**
-     * @dataProvider invalidYearDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidYear($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->expiryYear = $value;
-    }
-
-    /**
-     * @dataProvider invalidYearDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeYear($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->expiry_year = $value;
-    }
-
-    /**
-     * @dataProvider invalidMonthDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidMonth($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->expiryMonth = $value;
-    }
-
-    /**
-     * @dataProvider invalidMonthDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeMonth($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->expiry_month = $value;
-    }
-
-    /**
-     * @dataProvider validExpiryMonthDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetExpiryMonth($value): void
-    {
-        $this->getAndSetTest($value, 'expiryMonth', 'expiry_month');
-    }
-
-    /**
-     * @dataProvider invalidMonthDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidMonth($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setExpiryMonth($value);
-    }
-
-    /**
-     * @dataProvider validCardTypeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetCardType($value): void
-    {
-        $this->getAndSetTest($value, 'cardType', 'card_type');
-    }
-
-    /**
-     * @dataProvider validIssuerCountryDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetIssuerCountry($value): void
-    {
-        $this->getAndSetTest($value, 'issuerCountry', 'issuer_country');
-    }
-
-    /**
-     * @dataProvider validIssuerNameDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetIssuerName($value): void
-    {
-        $this->getAndSetTest($value, 'issuerName', 'issuer_name');
-    }
-
-    /**
-     * @dataProvider validSourceDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetSource($value): void
-    {
-        $this->getAndSetTest($value, 'source', 'source');
-    }
-
-    /**
-     * @dataProvider invalidCardTypeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidCardType($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setCardType($value);
-    }
-
-    /**
-     * @dataProvider invalidCardTypeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidCardType($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->cardType = $value;
-    }
-
-    /**
-     * @dataProvider invalidCardTypeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeCardType($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->card_type = $value;
-    }
-
-    /**
-     * @dataProvider invalidIssuerCountryDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidIssuerCountry($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setIssuerCountry($value);
-    }
-
-    /**
-     * @dataProvider invalidIssuerCountryDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidIssuerCountry($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->issuerCountry = $value;
-    }
-
-    /**
-     * @dataProvider invalidIssuerCountryDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeIssuerCountry($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->issuer_country = $value;
-    }
-
-    /**
-     * @dataProvider invalidSourceDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidSource($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setSource($value);
-    }
-
-    /**
-     * @dataProvider invalidSourceDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSource($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->source = $value;
-    }
-
-    public static function validLast4DataProvider(): array
-    {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $result[] = [Random::str(4, '0123456789')];
-        }
-
-        return $result;
-    }
-
-    public static function validFirst6DataProvider(): array
-    {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $result[] = [Random::str(6, '0123456789')];
-        }
-
-        return $result;
-    }
-
-    public static function validExpiryYearDataProvider(): array
-    {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $result[] = [Random::int(2000, 2200)];
-        }
-
-        return $result;
-    }
-
-    public static function validExpiryMonthDataProvider(): array
-    {
-        return [
-            ['01'],
-            ['02'],
-            ['03'],
-            ['04'],
-            ['05'],
-            ['06'],
-            ['07'],
-            ['08'],
-            ['09'],
-            ['10'],
-            ['11'],
-            ['12'],
-        ];
-    }
-
-    public static function validCardTypeDataProvider()
-    {
-        $result = [];
-        foreach (BankCardType::getValidValues() as $value) {
-            $result[] = [$value];
-        }
-
-        return $result;
-    }
-
-    public static function validIssuerCountryDataProvider()
-    {
-        return [
-            ['RU'],
-            ['EN'],
-            ['UK'],
-            ['AU'],
-            [null],
-            [''],
-        ];
-    }
-
-    public static function validIssuerNameDataProvider()
-    {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $result[] = [Random::str(3, 35)];
-        }
-        $result[] = [''];
-        $result[] = [null];
-
-        return $result;
-    }
-
-    public static function validSourceDataProvider()
-    {
-        $result = [];
-        foreach (BankCardSource::getValidValues() as $value) {
-            $result[] = [$value];
-        }
-        $result[] = [null];
-
-        return $result;
-    }
-
-    public static function invalidLast4DataProvider()
-    {
-        return [
-            [null],
-            [0],
-            [1],
-            [-1],
-            [Random::str(3, '0123456789')],
-            [Random::str(5, '0123456789')],
-        ];
-    }
-
-    public static function invalidFirst6DataProvider()
-    {
-        return [
-            ['null'],
-            [1],
-            [-1],
-            [Random::str(5, '0123456789')],
-            [Random::str(7, '0123456789')],
-        ];
-    }
-
-    public static function invalidYearDataProvider()
-    {
-        return [
-            [null],
-            [0],
-            [1],
-            [-1],
-            ['5'],
-            [Random::str(1, '0123456789')],
-            [Random::str(2, '0123456789')],
-            [Random::str(3, '0123456789')],
-        ];
-    }
-
-    public static function invalidMonthDataProvider()
-    {
-        return [
-            [null],
-            [0],
-            [-1],
-            [Random::str(3, '0123456789')],
-            ['13'],
-            ['16'],
-        ];
-    }
-
-    public static function invalidCardTypeDataProvider()
-    {
-        return [
-            [''],
-            [null],
-            [false],
-        ];
-    }
-
-    public static function invalidIssuerCountryDataProvider()
-    {
-        return [
-            [Random::str(3, 4)],
-        ];
-    }
-
-    public static function invalidSourceDataProvider()
-    {
-        return [
-            [Random::str(3, 6)],
-            [Random::int(1, 2)],
-            [true],
-        ];
-    }
-
     protected function getTestInstance(): BankCard
     {
         return new BankCard();
     }
 
-    protected function getAndSetTest($value, $property, $snakeCase = null): void
+    /**
+     * @return void
+     */
+    public function testBankCardDataClassExists(): void
     {
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
+        $this->object = $this->getMockBuilder(BankCard::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(BankCard::class));
+        $this->assertInstanceOf(BankCard::class, $this->object);
+    }
 
+    /**
+     * Test property "first6"
+     * @dataProvider validFirst6DataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testFirst6(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getFirst6());
+        self::assertEmpty($instance->first6);
+        $instance->setFirst6($value);
+        self::assertEquals($value, is_array($value) ? $instance->getFirst6()->toArray() : $instance->getFirst6());
+        self::assertEquals($value, is_array($value) ? $instance->first6->toArray() : $instance->first6);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getFirst6());
+            self::assertNotNull($instance->first6);
+            self::assertMatchesRegularExpression("/[0-9]{6}/", $instance->getFirst6());
+            self::assertMatchesRegularExpression("/[0-9]{6}/", $instance->first6);
+        }
+    }
+
+    /**
+     * Test invalid property "first6"
+     * @dataProvider invalidFirst6DataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidFirst6(mixed $value, string $exceptionClass): void
+    {
         $instance = $this->getTestInstance();
 
-        self::assertNull($instance->{$getter}());
-        self::assertNull($instance->{$property});
-        if (null !== $snakeCase) {
-            self::assertNull($instance->{$snakeCase});
-        }
+        $this->expectException($exceptionClass);
+        $instance->setFirst6($value);
+    }
 
-        $instance->{$setter}($value);
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validFirst6DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_first6'));
+    }
 
-        self::assertEquals($value, $instance->{$getter}());
-        self::assertEquals($value, $instance->{$property});
-        if (null !== $snakeCase) {
-            self::assertEquals($value, $instance->{$snakeCase});
-        }
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidFirst6DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_first6'));
+    }
 
+    /**
+     * Test property "last4"
+     * @dataProvider validLast4DataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testLast4(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setLast4($value);
+        self::assertNotNull($instance->getLast4());
+        self::assertNotNull($instance->last4);
+        self::assertEquals($value, is_array($value) ? $instance->getLast4()->toArray() : $instance->getLast4());
+        self::assertEquals($value, is_array($value) ? $instance->last4->toArray() : $instance->last4);
+        self::assertMatchesRegularExpression("/[0-9]{4}/", $instance->getLast4());
+        self::assertMatchesRegularExpression("/[0-9]{4}/", $instance->last4);
+    }
+
+    /**
+     * Test invalid property "last4"
+     * @dataProvider invalidLast4DataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidLast4(mixed $value, string $exceptionClass): void
+    {
         $instance = $this->getTestInstance();
 
-        $instance->{$property} = $value;
+        $this->expectException($exceptionClass);
+        $instance->setLast4($value);
+    }
 
-        self::assertEquals($value, $instance->{$getter}());
-        self::assertEquals($value, $instance->{$property});
-        if (null !== $snakeCase) {
-            self::assertEquals($value, $instance->{$snakeCase});
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validLast4DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_last4'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidLast4DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_last4'));
+    }
+
+    /**
+     * Test property "expiry_year"
+     * @dataProvider validExpiryYearDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testExpiryYear(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setExpiryYear($value);
+        self::assertNotNull($instance->getExpiryYear());
+        self::assertNotNull($instance->expiry_year);
+        self::assertEquals($value, is_array($value) ? $instance->getExpiryYear()->toArray() : $instance->getExpiryYear());
+        self::assertEquals($value, is_array($value) ? $instance->expiry_year->toArray() : $instance->expiry_year);
+        self::assertMatchesRegularExpression("/[0-9]{4}/", $instance->getExpiryYear());
+        self::assertMatchesRegularExpression("/[0-9]{4}/", $instance->expiry_year);
+    }
+
+    /**
+     * Test invalid property "expiry_year"
+     * @dataProvider invalidExpiryYearDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidExpiryYear(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setExpiryYear($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validExpiryYearDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_expiry_year'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidExpiryYearDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_expiry_year'));
+    }
+
+    /**
+     * Test property "expiry_month"
+     * @dataProvider validExpiryMonthDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testExpiryMonth(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setExpiryMonth($value);
+        self::assertNotNull($instance->getExpiryMonth());
+        self::assertNotNull($instance->expiry_month);
+        self::assertEquals($value, is_array($value) ? $instance->getExpiryMonth()->toArray() : $instance->getExpiryMonth());
+        self::assertEquals($value, is_array($value) ? $instance->expiry_month->toArray() : $instance->expiry_month);
+        self::assertMatchesRegularExpression("/^(0?[1-9]|1[0-2])$/", $instance->getExpiryMonth());
+        self::assertMatchesRegularExpression("/^(0?[1-9]|1[0-2])$/", $instance->expiry_month);
+    }
+
+    /**
+     * Test invalid property "expiry_month"
+     * @dataProvider invalidExpiryMonthDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidExpiryMonth(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setExpiryMonth($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validExpiryMonthDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_expiry_month'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidExpiryMonthDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_expiry_month'));
+    }
+
+    /**
+     * Test property "card_type"
+     * @dataProvider validCardTypeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCardType(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setCardType($value);
+        self::assertNotNull($instance->getCardType());
+        self::assertNotNull($instance->card_type);
+        self::assertEquals($value, is_array($value) ? $instance->getCardType()->toArray() : $instance->getCardType());
+        self::assertEquals($value, is_array($value) ? $instance->card_type->toArray() : $instance->card_type);
+    }
+
+    /**
+     * Test invalid property "card_type"
+     * @dataProvider invalidCardTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCardType(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCardType($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCardTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_card_type'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCardTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_card_type'));
+    }
+
+    /**
+     * Test property "card_product"
+     * @dataProvider validCardProductDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCardProduct(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCardProduct());
+        self::assertEmpty($instance->card_product);
+        $instance->setCardProduct($value);
+        self::assertEquals($value, is_array($value) ? $instance->getCardProduct()->toArray() : $instance->getCardProduct());
+        self::assertEquals($value, is_array($value) ? $instance->card_product->toArray() : $instance->card_product);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCardProduct());
+            self::assertNotNull($instance->card_product);
         }
+    }
 
-        if (null !== $snakeCase) {
-            $instance = $this->getTestInstance();
+    /**
+     * Test invalid property "card_product"
+     * @dataProvider invalidCardProductDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCardProduct(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
 
-            $instance->{$snakeCase} = $value;
+        $this->expectException($exceptionClass);
+        $instance->setCardProduct($value);
+    }
 
-            self::assertEquals($value, $instance->{$getter}());
-            self::assertEquals($value, $instance->{$property});
-            self::assertEquals($value, $instance->{$snakeCase});
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCardProductDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_card_product'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCardProductDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_card_product'));
+    }
+
+    /**
+     * Test property "issuer_country"
+     * @dataProvider validIssuerCountryDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testIssuerCountry(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getIssuerCountry());
+        self::assertEmpty($instance->issuer_country);
+        $instance->setIssuerCountry($value);
+        self::assertEquals($value, $instance->getIssuerCountry());
+        self::assertEquals($value, $instance->issuer_country);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getIssuerCountry());
+            self::assertNotNull($instance->issuer_country);
+            self::assertMatchesRegularExpression("/^[A-Z]{2}$/", $instance->getIssuerCountry());
+            self::assertMatchesRegularExpression("/^[A-Z]{2}$/", $instance->issuer_country);
         }
+    }
+
+    /**
+     * Test invalid property "issuer_country"
+     * @dataProvider invalidIssuerCountryDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidIssuerCountry(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setIssuerCountry($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIssuerCountryDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_issuer_country'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIssuerCountryDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_issuer_country'));
+    }
+
+    /**
+     * Test property "issuer_name"
+     * @dataProvider validIssuerNameDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testIssuerName(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getIssuerName());
+        self::assertEmpty($instance->issuer_name);
+        $instance->setIssuerName($value);
+        self::assertEquals($value, is_array($value) ? $instance->getIssuerName()->toArray() : $instance->getIssuerName());
+        self::assertEquals($value, is_array($value) ? $instance->issuer_name->toArray() : $instance->issuer_name);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getIssuerName());
+            self::assertNotNull($instance->issuer_name);
+        }
+    }
+
+    /**
+     * Test invalid property "issuer_name"
+     * @dataProvider invalidIssuerNameDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidIssuerName(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setIssuerName($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIssuerNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_issuer_name'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIssuerNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_issuer_name'));
+    }
+
+    /**
+     * Test property "source"
+     * @dataProvider validSourceDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testSource(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getSource());
+        self::assertEmpty($instance->source);
+        $instance->setSource($value);
+        self::assertEquals($value, is_array($value) ? $instance->getSource()->toArray() : $instance->getSource());
+        self::assertEquals($value, is_array($value) ? $instance->source->toArray() : $instance->source);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getSource());
+            self::assertNotNull($instance->source);
+        }
+    }
+
+    /**
+     * Test invalid property "source"
+     * @dataProvider invalidSourceDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidSource(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setSource($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validSourceDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_source'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidSourceDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_source'));
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -94,8 +94,8 @@ class CreateRefundRequest extends AbstractRequest implements CreateRefundRequest
      * @var SourceInterface[]|ListObjectInterface|null Информация о распределении денег
      */
     #[Assert\Valid]
-    #[Assert\Type(ListObject::class)]
     #[Assert\AllType(Source::class)]
+    #[Assert\Type(ListObject::class)]
     private ?ListObject $_sources = null;
 
     /**

@@ -1,170 +1,175 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Payout;
 
-use PHPUnit\Framework\TestCase;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Payout\PayoutCancellationDetails;
-use YooKassa\Model\Payout\PayoutCancellationDetailsPartyCode;
-use YooKassa\Model\Payout\PayoutCancellationDetailsReasonCode;
 
 /**
- * @internal
+ * PayoutCancellationDetailsTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class PayoutCancellationDetailsTest extends TestCase
+class PayoutCancellationDetailsTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param null|mixed $value
-     */
-    public function testConstructor(mixed $value = null): void
-    {
-        $instance = self::getInstance($value);
+    protected PayoutCancellationDetails $object;
 
-        self::assertEquals($value['party'], $instance->getParty());
-        self::assertEquals($value['reason'], $instance->getReason());
+    /**
+     * @return PayoutCancellationDetails
+     */
+    protected function getTestInstance(): PayoutCancellationDetails
+    {
+        return new PayoutCancellationDetails();
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param null|mixed $value
+     * @return void
      */
-    public function testGetSetParty(mixed $value = null): void
+    public function testPayoutCancellationDetailsClassExists(): void
     {
-        $instance = self::getInstance($value);
-        self::assertEquals($value['party'], $instance->getParty());
-
-        $instance = self::getInstance([]);
-        $instance->setParty($value['party']);
-        self::assertEquals($value['party'], $instance->getParty());
-        self::assertEquals($value['party'], $instance->party);
+        $this->object = $this->getMockBuilder(PayoutCancellationDetails::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(PayoutCancellationDetails::class));
+        $this->assertInstanceOf(PayoutCancellationDetails::class, $this->object);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param null $value
-     */
-    public function testGetSetReason(mixed $value = null): void
-    {
-        $instance = self::getInstance($value);
-        self::assertEquals($value['reason'], $instance->getReason());
-
-        $instance = self::getInstance([]);
-        $instance->setReason($value['reason']);
-        self::assertEquals($value['reason'], $instance->getReason());
-        self::assertEquals($value['reason'], $instance->reason);
-    }
-
-    /**
-     * @dataProvider invalidValueDataProvider
-     *
+     * Test property "party"
+     * @dataProvider validPartyDataProvider
      * @param mixed $value
-     * @param string $exceptionClassName
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidParty(mixed $value, string $exceptionClassName): void
+    public function testParty(mixed $value): void
     {
-        $instance = self::getInstance([]);
+        $instance = $this->getTestInstance();
+        $instance->setParty($value);
+        self::assertNotNull($instance->getParty());
+        self::assertNotNull($instance->party);
+        self::assertEquals($value, is_array($value) ? $instance->getParty()->toArray() : $instance->getParty());
+        self::assertEquals($value, is_array($value) ? $instance->party->toArray() : $instance->party);
+        self::assertContains($instance->getParty(), ['yoo_money', 'payout_network']);
+        self::assertContains($instance->party, ['yoo_money', 'payout_network']);
+    }
 
-        $this->expectException($exceptionClassName);
+    /**
+     * Test invalid property "party"
+     * @dataProvider invalidPartyDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidParty(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setParty($value);
     }
 
     /**
-     * @dataProvider invalidValueDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassName
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidParty(mixed $value, string $exceptionClassName): void
+    public function validPartyDataProvider(): array
     {
-        $instance = self::getInstance([]);
-
-        $this->expectException($exceptionClassName);
-        $instance->party = $value;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_party'));
     }
 
     /**
-     * @dataProvider invalidValueDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassName
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetInvalidReason(mixed $value, string $exceptionClassName): void
+    public function invalidPartyDataProvider(): array
     {
-        $instance = self::getInstance([]);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_party'));
+    }
 
-        $this->expectException($exceptionClassName);
+    /**
+     * Test property "reason"
+     * @dataProvider validReasonDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testReason(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setReason($value);
+        self::assertNotNull($instance->getReason());
+        self::assertNotNull($instance->reason);
+        self::assertEquals($value, is_array($value) ? $instance->getReason()->toArray() : $instance->getReason());
+        self::assertEquals($value, is_array($value) ? $instance->reason->toArray() : $instance->reason);
+        self::assertContains($instance->getReason(), ['insufficient_funds', 'fraud_suspected', 'one_time_limit_exceeded', 'periodic_limit_exceeded', 'rejected_by_payee', 'general_decline', 'issuer_unavailable', 'recipient_not_found', 'recipient_check_failed', 'identification_required']);
+        self::assertContains($instance->reason, ['insufficient_funds', 'fraud_suspected', 'one_time_limit_exceeded', 'periodic_limit_exceeded', 'rejected_by_payee', 'general_decline', 'issuer_unavailable', 'recipient_not_found', 'recipient_check_failed', 'identification_required']);
+    }
+
+    /**
+     * Test invalid property "reason"
+     * @dataProvider invalidReasonDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidReason(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setReason($value);
     }
 
     /**
-     * @dataProvider invalidValueDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassName
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidReason(mixed $value, string $exceptionClassName): void
+    public function validReasonDataProvider(): array
     {
-        $instance = self::getInstance([]);
-
-        $this->expectException($exceptionClassName);
-        $instance->reason = $value;
-    }
-
-    public static function validDataProvider(): array
-    {
-        $result = [];
-        $cancellationDetailsParties = PayoutCancellationDetailsPartyCode::getValidValues();
-        $countCancellationDetailsParties = count($cancellationDetailsParties);
-        $cancellationDetailsReasons = PayoutCancellationDetailsReasonCode::getValidValues();
-        $countCancellationDetailsReasons = count($cancellationDetailsReasons);
-        for ($i = 0; $i < 20; $i++) {
-            $result[] = [
-                [
-                    'party' => $cancellationDetailsParties[$i % $countCancellationDetailsParties],
-                    'reason' => $cancellationDetailsReasons[$i % $countCancellationDetailsReasons],
-                ],
-            ];
-        }
-
-        return $result;
-    }
-
-    public static function invalidValueDataProvider(): array
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            ['', EmptyPropertyValueException::class],
-            [Random::str(10), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_reason'));
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed|null $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testJsonSerialize(mixed $value = null): void
+    public function invalidReasonDataProvider(): array
     {
-        $instance = new PayoutCancellationDetails($value);
-        $expected = [
-            'party' => $value['party'],
-            'reason' => $value['reason'],
-        ];
-        self::assertEquals($expected, $instance->jsonSerialize());
-    }
-
-    /**
-     * @param mixed $value
-     * @return PayoutCancellationDetails
-     */
-    protected static function getInstance(mixed $value = null): PayoutCancellationDetails
-    {
-        return new PayoutCancellationDetails($value);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_reason'));
     }
 }

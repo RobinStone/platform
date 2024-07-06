@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Deals;
 
 use Exception;
@@ -14,7 +38,11 @@ use YooKassa\Model\Metadata;
 use YooKassa\Request\Deals\CreateDealRequestBuilder;
 
 /**
- * @internal
+ * CreateDealRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class CreateDealRequestBuilderTest extends TestCase
 {
@@ -25,7 +53,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetType($options): void
+    public function testSetType(mixed $options): void
     {
         $builder = new CreateDealRequestBuilder();
 
@@ -45,7 +73,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetInvalidType($options): void
+    public function testSetInvalidType(mixed $options): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateDealRequestBuilder();
@@ -59,7 +87,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetFeeMoment($options): void
+    public function testSetFeeMoment(mixed $options): void
     {
         $builder = new CreateDealRequestBuilder();
 
@@ -79,7 +107,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetInvalidFeeMoment($options): void
+    public function testSetInvalidFeeMoment(mixed $options): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateDealRequestBuilder();
@@ -93,7 +121,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetMetadata($options): void
+    public function testSetMetadata(mixed $options): void
     {
         $builder = new CreateDealRequestBuilder();
 
@@ -115,7 +143,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetInvalidMetadata($options): void
+    public function testSetInvalidMetadata(mixed $options): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateDealRequestBuilder();
@@ -129,7 +157,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetDescription($options): void
+    public function testSetDescription(mixed $options): void
     {
         $builder = new CreateDealRequestBuilder();
 
@@ -148,7 +176,7 @@ class CreateDealRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetInvalidDescription($options): void
+    public function testSetInvalidDescription(mixed $options): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateDealRequestBuilder();

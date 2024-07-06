@@ -1,459 +1,296 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\Receipt\Receipt;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Receipt\ReceiptCustomer;
 
 /**
- * @internal
+ * ReceiptCustomerTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class ReceiptCustomerTest extends TestCase
+class ReceiptCustomerTest extends AbstractTestCase
 {
+    protected ReceiptCustomer $object;
+
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return ReceiptCustomer
      */
-    public function testGetSetPhone($options): void
+    protected function getTestInstance(): ReceiptCustomer
     {
-        $instance = new ReceiptCustomer();
+        return new ReceiptCustomer();
+    }
 
-        $value = !empty($options['customer']['phone'])
-               ? $options['customer']['phone']
-               : (!empty($options['phone']) ? $options['phone'] : null);
+    /**
+     * @return void
+     */
+    public function testReceiptCustomerClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(ReceiptCustomer::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(ReceiptCustomer::class));
+        $this->assertInstanceOf(ReceiptCustomer::class, $this->object);
+    }
 
-        $instance->setPhone($value);
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getPhone());
-            self::assertNull($instance->phone);
-        } else {
-            self::assertEquals($value, $instance->getPhone());
-            self::assertEquals($value, $instance->phone);
+    /**
+     * Test property "full_name"
+     * @dataProvider validFullNameDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testFullName(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getFullName());
+        self::assertEmpty($instance->full_name);
+        self::assertIsBool($instance->isEmpty());
+        $instance->setFullName($value);
+        self::assertEquals($value, is_array($value) ? $instance->getFullName()->toArray() : $instance->getFullName());
+        self::assertEquals($value, is_array($value) ? $instance->full_name->toArray() : $instance->full_name);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getFullName());
+            self::assertNotNull($instance->full_name);
         }
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test invalid property "full_name"
+     * @dataProvider invalidFullNameDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
      *
-     * @param mixed $options
+     * @return void
      */
-    public function testSetterPhone($options): void
+    public function testInvalidFullName(mixed $value, string $exceptionClass): void
     {
-        $instance = new ReceiptCustomer();
+        $instance = $this->getTestInstance();
 
-        $value = !empty($options['customer']['phone'])
-               ? $options['customer']['phone']
-               : (!empty($options['phone']) ? $options['phone'] : null);
+        $this->expectException($exceptionClass);
+        $instance->setFullName($value);
+    }
 
-        $instance->phone = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getPhone());
-            self::assertNull($instance->phone);
-        } else {
-            self::assertEquals($value, $instance->getPhone());
-            self::assertEquals($value, $instance->phone);
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validFullNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_full_name'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidFullNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_full_name'));
+    }
+
+    /**
+     * Test property "inn"
+     * @dataProvider validInnDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testInn(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getInn());
+        self::assertEmpty($instance->inn);
+        $instance->setInn($value);
+        self::assertEquals($value, is_array($value) ? $instance->getInn()->toArray() : $instance->getInn());
+        self::assertEquals($value, is_array($value) ? $instance->inn->toArray() : $instance->inn);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getInn());
+            self::assertNotNull($instance->inn);
         }
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test invalid property "inn"
+     * @dataProvider invalidInnDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
      *
-     * @param mixed $options
+     * @return void
      */
-    public function testGetSetEmail($options): void
+    public function testInvalidInn(mixed $value, string $exceptionClass): void
     {
-        $instance = new ReceiptCustomer();
+        $instance = $this->getTestInstance();
 
-        $value = !empty($options['customer']['email'])
-               ? $options['customer']['email']
-               : (!empty($options['email']) ? $options['email'] : null);
+        $this->expectException($exceptionClass);
+        $instance->setInn($value);
+    }
 
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validInnDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_inn'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidInnDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_inn'));
+    }
+
+    /**
+     * Test property "email"
+     * @dataProvider validEmailDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testEmail(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getEmail());
+        self::assertEmpty($instance->email);
         $instance->setEmail($value);
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getEmail());
-            self::assertNull($instance->email);
-        } else {
-            self::assertEquals($value, $instance->getEmail());
-            self::assertEquals($value, $instance->email);
+        self::assertEquals($value, is_array($value) ? $instance->getEmail()->toArray() : $instance->getEmail());
+        self::assertEquals($value, is_array($value) ? $instance->email->toArray() : $instance->email);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getEmail());
+            self::assertNotNull($instance->email);
         }
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testSetterEmail($options): void
-    {
-        $instance = new ReceiptCustomer();
-
-        $value = !empty($options['customer']['email'])
-               ? $options['customer']['email']
-               : (!empty($options['email']) ? $options['email'] : null);
-
-        $instance->email = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getEmail());
-            self::assertNull($instance->email);
-        } else {
-            self::assertEquals($value, $instance->getEmail());
-            self::assertEquals($value, $instance->email);
-        }
-    }
-
-    /**
-     * @dataProvider validFullNameProvider
-     *
+     * Test invalid property "email"
+     * @dataProvider invalidEmailDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testGetSetFullName($value): void
+    public function testInvalidEmail(mixed $value, string $exceptionClass): void
     {
-        $instance = new ReceiptCustomer();
+        $instance = $this->getTestInstance();
 
-        $instance->setFullName($value);
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getFullName());
-            self::assertNull($instance->fullName);
-            self::assertNull($instance->full_name);
-        } else {
-            self::assertEquals($value, $instance->getFullName());
-            self::assertEquals($value, $instance->fullName);
-            self::assertEquals($value, $instance->full_name);
-        }
+        $this->expectException($exceptionClass);
+        $instance->setEmail($value);
     }
 
     /**
-     * @dataProvider validFullNameProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validEmailDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_email'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidEmailDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_email'));
+    }
+
+    /**
+     * Test property "phone"
+     * @dataProvider validPhoneDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterFullName($value): void
+    public function testPhone(mixed $value): void
     {
-        $instance = new ReceiptCustomer();
-
-        $instance->fullName = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getFullName());
-            self::assertNull($instance->fullName);
-            self::assertNull($instance->full_name);
-        } else {
-            self::assertEquals($value, $instance->getFullName());
-            self::assertEquals($value, $instance->fullName);
-            self::assertEquals($value, $instance->full_name);
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPhone());
+        self::assertEmpty($instance->phone);
+        $instance->setPhone($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPhone()->toArray() : $instance->getPhone());
+        self::assertEquals($value, is_array($value) ? $instance->phone->toArray() : $instance->phone);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getPhone());
+            self::assertNotNull($instance->phone);
         }
     }
 
     /**
-     * @dataProvider validFullNameProvider
-     *
+     * Test invalid property "phone"
+     * @dataProvider invalidPhoneDataProvider
      * @param mixed $value
-     */
-    public function testSetterSnakeFullName($value): void
-    {
-        $instance = new ReceiptCustomer();
-
-        $instance->full_name = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getFullName());
-            self::assertNull($instance->fullName);
-            self::assertNull($instance->full_name);
-        } else {
-            self::assertEquals($value, $instance->getFullName());
-            self::assertEquals($value, $instance->fullName);
-            self::assertEquals($value, $instance->full_name);
-        }
-    }
-
-    public static function validFullNameProvider()
-    {
-        return [
-            [null],
-            [''],
-            [Random::str(1)],
-            [Random::str(1, 256)],
-            [Random::str(256)],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidFullNameProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidFullName($value): void
+    public function testInvalidPhone(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new ReceiptCustomer();
-        $instance->setFullName($value);
-    }
+        $instance = $this->getTestInstance();
 
-    public static function invalidFullNameProvider()
-    {
-        return [
-            [Random::str(257)],
-        ];
+        $this->expectException($exceptionClass);
+        $instance->setPhone($value);
     }
 
     /**
-     * @dataProvider validInnProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetInn($value): void
+    public function validPhoneDataProvider(): array
     {
-        $instance = new ReceiptCustomer();
-
-        $instance->setInn($value);
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getInn());
-            self::assertNull($instance->inn);
-        } else {
-            self::assertEquals($value, $instance->getInn());
-            self::assertEquals($value, $instance->inn);
-        }
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_phone'));
     }
 
     /**
-     * @dataProvider validInnProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInn($options): void
+    public function invalidPhoneDataProvider(): array
     {
-        $instance = new ReceiptCustomer();
-
-        $instance->inn = $options;
-        if (null === $options || '' === $options) {
-            self::assertNull($instance->getInn());
-            self::assertNull($instance->inn);
-        } else {
-            self::assertEquals($options, $instance->getInn());
-            self::assertEquals($options, $instance->inn);
-        }
-    }
-
-    public static function validInnProvider()
-    {
-        return [
-            [null],
-            [''],
-            ['1234567890'],
-            ['123456789012'],
-            [Random::str(10, 10, '1234567890')],
-            [Random::str(12, 12, '1234567890')],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidInnProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidInn($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new ReceiptCustomer();
-        $instance->setInn($value);
-    }
-
-    public static function invalidInnProvider()
-    {
-        return [
-            [true],
-            ['123456789'],
-            ['12345678901'],
-            ['1234567890123'],
-            [Random::str(1)],
-            [Random::str(10, 10, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')],
-            [Random::str(12, 12, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')],
-            [Random::str(13, 13, '1234567890')],
-        ];
-    }
-
-    public static function validDataProvider()
-    {
-        return [
-            [
-                [
-                    'customer' => [],
-                ],
-            ],
-            [
-                [
-                    'customer' => [],
-                    'phone' => Random::str(10, 10, '1234567890'),
-                    'email' => uniqid('', true) . '@' . uniqid('', true),
-                ],
-            ],
-            [
-                [
-                    'customer' => [
-                        'phone' => Random::str(10, 10, '1234567890'),
-                        'email' => uniqid('', true) . '@' . uniqid('', true),
-                    ],
-                ],
-            ],
-            [
-                [
-                    'customer' => [
-                        'full_name' => Random::str(1, 256),
-                        'inn' => Random::str(12, 12, '1234567890'),
-                    ],
-                    'phone' => Random::str(10, 10, '1234567890'),
-                    'email' => uniqid('', true) . '@' . uniqid('', true),
-                ],
-            ],
-            [
-                [
-                    'customer' => [
-                        'full_name' => Random::str(1, 256),
-                        'phone' => Random::str(10, 10, '1234567890'),
-                        'email' => uniqid('', true) . '@' . uniqid('', true),
-                        'inn' => Random::str(10, 10, '1234567890'),
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider fromArrayDataProvider
-     */
-    public function testCustomerFromArray(mixed $source, mixed $expected): void
-    {
-        $receipt = new Receipt();
-        $receipt->fromArray($source);
-
-        if (!empty($expected)) {
-            foreach ($expected->jsonSerialize() as $property => $value) {
-                self::assertEquals($value, $expected->offsetGet($property));
-            }
-        } else {
-            self::assertEquals(true, $receipt->getCustomer()->isEmpty());
-        }
-    }
-
-    public static function fromArrayDataProvider()
-    {
-        $customer = new ReceiptCustomer();
-        $customer->setFullName('John Doe');
-        $customer->setEmail('johndoe@yoomoney.ru');
-        $customer->setPhone('+79000000000');
-        $customer->setInn('6321341814');
-
-        return [
-            [
-                [],
-                null,
-            ],
-
-            [
-                [
-                    'customer' => [
-                        'fullName' => 'John Doe',
-                        'email' => 'johndoe@yoomoney.ru',
-                        'phone' => '79000000000',
-                        'inn' => '6321341814',
-                    ],
-                ],
-
-                $customer,
-            ],
-
-            [
-                [
-                    'customer' => [
-                        'full_name' => 'John Doe',
-                        'inn' => '6321341814',
-                        'email' => 'johndoe@yoomoney.ru',
-                        'phone' => '79000000000',
-                    ],
-                ],
-
-                $customer,
-            ],
-
-            [
-                [
-                    'customer' => [
-                        'fullName' => 'John Doe',
-                        'inn' => '6321341814',
-                    ],
-                    'email' => 'johndoe@yoomoney.ru',
-                    'phone' => '79000000000',
-                ],
-
-                $customer,
-            ],
-
-            [
-                [
-                    'customer' => [
-                        'full_name' => 'John Doe',
-                        'inn' => '6321341814',
-                        'email' => 'johndoe@yoomoney.ru',
-                    ],
-                    'phone' => '79000000000',
-                ],
-
-                $customer,
-            ],
-            [
-                [
-                    'customer' => [
-                        'fullName' => 'John Doe',
-                        'inn' => '6321341814',
-                        'phone' => '79000000000',
-                    ],
-                    'email' => 'johndoe@yoomoney.ru',
-                ],
-
-                $customer,
-            ],
-            [
-                [
-                    'customer' => [
-                        'full_name' => 'John Doe',
-                        'inn' => '6321341814',
-                        'phone' => '79000000000',
-                        'email' => 'johndoe@yoomoney.ru',
-                    ],
-                    'email' => 'johndoeOld@yoomoney.ru',
-                ],
-
-                $customer,
-            ],
-            [
-                [
-                    'customer' => [
-                        'fullName' => 'John Doe',
-                        'inn' => '6321341814',
-                        'phone' => '79000000000',
-                        'email' => 'johndoe@yoomoney.ru',
-                    ],
-                    'phone' => '79111111111',
-                ],
-
-                $customer,
-            ],
-            [
-                [
-                    'customer' => [
-                        'full_name' => 'John Doe',
-                        'inn' => '6321341814',
-                        'phone' => '79000000000',
-                        'email' => 'johndoe@yoomoney.ru',
-                    ],
-                    'phone' => '79111111111',
-                    'email' => 'johndoeOld@yoomoney.ru',
-                ],
-
-                $customer,
-            ],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_phone'));
     }
 }

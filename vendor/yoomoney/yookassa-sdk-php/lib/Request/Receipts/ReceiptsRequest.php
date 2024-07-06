@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,11 +40,17 @@ use YooKassa\Validator\Constraints as Assert;
  * @link     https://yookassa.ru/developers/api
  *
  * @property DateTime $createdAtGte Время создания, от (включительно)
+ * @property DateTime $created_at_gte Время создания, от (включительно)
  * @property DateTime $createdAtGt Время создания, от (не включая)
+ * @property DateTime $created_at_gt Время создания, от (не включая)
  * @property DateTime $createdAtLte Время создания, до (включительно)
+ * @property DateTime $created_at_lte Время создания, до (включительно)
  * @property DateTime $createdAtLt Время создания, до (не включая)
+ * @property DateTime $created_at_lt Время создания, до (не включая)
  * @property string $paymentId Идентификатор платежа
+ * @property string $payment_id Идентификатор платежа
  * @property string $refundId Идентификатор возврата
+ * @property string $refund_id Идентификатор возврата
  * @property string $status Статус возврата
  * @property null|int $limit Ограничение количества объектов возврата, отображаемых на одной странице выдачи
  * @property string $cursor Токен для получения следующей страницы выборки

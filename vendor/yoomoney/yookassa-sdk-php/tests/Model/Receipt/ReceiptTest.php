@@ -1,18 +1,39 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use TypeError;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
 use YooKassa\Common\ListObject;
 use YooKassa\Helpers\Random;
 use YooKassa\Model\CurrencyCode;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\MonetaryAmount;
-use YooKassa\Model\Receipt\AdditionalUserProps;
-use YooKassa\Model\Receipt\IndustryDetails;
 use YooKassa\Model\Receipt\OperationalDetails;
 use YooKassa\Model\Receipt\Receipt;
 use YooKassa\Model\Receipt\ReceiptCustomer;
@@ -20,615 +41,532 @@ use YooKassa\Model\Receipt\ReceiptItem;
 use YooKassa\Model\Receipt\ReceiptItemAmount;
 use YooKassa\Model\Receipt\Settlement;
 use YooKassa\Model\Receipt\SettlementType;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
 
 /**
- * @internal
+ * ReceiptTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class ReceiptTest extends TestCase
+class ReceiptTest extends AbstractTestCase
 {
-    public function testGetSetAddItems(): void
+    protected Receipt $object;
+
+    /**
+     * @return Receipt
+     */
+    protected function getTestInstance(): Receipt
     {
-        $instance = new Receipt();
+        return new Receipt();
+    }
 
-        self::assertNotNull($instance->getItems());
-        self::assertEquals(ReceiptItem::class, $instance->getItems()->getType());
-        self::assertEmpty($instance->getItems());
+    /**
+     * @return void
+     */
+    public function testReceiptClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(Receipt::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(Receipt::class));
+        $this->assertInstanceOf(Receipt::class, $this->object);
+        self::assertNull($this->object->getObjectId());
+    }
 
-        self::assertNotNull($instance->items);
-        self::assertEquals(ReceiptItem::class, $instance->items->getType());
-        self::assertEmpty($instance->items);
-
-        $item = new ReceiptItem();
-        $instance->addItem($item);
-        $items = $instance->getItems();
-        self::assertSame(count($items), 1);
-        foreach ($items as $tmp) {
-            self::assertSame($item, $tmp);
-        }
-
-        $this->expectException(EmptyPropertyValueException::class);
-        $instance->setItems([]);
-
-        self::assertNotNull($instance->getItems());
-        self::assertIsArray($instance->getItems());
-        self::assertEmpty($instance->getItems());
-
-        $instance->setItems($items);
-        self::assertSame(count($items), 1);
-        foreach ($items as $tmp) {
-            self::assertSame($item, $tmp);
+    /**
+     * Test property "customer"
+     * @dataProvider validCustomerDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCustomer(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertNotEmpty($instance->getCustomer());
+        self::assertNotEmpty($instance->customer);
+        $instance->setCustomer($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCustomer());
+            self::assertNotNull($instance->customer);
+            self::assertEquals($value, is_array($value) ? $instance->getCustomer()->toArray() : $instance->getCustomer());
+            self::assertEquals($value, is_array($value) ? $instance->customer->toArray() : $instance->customer);
         }
     }
 
     /**
-     * @dataProvider invalidItemsProvider
-     *
+     * Test invalid property "customer"
+     * @dataProvider invalidCustomerDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidItems(mixed $value): void
+    public function testInvalidCustomer(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Receipt();
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCustomer($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCustomerDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_customer'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCustomerDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_customer'));
+    }
+
+    /**
+     * Test property "items"
+     * @dataProvider validItemsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testItems(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertIsObject($instance->getItems());
+        self::assertIsObject($instance->items);
+        self::assertCount(0, $instance->getItems());
+        self::assertCount(0, $instance->items);
+        $instance->setItems($value);
+        self::assertNotNull($instance->getItems());
+        self::assertNotNull($instance->items);
+        self::assertTrue($instance->notEmpty());
+        foreach ($value as $key => $element) {
+            if (is_array($element) && !empty($element)) {
+                self::assertEquals($element, $instance->getItems()[$key]->toArray());
+                self::assertEquals($element, $instance->items[$key]->toArray());
+                self::assertIsArray($instance->getItems()[$key]->toArray());
+                self::assertIsArray($instance->items[$key]->toArray());
+            }
+            if (is_object($element) && !empty($element)) {
+                self::assertEquals($element, $instance->getItems()->get($key));
+                self::assertIsObject($instance->getItems()->get($key));
+                self::assertIsObject($instance->items->get($key));
+                self::assertIsObject($instance->getItems());
+                self::assertIsObject($instance->items);
+            }
+        }
+        self::assertCount(count($value), $instance->getItems());
+        self::assertCount(count($value), $instance->items);
+
+        $instance->removeItems();
+        self::assertCount(0, $instance->getItems());
+        self::assertCount(0, $instance->items);
+    }
+
+    /**
+     * Test invalid property "items"
+     * @dataProvider invalidItemsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidItems(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setItems($value);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetTaxSystemCode($options): void
+    public function validItemsDataProvider(): array
     {
-        $instance = new Receipt();
-
-        $instance->setTaxSystemCode($options['tax_system_code']);
-        self::assertEquals($options['tax_system_code'], $instance->getTaxSystemCode());
-        self::assertEquals($options['tax_system_code'], $instance->taxSystemCode);
-        self::assertEquals($options['tax_system_code'], $instance->tax_system_code);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_items'));
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterTaxSystemCode($options): void
+    public function invalidItemsDataProvider(): array
     {
-        $instance = new Receipt();
-
-        self::assertNull($instance->getTaxSystemCode());
-        self::assertNull($instance->taxSystemCode);
-        self::assertNull($instance->tax_system_code);
-
-        $instance->taxSystemCode = $options['tax_system_code'];
-        self::assertEquals($options['tax_system_code'], $instance->getTaxSystemCode());
-        self::assertEquals($options['tax_system_code'], $instance->taxSystemCode);
-        self::assertEquals($options['tax_system_code'], $instance->tax_system_code);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_items'));
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test property "settlements"
+     * @dataProvider validSettlementsDataProvider
+     * @param mixed $value
      *
-     * @param mixed $options
+     * @return void
+     * @throws Exception
      */
-    public function testGetSetAdditionalUserProps($options): void
+    public function testSettlements(mixed $value): void
     {
-        $instance = new Receipt();
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getSettlements());
+        self::assertEmpty($instance->settlements);
+        self::assertIsObject($instance->getSettlements());
+        self::assertIsObject($instance->settlements);
+        self::assertCount(0, $instance->getSettlements());
+        self::assertCount(0, $instance->settlements);
 
-        self::assertNull($instance->getAdditionalUserProps());
-        self::assertNull($instance->additionalUserProps);
-        self::assertNull($instance->additional_user_props);
-
-        if (!empty($options['additional_user_props'])) {
-            $instance->setAdditionalUserProps($options['additional_user_props']);
-            if (is_array($options['additional_user_props'])) {
-                self::assertEquals($options['additional_user_props'], $instance->getAdditionalUserProps()->toArray());
-                self::assertEquals($options['additional_user_props'], $instance->additionalUserProps->toArray());
-                self::assertEquals($options['additional_user_props'], $instance->additional_user_props->toArray());
-            } else {
-                self::assertEquals($options['additional_user_props'], $instance->getAdditionalUserProps());
-                self::assertEquals($options['additional_user_props'], $instance->additionalUserProps);
-                self::assertEquals($options['additional_user_props'], $instance->additional_user_props);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getSettlements());
+            self::assertNotNull($instance->settlements);
+            foreach ($value as $element) {
+                if (is_object($element) && !empty($element)) {
+                    $instance->addSettlement($element);
+                    self::assertEquals($element, $instance->getSettlements()->get(0));
+                    self::assertIsObject($instance->getSettlements()->get(0));
+                    self::assertIsObject($instance->settlements->get(0));
+                    self::assertIsObject($instance->getSettlements());
+                    self::assertIsObject($instance->settlements);
+                    $instance->getSettlements()->clear();
+                }
             }
-        }
-    }
 
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testSetterAdditionalUserProps($options): void
-    {
-        $instance = new Receipt();
-
-        self::assertNull($instance->getAdditionalUserProps());
-        self::assertNull($instance->additionalUserProps);
-        self::assertNull($instance->additional_user_props);
-
-        if (!empty($options['additional_user_props'])) {
-            $instance->additionalUserProps = $options['additional_user_props'];
-            if (is_array($options['additional_user_props'])) {
-                self::assertEquals($options['additional_user_props'], $instance->getAdditionalUserProps()->toArray());
-                self::assertEquals($options['additional_user_props'], $instance->additionalUserProps->toArray());
-                self::assertEquals($options['additional_user_props'], $instance->additional_user_props->toArray());
-            } else {
-                self::assertEquals($options['additional_user_props'], $instance->getAdditionalUserProps());
-                self::assertEquals($options['additional_user_props'], $instance->additionalUserProps);
-                self::assertEquals($options['additional_user_props'], $instance->additional_user_props);
+            $instance->setSettlements($value);
+            foreach ($value as $key => $element) {
+                if (is_array($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getSettlements()[$key]->toArray());
+                    self::assertEquals($element, $instance->settlements[$key]->toArray());
+                    self::assertIsArray($instance->getSettlements()[$key]->toArray());
+                    self::assertIsArray($instance->settlements[$key]->toArray());
+                }
+                if (is_object($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getSettlements()->get($key));
+                    self::assertIsObject($instance->getSettlements()->get($key));
+                    self::assertIsObject($instance->settlements->get($key));
+                    self::assertIsObject($instance->getSettlements());
+                    self::assertIsObject($instance->settlements);
+                }
             }
+            self::assertCount(count($value), $instance->getSettlements());
+            self::assertCount(count($value), $instance->settlements);
+            self::assertGreaterThanOrEqual(1, $instance->getSettlements()->count());
+            self::assertGreaterThanOrEqual(1, $instance->settlements->count());
         }
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testSetReceiptIndustryDetails($options): void
-    {
-        $instance = new Receipt();
-        $instance->setReceiptIndustryDetails($options['receipt_industry_details']);
-
-        self::assertEquals($options['receipt_industry_details'], $instance->getReceiptIndustryDetails()->toArray());
-
-        self::assertCount(count($options['receipt_industry_details']), $instance->getReceiptIndustryDetails());
-        if (!empty($options['receipt_industry_details'])) {
-            self::assertEquals($options['receipt_industry_details'][0], $instance->getReceiptIndustryDetails()[0]->toArray());
-        }
-    }
-
-    /**
-     * @dataProvider invalidReceiptIndustryDetailsDataProvider
-     *
+     * Test invalid property "settlements"
+     * @dataProvider invalidSettlementsDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidReceiptIndustryDetails($value): void
+    public function testInvalidSettlements(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Receipt();
-        $instance->setReceiptIndustryDetails($value);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setSettlements($value);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testAddReceiptIndustryDetails($options): void
+    public function validSettlementsDataProvider(): array
     {
-        $instance = new Receipt();
-        foreach ($options['receipt_industry_details'] as $item) {
-            $instance->addReceiptIndustryDetails($item);
-        }
-
-        self::assertCount(count($options['receipt_industry_details']), $instance->getReceiptIndustryDetails());
-        if (!empty($options['receipt_industry_details'])) {
-            self::assertEquals($options['receipt_industry_details'][0], $instance->getReceiptIndustryDetails()[0]->toArray());
-        }
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_settlements'));
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetReceiptOperationalDetails($options): void
+    public function invalidSettlementsDataProvider(): array
     {
-        $instance = new Receipt();
-
-        $instance->setReceiptOperationalDetails($options['receipt_operational_details']);
-
-        if (is_array($options['receipt_operational_details'])) {
-            self::assertEquals($options['receipt_operational_details'], $instance->getReceiptOperationalDetails()->toArray());
-        } else {
-            self::assertEquals($options['receipt_operational_details'], $instance->getReceiptOperationalDetails());
-        }
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_settlements'));
     }
 
     /**
-     * @dataProvider invalidReceiptOperationalDetailsDataProvider
-     *
+     * Test property "tax_system_code"
+     * @dataProvider validTaxSystemCodeDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidReceiptOperationalDetails($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Receipt();
-        $instance->setReceiptOperationalDetails($value);
-    }
-
-
-    /**
-     * @dataProvider validDataProvider
-     * @param $options
-     */
-    public function testSetterTax_system_code($options)
-    {
-        $instance = new Receipt();
-
-        self::assertNull($instance->getTaxSystemCode());
-        self::assertNull($instance->taxSystemCode);
-        self::assertNull($instance->tax_system_code);
-
-        $instance->tax_system_code = $options['tax_system_code'];
-        self::assertEquals($options['tax_system_code'], $instance->getTaxSystemCode());
-        self::assertEquals($options['tax_system_code'], $instance->taxSystemCode);
-        self::assertEquals($options['tax_system_code'], $instance->tax_system_code);
-    }
-
-    /**
-     * @dataProvider invalidTaxSystemIdProvider
      *
-     * @param mixed $value
-     * @param string $exception
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidTaxSystemCode(mixed $value, string $exception): void
+    public function testTaxSystemCode(mixed $value): void
     {
-        $this->expectException($exception);
-        $instance = new Receipt();
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getTaxSystemCode());
+        self::assertEmpty($instance->tax_system_code);
+        $instance->setTaxSystemCode($value);
+        self::assertEquals($value, is_array($value) ? $instance->getTaxSystemCode()->toArray() : $instance->getTaxSystemCode());
+        self::assertEquals($value, is_array($value) ? $instance->tax_system_code->toArray() : $instance->tax_system_code);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getTaxSystemCode());
+            self::assertNotNull($instance->tax_system_code);
+            self::assertLessThanOrEqual(6, is_string($instance->getTaxSystemCode()) ? mb_strlen($instance->getTaxSystemCode()) : $instance->getTaxSystemCode());
+            self::assertLessThanOrEqual(6, is_string($instance->tax_system_code) ? mb_strlen($instance->tax_system_code) : $instance->tax_system_code);
+            self::assertGreaterThanOrEqual(1, is_string($instance->getTaxSystemCode()) ? mb_strlen($instance->getTaxSystemCode()) : $instance->getTaxSystemCode());
+            self::assertGreaterThanOrEqual(1, is_string($instance->tax_system_code) ? mb_strlen($instance->tax_system_code) : $instance->tax_system_code);
+            self::assertIsNumeric($instance->getTaxSystemCode());
+            self::assertIsNumeric($instance->tax_system_code);
+        }
+    }
+
+    /**
+     * Test invalid property "tax_system_code"
+     * @dataProvider invalidTaxSystemCodeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidTaxSystemCode(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setTaxSystemCode($value);
     }
 
     /**
-     *
-     */
-    public function testNotEmpty()
-    {
-        $instance = new Receipt();
-
-        self::assertFalse($instance->notEmpty());
-        $instance->addItem(new ReceiptItem());
-        self::assertTrue($instance->notEmpty());
-    }
-
-    /**
-     * @dataProvider validSettlementsDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetSettlements($value): void
-    {
-        $instance = new Receipt();
-        $instance->setSettlements($value);
-
-        self::assertCount(count($value), $instance->getSettlements());
-        self::assertEquals($value[0], $instance->getSettlements()[0]);
-    }
-
-    /**
-     * @dataProvider validSettlementsDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testAddSettlements($value): void
-    {
-        $instance = new Receipt();
-        foreach ($value as $item) {
-            $instance->addSettlement($item);
-        }
-
-        self::assertCount(count($value), $instance->getSettlements());
-        self::assertEquals($value[0], $instance->getSettlements()[0]);
-    }
-
-    /**
-     * @dataProvider invalidSettlementsDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassName
-     */
-    public function testInvalidSettlementsData(mixed $value, string $exceptionClassName): void
-    {
-        $instance = new Receipt();
-
-        $this->expectException($exceptionClassName);
-        $instance->setSettlements($value);
-    }
-
-    public static function validDataProvider()
-    {
-        $result = [
-            [
-                [
-                    'items' => [],
-                    'tax_system_code' => null,
-                    'customer' => [
-                        'phone' => '',
-                        'email' => '',
-                    ],
-                    'additional_user_props' => [
-                        'name' => Random::str(AdditionalUserProps::NAME_MAX_LENGTH),
-                        'value' => Random::str(AdditionalUserProps::VALUE_MAX_LENGTH),
-                    ],
-                    'settlements' => [
-                        [
-                            'type' => 'cashless',
-                            'amount' => [
-                                'value' => '10.00',
-                                'currency' => 'RUB',
-                            ],
-                        ],
-                    ],
-                    'receipt_industry_details' => [],
-                    'receipt_operational_details' => null,
-                ],
-            ],
-            [
-                [
-                    'items' => [],
-                    'tax_system_code' => 6,
-                    'customer' => [
-                        'phone' => '',
-                        'email' => '',
-                    ],
-                    'settlements' => [
-                        [
-                            'type' => Random::value(SettlementType::getValidValues()),
-                            'amount' => [
-                                'value' => round(Random::float(0.1, 99.99), 2),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                        ],
-                    ],
-                    'receipt_industry_details' => [],
-                    'receipt_operational_details' => null,
-                ],
-            ],
-            [
-                [
-                    'items' => [],
-                    'customer' => [
-                        'phone' => '',
-                        'email' => '',
-                    ],
-                    'tax_system_code' => 1,
-                    'settlements' => [
-                        [
-                            'type' => Random::value(SettlementType::getValidValues()),
-                            'amount' => [
-                                'value' => round(Random::float(0.1, 99.99), 2),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                        ],
-                    ],
-                    'receipt_industry_details' => [],
-                    'receipt_operational_details' => null,
-                ],
-            ],
-            [
-                [
-                    'items' => [],
-                    'customer' => [
-                        'phone' => '',
-                        'email' => '',
-                    ],
-                    'tax_system_code' => 2,
-                    'settlements' => [
-                        [
-                            'type' => Random::value(SettlementType::getValidValues()),
-                            'amount' => [
-                                'value' => round(Random::float(0.1, 99.99), 2),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                        ],
-                    ],
-                    'receipt_industry_details' => [],
-                    'receipt_operational_details' => null,
-                ],
-            ],
-            [
-                [
-                    'items' => [],
-                    'customer' => [
-                        'phone' => '',
-                        'email' => '',
-                    ],
-                    'tax_system_code' => 3,
-                    'settlements' => [
-                        [
-                            'type' => Random::value(SettlementType::getValidValues()),
-                            'amount' => [
-                                'value' => round(Random::float(0.1, 99.99), 2),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                        ],
-                    ],
-                    'receipt_industry_details' => [],
-                    'receipt_operational_details' => null,
-                ],
-            ],
-        ];
-        for ($i = 1; $i < 6; $i++) {
-            $receipt = [
-                'items' => [],
-                'tax_system_code' => $i,
-                'customer' => [
-                    'phone' => Random::str(10, 10, '1234567890'),
-                    'email' => uniqid('', true) . '@' . uniqid('', true),
-                ],
-                'receipt_industry_details' => [
-                    [
-                        'federal_id' => Random::value([
-                            '00' . Random::int(1, 9),
-                            '0' . Random::int(1, 6) . Random::int(0, 9),
-                            '07' . Random::int(0, 3)
-                        ]),
-                        'document_date' => date(IndustryDetails::DOCUMENT_DATE_FORMAT),
-                        'document_number' => Random::str(1, IndustryDetails::DOCUMENT_NUMBER_MAX_LENGTH),
-                        'value' => Random::str(1, IndustryDetails::VALUE_MAX_LENGTH),
-                    ],
-                ],
-                'receipt_operational_details' => [
-                    'operation_id' => Random::int(0, OperationalDetails::OPERATION_ID_MAX_VALUE),
-                    'value' => Random::str(1, OperationalDetails::VALUE_MAX_LENGTH),
-                    'created_at' => date(YOOKASSA_DATE),
-                ],
-            ];
-            $result[] = [$receipt];
-        }
-
-        return $result;
-    }
-
-    public static function validSettlementsDataProvider()
-    {
-        $result = [
-            [
-                [new Settlement(
-                    [
-                        'type' => 'cashless',
-                        'amount' => [
-                            'value' => '10.00',
-                            'currency' => 'RUB',
-                        ],
-                    ]
-                ),
-                ],
-            ]];
-        for ($i = 1; $i < 9; $i++) {
-            $receipt = [
-                new Settlement(
-                    [
-                        'type' => Random::value(SettlementType::getValidValues()),
-                        'amount' => new MonetaryAmount(Random::int(1, 1000), 'RUB'),
-                    ]
-                ),
-            ];
-            $result[] = [$receipt];
-        }
-
-        return $result;
-    }
-
-    public static function invalidSettlementsDataProvider()
-    {
-        return [
-            [[[]], EmptyPropertyValueException::class],
-            [Random::str(10), InvalidPropertyValueTypeException::class],
-        ];
-    }
-
-    public static function invalidItemsProvider()
-    {
-        return [
-            [null],
-            [new stdClass()],
-            ['invalid_value'],
-            [''],
-            [0],
-            [1],
-            [true],
-            [false],
-            [1.43],
-            [[]],
-        ];
-    }
-
-    public static function invalidTaxSystemIdProvider()
-    {
-        return [
-            [new stdClass(), TypeError::class],
-            ['invalid_value', TypeError::class],
-            [0, InvalidArgumentException::class],
-            [3234, InvalidArgumentException::class],
-            [false, InvalidArgumentException::class],
-        ];
-    }
-
-    public function invalidPhoneProvider()
-    {
-        return [
-            [new stdClass()],
-            [[]],
-            [true],
-            [false],
-        ];
-    }
-
-    /**
+     * @return array[]
      * @throws Exception
      */
-    public static function invalidReceiptIndustryDetailsDataProvider(): array
+    public function validTaxSystemCodeDataProvider(): array
     {
-        return [
-            [new stdClass()],
-            [true],
-            [Random::str(1, 100)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_tax_system_code'));
     }
 
-    public static function invalidReceiptOperationalDetailsDataProvider()
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTaxSystemCodeDataProvider(): array
     {
-        return [
-            [new stdClass()],
-            [true],
-            [Random::str(1, 100)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_tax_system_code'));
     }
 
-    public function testGetAmountValue(): void
+    /**
+     * Test property "additional_user_props"
+     * @dataProvider validAdditionalUserPropsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAdditionalUserProps(mixed $value): void
     {
-        $receipt = new Receipt();
-        self::assertEquals(0, $receipt->getAmountValue());
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAdditionalUserProps());
+        self::assertEmpty($instance->additional_user_props);
+        $instance->setAdditionalUserProps($value);
+        self::assertEquals($value, is_array($value) ? $instance->getAdditionalUserProps()->toArray() : $instance->getAdditionalUserProps());
+        self::assertEquals($value, is_array($value) ? $instance->additional_user_props->toArray() : $instance->additional_user_props);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getAdditionalUserProps());
+            self::assertNotNull($instance->additional_user_props);
+        }
+    }
 
-        $item = new ReceiptItem();
-        $item->setPrice(new ReceiptItemAmount(Random::float(0.01, 99.99)));
-        $item->setQuantity(Random::float(0.0001, 99.99));
-        $receipt->addItem($item);
+    /**
+     * Test invalid property "additional_user_props"
+     * @dataProvider invalidAdditionalUserPropsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAdditionalUserProps(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
 
-        $expected = (int) round($item->getPrice()->getIntegerValue() * $item->getQuantity());
-        self::assertEquals($expected, $receipt->getAmountValue());
-        self::assertEquals($expected, $receipt->getAmountValue(false));
-        self::assertEquals(0, $receipt->getShippingAmountValue());
+        $this->expectException($exceptionClass);
+        $instance->setAdditionalUserProps($value);
+    }
 
-        $item = new ReceiptItem();
-        $item->setPrice(new ReceiptItemAmount(Random::float(0.01, 99.99)));
-        $item->setQuantity(Random::float(0.0001, 99.99));
-        $receipt->addItem($item);
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAdditionalUserPropsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_additional_user_props'));
+    }
 
-        $expected += (int) round($item->getPrice()->getIntegerValue() * $item->getQuantity());
-        self::assertEquals($expected, $receipt->getAmountValue());
-        self::assertEquals($expected, $receipt->getAmountValue(false));
-        self::assertEquals(0, $receipt->getShippingAmountValue());
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAdditionalUserPropsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_additional_user_props'));
+    }
 
-        $item = new ReceiptItem();
-        $item->setPrice(new ReceiptItemAmount(Random::float(0.01, 99.99)));
-        $item->setQuantity(Random::float(0.0001, 99.99));
-        $item->setIsShipping(true);
-        $receipt->addItem($item);
+    /**
+     * Test property "receipt_industry_details"
+     * @dataProvider validReceiptIndustryDetailsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testReceiptIndustryDetails(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getReceiptIndustryDetails());
+        self::assertEmpty($instance->receipt_industry_details);
+        self::assertIsObject($instance->getReceiptIndustryDetails());
+        self::assertIsObject($instance->receipt_industry_details);
+        self::assertCount(0, $instance->getReceiptIndustryDetails());
+        self::assertCount(0, $instance->receipt_industry_details);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getReceiptIndustryDetails());
+            self::assertNotNull($instance->receipt_industry_details);
+            foreach ($value as $element) {
+                if (is_object($element) && !empty($element)) {
+                    $instance->addReceiptIndustryDetails($element);
+                    self::assertEquals($element, $instance->getReceiptIndustryDetails()->get(0));
+                    self::assertIsObject($instance->getReceiptIndustryDetails()->get(0));
+                    self::assertIsObject($instance->receipt_industry_details->get(0));
+                    self::assertIsObject($instance->getReceiptIndustryDetails());
+                    self::assertIsObject($instance->receipt_industry_details);
+                    $instance->getReceiptIndustryDetails()->clear();
+                }
+            }
 
-        $shipping = $expected;
-        $expected += (int) round($item->getPrice()->getIntegerValue() * $item->getQuantity());
+            $instance->setReceiptIndustryDetails($value);
+            foreach ($value as $key => $element) {
+                if (is_array($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getReceiptIndustryDetails()[$key]->toArray());
+                    self::assertEquals($element, $instance->receipt_industry_details[$key]->toArray());
+                    self::assertIsArray($instance->getReceiptIndustryDetails()[$key]->toArray());
+                    self::assertIsArray($instance->receipt_industry_details[$key]->toArray());
+                }
+                if (is_object($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getReceiptIndustryDetails()->get($key));
+                    self::assertIsObject($instance->getReceiptIndustryDetails()->get($key));
+                    self::assertIsObject($instance->receipt_industry_details->get($key));
+                    self::assertIsObject($instance->getReceiptIndustryDetails());
+                    self::assertIsObject($instance->receipt_industry_details);
+                }
+            }
+            self::assertCount(count($value), $instance->getReceiptIndustryDetails());
+            self::assertCount(count($value), $instance->receipt_industry_details);
+        }
+    }
 
-        self::assertEquals($expected, $receipt->getAmountValue());
-        self::assertEquals($shipping, $receipt->getAmountValue(false));
-        self::assertEquals($expected - $shipping, $receipt->getShippingAmountValue());
+    /**
+     * Test invalid property "receipt_industry_details"
+     * @dataProvider invalidReceiptIndustryDetailsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidReceiptIndustryDetails(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
 
-        $item = new ReceiptItem();
-        $item->setPrice(new ReceiptItemAmount(Random::float(0.01, 99.99)));
-        $item->setQuantity(Random::float(0.0001, 99.99));
-        $item->setIsShipping(true);
-        $receipt->addItem($item);
+        $this->expectException($exceptionClass);
+        $instance->setReceiptIndustryDetails($value);
+    }
 
-        $expected += (int) round($item->getPrice()->getIntegerValue() * $item->getQuantity());
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validReceiptIndustryDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_receipt_industry_details'));
+    }
 
-        self::assertEquals($expected, $receipt->getAmountValue());
-        self::assertEquals($shipping, $receipt->getAmountValue(false));
-        self::assertEquals($expected - $shipping, $receipt->getShippingAmountValue());
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidReceiptIndustryDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_receipt_industry_details'));
+    }
 
-        $item = new ReceiptItem();
-        $item->setPrice(new ReceiptItemAmount(Random::float(0.01, 99.99)));
-        $item->setQuantity(Random::float(0.0001, 99.99));
-        $receipt->addItem($item);
+    /**
+     * Test property "receipt_operational_details"
+     * @dataProvider validReceiptOperationalDetailsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testReceiptOperationalDetails(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getReceiptOperationalDetails());
+        self::assertEmpty($instance->receipt_operational_details);
+        $instance->setReceiptOperationalDetails($value);
+        self::assertEquals($value, is_array($value) ? $instance->getReceiptOperationalDetails()->toArray() : $instance->getReceiptOperationalDetails());
+        self::assertEquals($value, is_array($value) ? $instance->receipt_operational_details->toArray() : $instance->receipt_operational_details);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getReceiptOperationalDetails());
+            self::assertNotNull($instance->receipt_operational_details);
+        }
+    }
 
-        $shipping += (int) round($item->getPrice()->getIntegerValue() * $item->getQuantity());
-        $expected += (int) round($item->getPrice()->getIntegerValue() * $item->getQuantity());
-        self::assertEquals($expected, $receipt->getAmountValue());
-        self::assertEquals($shipping, $receipt->getAmountValue(false));
-        self::assertEquals($expected - $shipping, $receipt->getShippingAmountValue());
+    /**
+     * Test invalid property "receipt_operational_details"
+     * @dataProvider invalidReceiptOperationalDetailsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidReceiptOperationalDetails(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setReceiptOperationalDetails($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validReceiptOperationalDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_receipt_operational_details'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidReceiptOperationalDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_receipt_operational_details'));
     }
 
     /**
@@ -867,12 +805,6 @@ class ReceiptTest extends TestCase
         }
     }
 
-    public function testGetObjectId()
-    {
-        $instance = new Receipt();
-        self::assertNull($instance->getObjectId());
-    }
-
     public function fromArrayDataProvider(): array
     {
         $receiptItem = new ReceiptItem();
@@ -1012,70 +944,6 @@ class ReceiptTest extends TestCase
                     ]),
                 ],
             ],
-        ];
-    }
-
-    /**
-     * @dataProvider fromArrayCustomerDataProvider
-     * @param array $source
-     * @param array $expected
-     */
-    public function testCustomerFromArray($source, $expected): void
-    {
-        $receipt = new Receipt();
-        $receipt->fromArray($source);
-
-        if (!empty($expected)) {
-            foreach ($expected as $property => $value) {
-                self::assertEquals($value, $receipt->offsetGet($property));
-            }
-        } else {
-            self::assertEquals(true, $receipt->getCustomer()->isEmpty());
-        }
-    }
-
-    public function fromArrayCustomerDataProvider(): array
-    {
-        $customer = new ReceiptCustomer();
-        $customer->setFullName('John Doe');
-        $customer->setEmail('johndoe@yoomoney.ru');
-        $customer->setPhone('79000000000');
-        $customer->setInn('6321341814');
-
-        return [
-
-            [
-                [],
-                [],
-            ],
-
-            [
-                [
-                    'customer' => [
-                        'fullName' => 'John Doe',
-                        'email' => 'johndoe@yoomoney.ru',
-                        'phone' => '79000000000',
-                        'inn' => '6321341814',
-                    ],
-                ],
-                [
-                    'customer' => $customer
-                ],
-            ],
-
-            [
-                [
-                    'customer' => [
-                        'full_name' => 'John Doe',
-                        'inn' => '6321341814',
-                        'email' => 'johndoe@yoomoney.ru',
-                        'phone' => '79000000000',
-                    ],
-                ],
-                [
-                    'customer' => $customer
-                ],
-            ]
         ];
     }
 }

@@ -1,15 +1,16 @@
 # [YooKassa API SDK](../home.md)
 
-# Abstract Class: \YooKassa\Model\Deal\BaseDeal
-### Namespace: [\YooKassa\Model\Deal](../namespaces/yookassa-model-deal.md)
+# Class: \YooKassa\Model\Payment\PaymentMethod\BankCardProduct
+### Namespace: [\YooKassa\Model\Payment\PaymentMethod](../namespaces/yookassa-model-payment-paymentmethod.md)
 ---
 **Summary:**
 
-Класс, представляющий модель BaseDeal.
+Класс, представляющий модель BankCardProduct.
 
 **Description:**
 
-Базовая сущность сделки.
+Карточный продукт платежной системы, с которым ассоциирована банковская карта.
+Например, карточные продукты платежной системы Мир: `Mir Classic`, `Mir Classic Credit`, `MIR Privilege Plus` и другие.
 
 ---
 ### Constants
@@ -19,8 +20,8 @@
 ### Properties
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
-| public | [$type](../classes/YooKassa-Model-Deal-BaseDeal.md#property_type) |  | Тип сделки |
-| protected | [$_type](../classes/YooKassa-Model-Deal-BaseDeal.md#property__type) |  | Тип сделки |
+| public | [$code](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md#property_code) |  | Код карточного продукта. Пример: ~`MCP` |
+| public | [$name](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md#property_name) |  | Название карточного продукта. Пример: ~`MIR Privilege` |
 
 ---
 ### Methods
@@ -32,25 +33,27 @@
 | public | [__set()](../classes/YooKassa-Common-AbstractObject.md#method___set) |  | Устанавливает значение свойства. |
 | public | [__unset()](../classes/YooKassa-Common-AbstractObject.md#method___unset) |  | Удаляет свойство. |
 | public | [fromArray()](../classes/YooKassa-Common-AbstractObject.md#method_fromArray) |  | Устанавливает значения свойств текущего объекта из массива. |
-| public | [getType()](../classes/YooKassa-Model-Deal-BaseDeal.md#method_getType) |  | Возвращает тип сделки. |
+| public | [getCode()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md#method_getCode) |  | Возвращает code. |
+| public | [getName()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md#method_getName) |  | Возвращает name. |
 | public | [getValidator()](../classes/YooKassa-Common-AbstractObject.md#method_getValidator) |  |  |
 | public | [jsonSerialize()](../classes/YooKassa-Common-AbstractObject.md#method_jsonSerialize) |  | Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации. |
 | public | [offsetExists()](../classes/YooKassa-Common-AbstractObject.md#method_offsetExists) |  | Проверяет наличие свойства. |
 | public | [offsetGet()](../classes/YooKassa-Common-AbstractObject.md#method_offsetGet) |  | Возвращает значение свойства. |
 | public | [offsetSet()](../classes/YooKassa-Common-AbstractObject.md#method_offsetSet) |  | Устанавливает значение свойства. |
 | public | [offsetUnset()](../classes/YooKassa-Common-AbstractObject.md#method_offsetUnset) |  | Удаляет свойство. |
-| public | [setType()](../classes/YooKassa-Model-Deal-BaseDeal.md#method_setType) |  | Устанавливает тип сделки. |
+| public | [setCode()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md#method_setCode) |  | Устанавливает code. |
+| public | [setName()](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md#method_setName) |  | Устанавливает name. |
 | public | [toArray()](../classes/YooKassa-Common-AbstractObject.md#method_toArray) |  | Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации Является алиасом метода AbstractObject::jsonSerialize(). |
 | protected | [getUnknownProperties()](../classes/YooKassa-Common-AbstractObject.md#method_getUnknownProperties) |  | Возвращает массив свойств которые не существуют, но были заданы у объекта. |
 | protected | [validatePropertyValue()](../classes/YooKassa-Common-AbstractObject.md#method_validatePropertyValue) |  |  |
 
 ---
 ### Details
-* File: [lib/Model/Deal/BaseDeal.php](../../lib/Model/Deal/BaseDeal.php)
+* File: [lib/Model/Payment/PaymentMethod/BankCardProduct.php](../../lib/Model/Payment/PaymentMethod/BankCardProduct.php)
 * Package: YooKassa\Model
 * Class Hierarchy: 
   * [\YooKassa\Common\AbstractObject](../classes/YooKassa-Common-AbstractObject.md)
-  * \YooKassa\Model\Deal\BaseDeal
+  * \YooKassa\Model\Payment\PaymentMethod\BankCardProduct
 
 * See Also:
   * [](https://yookassa.ru/developers/api)
@@ -59,31 +62,31 @@
 ### Tags
 | Tag | Version | Description |
 | --- | ------- | ----------- |
-| category |  | Abstract Class |
+| category |  | Class |
 | author |  | cms@yoomoney.ru |
 
 ---
 ## Properties
-<a name="property_type"></a>
-#### public $type : string
+<a name="property_code"></a>
+#### public $code : string
 ---
 ***Description***
 
-Тип сделки
+Код карточного продукта. Пример: ~`MCP`
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
 **Details:**
 
 
-<a name="property__type"></a>
-#### protected $_type : ?string
+<a name="property_name"></a>
+#### public $name : string|null
 ---
-**Summary**
+***Description***
 
-Тип сделки
+Название карточного продукта. Пример: ~`MIR Privilege`
 
-**Type:** <a href="../?string"><abbr title="?string">?string</abbr></a>
+**Type:** <a href="../string|null"><abbr title="string|null">string|null</abbr></a>
 
 **Details:**
 
@@ -224,19 +227,36 @@ public fromArray(array|\Traversable $sourceArray) : void
 **Returns:** void - 
 
 
-<a name="method_getType" class="anchor"></a>
-#### public getType() : string|null
+<a name="method_getCode" class="anchor"></a>
+#### public getCode() : string|null
 
 ```php
-public getType() : string|null
+public getCode() : string|null
 ```
 
 **Summary**
 
-Возвращает тип сделки.
+Возвращает code.
 
 **Details:**
-* Inherited From: [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+* Inherited From: [\YooKassa\Model\Payment\PaymentMethod\BankCardProduct](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md)
+
+**Returns:** string|null - 
+
+
+<a name="method_getName" class="anchor"></a>
+#### public getName() : string|null
+
+```php
+public getName() : string|null
+```
+
+**Summary**
+
+Возвращает name.
+
+**Details:**
+* Inherited From: [\YooKassa\Model\Payment\PaymentMethod\BankCardProduct](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md)
 
 **Returns:** string|null - 
 
@@ -360,24 +380,46 @@ public offsetUnset(string $offset) : void
 **Returns:** void - 
 
 
-<a name="method_setType" class="anchor"></a>
-#### public setType() : self
+<a name="method_setCode" class="anchor"></a>
+#### public setCode() : self
 
 ```php
-public setType(string|null $type = null) : self
+public setCode(string|null $code = null) : self
 ```
 
 **Summary**
 
-Устанавливает тип сделки.
+Устанавливает code.
 
 **Details:**
-* Inherited From: [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+* Inherited From: [\YooKassa\Model\Payment\PaymentMethod\BankCardProduct](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">string OR null</code> | type  |  |
+| <code lang="php">string OR null</code> | code  | Код карточного продукта. Пример: ~`MCP` |
+
+**Returns:** self - 
+
+
+<a name="method_setName" class="anchor"></a>
+#### public setName() : self
+
+```php
+public setName(string|null $name = null) : self
+```
+
+**Summary**
+
+Устанавливает name.
+
+**Details:**
+* Inherited From: [\YooKassa\Model\Payment\PaymentMethod\BankCardProduct](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md)
+
+##### Parameters:
+| Type | Name | Description |
+| ---- | ---- | ----------- |
+| <code lang="php">string OR null</code> | name  | Название карточного продукта. Пример: ~`MIR Privilege` |
 
 **Returns:** self - 
 
@@ -448,10 +490,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

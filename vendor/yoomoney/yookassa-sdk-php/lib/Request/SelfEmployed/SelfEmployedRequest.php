@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -116,11 +116,11 @@ class SelfEmployedRequest extends AbstractRequest implements SelfEmployedRequest
     /**
      * Устанавливает телефон самозанятого.
      *
-     * @param string|array|null $phone Телефон самозанятого
+     * @param string|null $phone Телефон самозанятого
      *
      * @return self
      */
-    public function setPhone(mixed $phone = null): self
+    public function setPhone(?string $phone = null): self
     {
         $this->_phone = $this->validatePropertyValue('_phone', $phone);
         return $this;
@@ -158,7 +158,7 @@ class SelfEmployedRequest extends AbstractRequest implements SelfEmployedRequest
         if (is_array($confirmation)) {
             $confirmation = (new SelfEmployedRequestConfirmationFactory)->factoryFromArray($confirmation);
         }
-        $this->_confirmation = $this->validatePropertyValue('_payout_destination_data', $confirmation);
+        $this->_confirmation = $this->validatePropertyValue('_confirmation', $confirmation);
         return $this;
     }
 

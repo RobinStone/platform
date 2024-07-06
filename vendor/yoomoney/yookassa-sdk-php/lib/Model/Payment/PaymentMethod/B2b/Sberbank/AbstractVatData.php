@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ use YooKassa\Validator\Constraints as Assert;
  *
  * @property string $type Способ расчёта НДС
  */
-abstract class VatData extends AbstractObject
+abstract class AbstractVatData extends AbstractObject
 {
     /**
      * @var string|null Способ расчёта НДС

@@ -1,141 +1,179 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Notification;
 
 use Exception;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\Notification\NotificationEventType;
+use InvalidArgumentException;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Notification\NotificationSucceeded;
-use YooKassa\Model\Notification\NotificationType;
-use YooKassa\Model\Payment\ConfirmationType;
-use YooKassa\Model\Payment\PaymentInterface;
-use YooKassa\Model\Payment\PaymentMethodType;
-use YooKassa\Model\Payment\PaymentStatus;
-use YooKassa\Model\Payment\ReceiptRegistrationStatus;
+use YooKassa\Model\Receipt\SettlementType;
 
 /**
- * @internal
+ * NotificationSucceededTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class NotificationSucceededTest extends AbstractTestNotification
+class NotificationSucceededTest extends AbstractTestCase
 {
+    protected NotificationSucceeded $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @param mixed|null $value
+     * @return NotificationSucceeded
      */
-    public function testGetObject(array $value): void
+    protected function getTestInstance(mixed $value = null): NotificationSucceeded
     {
-        $instance = $this->getTestInstance($value);
-        self::assertInstanceOf(PaymentInterface::class, $instance->getObject());
-        self::assertEquals($value['object']['id'], $instance->getObject()->getId());
+        return new NotificationSucceeded($value);
     }
 
     /**
+     * @return void
+     */
+    public function testNotificationCanceledClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(NotificationSucceeded::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(NotificationSucceeded::class));
+        $this->assertInstanceOf(NotificationSucceeded::class, $this->object);
+    }
+
+    /**
+     * Test property "object"
+     * @dataProvider validObjectDataProvider
+     * @param mixed $value
+     *
+     * @return void
      * @throws Exception
      */
-    public function validDataProvider(): array
+    public function testAmount(mixed $value): void
     {
-        $result = [];
-        $statuses = PaymentStatus::getValidValues();
-        $receiptRegistrations = ReceiptRegistrationStatus::getValidValues();
+        $instance = $this->getTestInstance();
+        $instance->setObject($value);
+        self::assertNotNull($instance->getObject());
+        self::assertNotNull($instance->object);
+        self::assertEquals($value, is_array($value) ? $instance->getObject()->toArray() : $instance->getObject());
+        self::assertEquals($value, is_array($value) ? $instance->object->toArray() : $instance->object);
+    }
 
-        $confirmations = [
-            [
-                'type' => ConfirmationType::REDIRECT,
-                'confirmation_url' => 'https://confirmation.url',
-                'return_url' => 'https://merchant-site.ru/return_url',
-                'enforce' => false,
-            ],
-            [
-                'type' => ConfirmationType::EXTERNAL,
-            ],
-        ];
+    /**
+     * Test invalid property "object"
+     * @dataProvider invalidObjectDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidObject(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
 
-        $payment_methods = [
-            [
-                'type' => PaymentMethodType::QIWI,
-            ],
-            [
-                'type' => PaymentMethodType::TINKOFF_BANK,
-            ],
-            [
-                'type' => PaymentMethodType::SBER_LOAN,
-                'loan_option' => Random::value([
-                    null,
-                    'loan',
-                    'installments_1',
-                    'installments_12',
-                    'installments_36',
-                ]),
-                'discount_amount' => Random::value([
-                    null,
-                    [
-                        'value' => Random::float(0.01, 100000.0),
-                        'currency' => Random::value(CurrencyCode::getValidValues()),
-                    ],
-                    [
-                        'value' => Random::float(0.01, 1000000.0),
-                        'currency' => Random::value(CurrencyCode::getValidValues()),
-                    ],
-                ]),
-            ],
-            [
-                'type' => 'new_method',
-                'new_property' => 'new_property_value',
-            ],
-        ];
+        $this->expectException($exceptionClass);
+        $instance->setObject($value);
+    }
 
-        for ($i = 0; $i < 10; $i++) {
-            $payment = [
-                'id' => Random::str(36),
-                'status' => Random::value($statuses),
-                'recipient' => [
-                    'account_id' => Random::str(1, 64, '0123456789'),
-                    'gateway_id' => Random::str(1, 256),
-                ],
-                'amount' => [
-                    'value' => Random::float(0.01, 1000000.0),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-                'payment_method' => Random::value($payment_methods),
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'captured_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'confirmation' => Random::value($confirmations),
-                'refunded' => [
-                    'value' => Random::float(0.01, 1000000.0),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-                'paid' => $i % 2 ? true : false,
-                'refundable' => $i % 2 ? true : false,
-                'receipt_registration' => Random::value($receiptRegistrations),
-                'metadata' => [
-                    'value' => Random::str(1, 256),
-                    'currency' => Random::str(1, 256),
-                ],
-            ];
-            $result[] = [
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validObjectDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_object'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidObjectDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_object'));
+    }
+
+    /**
+     * Test valid method "fromArray"
+     * @dataProvider validClassDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function testFromArray(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->fromArray($value->toArray());
+        self::assertEquals($value['object'], $instance->getObject());
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function validClassDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        $objects = $this->validObjectDataProvider();
+        $instance->setObject(array_shift($objects[0]));
+        return [[$instance]];
+    }
+
+    /**
+     * @dataProvider invalidDataProvider
+     */
+    public function testInvalidFromArray(array $options): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->getTestInstance($options);
+    }
+
+    /**
+     * @return \array[][]
+     */
+    public static function invalidDataProvider(): array
+    {
+        return [
+            [
                 [
-                    'type' => $this->getExpectedType(),
-                    'event' => $this->getExpectedEvent(),
-                    'object' => $payment,
+                    'type' => SettlementType::PREPAYMENT,
                 ],
-            ];
-        }
-
-        return $result;
-    }
-
-    protected function getTestInstance(array $source): NotificationSucceeded
-    {
-        return new NotificationSucceeded($source);
-    }
-
-    protected function getExpectedType(): string
-    {
-        return NotificationType::NOTIFICATION;
-    }
-
-    protected function getExpectedEvent(): string
-    {
-        return NotificationEventType::PAYMENT_SUCCEEDED;
+            ],
+            [
+                [
+                    'event' => SettlementType::PREPAYMENT,
+                ],
+            ],
+            [
+                [
+                    'object' => [],
+                ],
+            ],
+        ];
     }
 }

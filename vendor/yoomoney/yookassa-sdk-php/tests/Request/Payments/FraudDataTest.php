@@ -1,157 +1,181 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments;
 
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Request\Payments\FraudData;
 
 /**
- * @internal
+ * FraudDataTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class FraudDataTest extends TestCase
+class FraudDataTest extends AbstractTestCase
 {
+    protected FraudData $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return FraudData
      */
-    public function testGetSetToppedUpPhone(array $options): void
+    protected function getTestInstance(): FraudData
     {
-        $instance = new FraudData();
-
-        $instance->setToppedUpPhone($options['topped_up_phone']);
-        self::assertEquals($options['topped_up_phone'], $instance->getToppedUpPhone());
-        self::assertEquals($options['topped_up_phone'], $instance->topped_up_phone);
-
-        $instance = new FraudData();
-        $instance->topped_up_phone = $options['topped_up_phone'];
-        self::assertEquals($options['topped_up_phone'], $instance->getToppedUpPhone());
-        self::assertEquals($options['topped_up_phone'], $instance->topped_up_phone);
+        return new FraudData();
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * @return void
+     */
+    public function testFraudDataClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(FraudData::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(FraudData::class));
+        $this->assertInstanceOf(FraudData::class, $this->object);
+    }
+
+    /**
+     * Test property "topped_up_phone"
+     * @dataProvider validToppedUpPhoneDataProvider
      * @param mixed $value
+     *
+     * @return void
      * @throws Exception
      */
-    public function testSetInvalidToppedUpPhone($value): void
+    public function testToppedUpPhone(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new FraudData();
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getToppedUpPhone());
+        self::assertEmpty($instance->topped_up_phone);
+        $instance->setToppedUpPhone($value);
+        self::assertEquals($value, is_array($value) ? $instance->getToppedUpPhone()->toArray() : $instance->getToppedUpPhone());
+        self::assertEquals($value, is_array($value) ? $instance->topped_up_phone->toArray() : $instance->topped_up_phone);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getToppedUpPhone());
+            self::assertNotNull($instance->topped_up_phone);
+            self::assertMatchesRegularExpression("/[0-9]{4,15}/", $instance->getToppedUpPhone());
+            self::assertMatchesRegularExpression("/[0-9]{4,15}/", $instance->topped_up_phone);
+        }
+    }
+
+    /**
+     * Test invalid property "topped_up_phone"
+     * @dataProvider invalidToppedUpPhoneDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidToppedUpPhone(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setToppedUpPhone($value);
     }
 
-    public static function validDataProvider()
-    {
-        $result = [];
-        $result[] = [['topped_up_phone' => null]];
-        $result[] = [['topped_up_phone' => '']];
-        for ($i = 0; $i < 10; $i++) {
-            $payment = [
-                'topped_up_phone' => Random::str(4, 15, '0123456789'),
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
-    }
-
-    public static function invalidDataProvider()
-    {
-        return [
-            [Random::str(1, 3, '0123456789')],
-            [Random::str(16, 30, '0123456789')],
-            [Random::str(4, 16)],
-        ];
-    }
-
     /**
-     * @dataProvider validMerchantCustomerBankAccountDataProvider
-     */
-    public function testGetSetMerchantCustomerBankAccount(array $options): void
-    {
-        if (!isset($options['merchant_customer_bank_account'])) {
-            return;
-        }
-
-        $instance = new FraudData();
-
-        $instance->setMerchantCustomerBankAccount($options['merchant_customer_bank_account']);
-        if (is_array($options['merchant_customer_bank_account'])) {
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->getMerchantCustomerBankAccount()->toArray());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchant_customer_bank_account->toArray());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchantCustomerBankAccount->toArray());
-        } else {
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->getMerchantCustomerBankAccount());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchant_customer_bank_account);
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchantCustomerBankAccount);
-        }
-
-        $instance = new FraudData();
-        $instance->merchant_customer_bank_account = $options['merchant_customer_bank_account'];
-        if (is_array($options['merchant_customer_bank_account'])) {
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->getMerchantCustomerBankAccount()->toArray());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchant_customer_bank_account->toArray());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchantCustomerBankAccount->toArray());
-        } else {
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->getMerchantCustomerBankAccount());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchant_customer_bank_account);
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchantCustomerBankAccount);
-        }
-
-        $instance = new FraudData();
-        $instance->merchantCustomerBankAccount = $options['merchant_customer_bank_account'];
-        if (is_array($options['merchant_customer_bank_account'])) {
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->getMerchantCustomerBankAccount()->toArray());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchant_customer_bank_account->toArray());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchantCustomerBankAccount->toArray());
-        } else {
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->getMerchantCustomerBankAccount());
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchant_customer_bank_account);
-            self::assertEquals($options['merchant_customer_bank_account'], $instance->merchantCustomerBankAccount);
-        }
-    }
-
-    /**
-     * @dataProvider invalidMerchantCustomerBankAccountDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
      * @throws Exception
      */
-    public function testSetInvalidMerchantCustomerBankAccount($value): void
+    public function validToppedUpPhoneDataProvider(): array
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new FraudData();
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_topped_up_phone'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidToppedUpPhoneDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_topped_up_phone'));
+    }
+
+    /**
+     * Test property "merchant_customer_bank_account"
+     * @dataProvider validMerchantCustomerBankAccountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testMerchantCustomerBankAccount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMerchantCustomerBankAccount());
+        self::assertEmpty($instance->merchant_customer_bank_account);
+        $instance->setMerchantCustomerBankAccount($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMerchantCustomerBankAccount()->toArray() : $instance->getMerchantCustomerBankAccount());
+        self::assertEquals($value, is_array($value) ? $instance->merchant_customer_bank_account->toArray() : $instance->merchant_customer_bank_account);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMerchantCustomerBankAccount());
+            self::assertNotNull($instance->merchant_customer_bank_account);
+        }
+    }
+
+    /**
+     * Test invalid property "merchant_customer_bank_account"
+     * @dataProvider invalidMerchantCustomerBankAccountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidMerchantCustomerBankAccount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setMerchantCustomerBankAccount($value);
     }
 
-    public static function validMerchantCustomerBankAccountDataProvider()
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validMerchantCustomerBankAccountDataProvider(): array
     {
-        $result = [];
-        $result[] = [['topped_up_phone' => null]];
-        $result[] = [['topped_up_phone' => '', 'merchant_customer_bank_account' => null]];
-        for ($i = 0; $i < 10; $i++) {
-            $payment = [
-                'topped_up_phone' => Random::str(4, 15, '0123456789'),
-                'merchant_customer_bank_account' => [
-                    'account_number' => Random::str(20, 20, '0123456789'),
-                    'bic' => Random::str(20, 20, '0123456789'),
-                ],
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_merchant_customer_bank_account'));
     }
 
-    public static function invalidMerchantCustomerBankAccountDataProvider()
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidMerchantCustomerBankAccountDataProvider(): array
     {
-        return [
-            [Random::str(1, 3, '0123456789')],
-            [Random::str(16, 30, '0123456789')],
-            [Random::str(4, 16)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_merchant_customer_bank_account'));
     }
 }

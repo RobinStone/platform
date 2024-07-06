@@ -1,1050 +1,1368 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Payment;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\Deal\PaymentDealInfo;
-use YooKassa\Model\Deal\SettlementPayoutPaymentType;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
 use YooKassa\Model\Metadata;
-use YooKassa\Model\MonetaryAmount;
-use YooKassa\Model\Payment\AuthorizationDetails;
-use YooKassa\Model\Payment\CancellationDetails;
-use YooKassa\Model\Payment\CancellationDetailsPartyCode;
-use YooKassa\Model\Payment\CancellationDetailsReasonCode;
-use YooKassa\Model\Payment\Confirmation\ConfirmationRedirect;
 use YooKassa\Model\Payment\Payment;
-use YooKassa\Model\Payment\PaymentMethod\PaymentMethodQiwi;
-use YooKassa\Model\Payment\PaymentMethodType;
-use YooKassa\Model\Payment\PaymentStatus;
-use YooKassa\Model\Payment\ReceiptRegistrationStatus;
-use YooKassa\Model\Payment\Recipient;
-use YooKassa\Model\Payment\Transfer;
-use YooKassa\Model\Payment\TransferStatus;
-use YooKassa\Model\Receipt\ReceiptItemAmount;
 use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
-use YooKassa\Validator\Exceptions\ValidatorParameterException;
 
 /**
- * @internal
+ * PaymentTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class PaymentTest extends TestCase
+class PaymentTest extends AbstractTestCase
 {
+    protected Payment $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return Payment
      */
-    public function testGetSetId(array $options): void
+    protected function getTestInstance(): Payment
     {
-        $instance = new Payment();
-
-        $instance->setId($options['id']);
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
-
-        $instance = new Payment();
-        $instance->id = $options['id'];
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
+        return new Payment();
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * @return void
+     */
+    public function testPaymentClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(Payment::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(Payment::class));
+        $this->assertInstanceOf(Payment::class, $this->object);
+    }
+
+    /**
+     * Test property "id"
+     * @dataProvider validIdDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidId($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setId($value['id']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
      *
+     * @return void
+     * @throws Exception
+     */
+    public function testId(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setId($value);
+        self::assertNotNull($instance->getId());
+        self::assertNotNull($instance->id);
+        self::assertEquals($value, is_array($value) ? $instance->getId()->toArray() : $instance->getId());
+        self::assertEquals($value, is_array($value) ? $instance->id->toArray() : $instance->id);
+        self::assertLessThanOrEqual(36, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertLessThanOrEqual(36, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+        self::assertGreaterThanOrEqual(36, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertGreaterThanOrEqual(36, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+    }
+
+    /**
+     * Test invalid property "id"
+     * @dataProvider invalidIdDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidId($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->id = $value['id'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetStatus(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setStatus($options['status']);
-        self::assertEquals($options['status'], $instance->getStatus());
-        self::assertEquals($options['status'], $instance->status);
-
-        $instance = new Payment();
-        $instance->status = $options['status'];
-        self::assertEquals($options['status'], $instance->getStatus());
-        self::assertEquals($options['status'], $instance->status);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidStatus($value): void
+    public function testInvalidId(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setStatus($value['status']);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setId($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * Test property "status"
+     * @dataProvider validStatusDataProvider
+     * @param mixed $value
      *
+     * @return void
+     * @throws Exception
+     */
+    public function testStatus(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setStatus($value);
+        self::assertNotNull($instance->getStatus());
+        self::assertNotNull($instance->status);
+        self::assertEquals($value, is_array($value) ? $instance->getStatus()->toArray() : $instance->getStatus());
+        self::assertEquals($value, is_array($value) ? $instance->status->toArray() : $instance->status);
+    }
+
+    /**
+     * Test invalid property "status"
+     * @dataProvider invalidStatusDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidStatus($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->status = $value['status'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetRecipient(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setRecipient($options['recipient']);
-        self::assertSame($options['recipient'], $instance->getRecipient());
-        self::assertSame($options['recipient'], $instance->recipient);
-
-        $instance = new Payment();
-        $instance->recipient = $options['recipient'];
-        self::assertSame($options['recipient'], $instance->getRecipient());
-        self::assertSame($options['recipient'], $instance->recipient);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidRecipient($value): void
+    public function testInvalidStatus(mixed $value, string $exceptionClass): void
     {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setStatus($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * Test property "amount"
+     * @dataProvider validAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setAmount($value);
+        self::assertNotNull($instance->getAmount());
+        self::assertNotNull($instance->amount);
+        self::assertEquals($value, is_array($value) ? $instance->getAmount()->toArray() : $instance->getAmount());
+        self::assertEquals($value, is_array($value) ? $instance->amount->toArray() : $instance->amount);
+    }
+
+    /**
+     * Test invalid property "amount"
+     * @dataProvider invalidAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAmount($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * Test property "income_amount"
+     * @dataProvider validIncomeAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testIncomeAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getIncomeAmount());
+        self::assertEmpty($instance->income_amount);
+        $instance->setIncomeAmount($value);
+        self::assertEquals($value, is_array($value) ? $instance->getIncomeAmount()->toArray() : $instance->getIncomeAmount());
+        self::assertEquals($value, is_array($value) ? $instance->income_amount->toArray() : $instance->income_amount);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getIncomeAmount());
+            self::assertNotNull($instance->income_amount);
+        }
+    }
+
+    /**
+     * Test invalid property "income_amount"
+     * @dataProvider invalidIncomeAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidIncomeAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setIncomeAmount($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIncomeAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_income_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIncomeAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_income_amount'));
+    }
+
+    /**
+     * Test property "description"
+     * @dataProvider validDescriptionDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testDescription(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getDescription());
+        self::assertEmpty($instance->description);
+        $instance->setDescription($value);
+        self::assertEquals($value, is_array($value) ? $instance->getDescription()->toArray() : $instance->getDescription());
+        self::assertEquals($value, is_array($value) ? $instance->description->toArray() : $instance->description);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getDescription());
+            self::assertNotNull($instance->description);
+            self::assertLessThanOrEqual(128, is_string($instance->getDescription()) ? mb_strlen($instance->getDescription()) : $instance->getDescription());
+            self::assertLessThanOrEqual(128, is_string($instance->description) ? mb_strlen($instance->description) : $instance->description);
+        }
+    }
+
+    /**
+     * Test invalid property "description"
+     * @dataProvider invalidDescriptionDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidDescription(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setDescription($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validDescriptionDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_description'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidDescriptionDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_description'));
+    }
+
+    /**
+     * Test property "recipient"
+     * @dataProvider validRecipientDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testRecipient(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setRecipient($value);
+        self::assertNotNull($instance->getRecipient());
+        self::assertNotNull($instance->recipient);
+        self::assertEquals($value, is_array($value) ? $instance->getRecipient()->toArray() : $instance->getRecipient());
+        self::assertEquals($value, is_array($value) ? $instance->recipient->toArray() : $instance->recipient);
+    }
+
+    /**
+     * Test invalid property "recipient"
+     * @dataProvider invalidRecipientDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidRecipient(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setRecipient($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validRecipientDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_recipient'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidRecipientDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_recipient'));
+    }
+
+    /**
+     * Test property "payment_method"
+     * @dataProvider validPaymentMethodDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPaymentMethod(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPaymentMethod());
+        self::assertEmpty($instance->payment_method);
+        $instance->setPaymentMethod($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPaymentMethod()->toArray() : $instance->getPaymentMethod());
+        self::assertEquals($value, is_array($value) ? $instance->payment_method->toArray() : $instance->payment_method);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getPaymentMethod());
+            self::assertNotNull($instance->payment_method);
+        }
+    }
+
+    /**
+     * Test invalid property "payment_method"
+     * @dataProvider invalidPaymentMethodDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidPaymentMethod(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPaymentMethod($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPaymentMethodDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_method'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPaymentMethodDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_method'));
+    }
+
+    /**
+     * Test property "captured_at"
+     * @dataProvider validCapturedAtDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCapturedAt(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCapturedAt());
+        self::assertEmpty($instance->captured_at);
+        $instance->setCapturedAt($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCapturedAt());
+            self::assertNotNull($instance->captured_at);
+            if ($value instanceof Datetime) {
+                self::assertEquals($value, $instance->getCapturedAt());
+                self::assertEquals($value, $instance->captured_at);
+            } else {
+                self::assertEquals(new Datetime($value), $instance->getCapturedAt());
+                self::assertEquals(new Datetime($value), $instance->captured_at);
+            }
+        }
+    }
+
+    /**
+     * Test invalid property "captured_at"
+     * @dataProvider invalidCapturedAtDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCapturedAt(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCapturedAt($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCapturedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_captured_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCapturedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_captured_at'));
+    }
+
+    /**
+     * Test property "created_at"
+     * @dataProvider validCreatedAtDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCreatedAt(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setCreatedAt($value);
+        self::assertNotNull($instance->getCreatedAt());
+        self::assertNotNull($instance->created_at);
+        if ($value instanceof Datetime) {
+            self::assertEquals($value, $instance->getCreatedAt());
+            self::assertEquals($value, $instance->created_at);
+        } else {
+            self::assertEquals(new Datetime($value), $instance->getCreatedAt());
+            self::assertEquals(new Datetime($value), $instance->created_at);
+        }
+    }
+
+    /**
+     * Test invalid property "created_at"
+     * @dataProvider invalidCreatedAtDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCreatedAt(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCreatedAt($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCreatedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCreatedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
+
+    /**
+     * Test property "expires_at"
+     * @dataProvider validExpiresAtDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testExpiresAt(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getExpiresAt());
+        self::assertEmpty($instance->expires_at);
+        $instance->setExpiresAt($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getExpiresAt());
+            self::assertNotNull($instance->expires_at);
+            if ($value instanceof Datetime) {
+                self::assertEquals($value, $instance->getExpiresAt());
+                self::assertEquals($value, $instance->expires_at);
+            } else {
+                self::assertEquals(new Datetime($value), $instance->getExpiresAt());
+                self::assertEquals(new Datetime($value), $instance->expires_at);
+            }
+        }
+    }
+
+    /**
+     * Test invalid property "expires_at"
+     * @dataProvider invalidExpiresAtDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidExpiresAt(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setExpiresAt($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validExpiresAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_expires_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidExpiresAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_expires_at'));
+    }
+
+    /**
+     * Test property "confirmation"
+     * @dataProvider validConfirmationDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testConfirmation(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getConfirmation());
+        self::assertEmpty($instance->confirmation);
+        $instance->setConfirmation($value);
+        self::assertEquals($value, is_array($value) ? $instance->getConfirmation()->toArray() : $instance->getConfirmation());
+        self::assertEquals($value, is_array($value) ? $instance->confirmation->toArray() : $instance->confirmation);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getConfirmation());
+            self::assertNotNull($instance->confirmation);
+        }
+    }
+
+    /**
+     * Test invalid property "confirmation"
+     * @dataProvider invalidConfirmationDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidConfirmation(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setConfirmation($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validConfirmationDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_confirmation'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidConfirmationDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_confirmation'));
+    }
+
+    /**
+     * Test property "test"
+     * @dataProvider validTestDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testTest(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setTest($value);
+        self::assertNotNull($instance->getTest());
+        self::assertNotNull($instance->test);
+        self::assertEquals($value, is_array($value) ? $instance->getTest()->toArray() : $instance->getTest());
+        self::assertEquals($value, is_array($value) ? $instance->test->toArray() : $instance->test);
+        self::assertIsBool($instance->getTest());
+        self::assertIsBool($instance->test);
+    }
+
+    /**
+     * Test invalid property "test"
+     * @dataProvider invalidTestDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidTest(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
         $this->expectException(InvalidPropertyValueTypeException::class);
-        $instance = new Payment();
-        $instance->setRecipient($value['recipient']);
+        $instance->setTest($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validTestDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_test'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTestDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_test'));
+    }
+
+    /**
+     * Test property "refunded_amount"
+     * @dataProvider validRefundedAmountDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidRecipient($value): void
-    {
-        $this->expectException(InvalidPropertyValueTypeException::class);
-        $instance = new Payment();
-        $instance->setRecipient($value['recipient']);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetAmount(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setAmount($options['amount']);
-        self::assertSame($options['amount'], $instance->getAmount());
-        self::assertSame($options['amount'], $instance->amount);
-
-        $instance = new Payment();
-        $instance->amount = $options['amount'];
-        self::assertSame($options['amount'], $instance->getAmount());
-        self::assertSame($options['amount'], $instance->amount);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidAmount($value): void
+    public function testRefundedAmount(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setAmount($value['amount']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidAmount($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->amount = $value['amount'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetPaymentMethod(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setPaymentMethod($options['payment_method']);
-        if (is_array($options['payment_method'])) {
-            self::assertSame($options['payment_method'], $instance->getPaymentMethod()->toArray());
-            self::assertSame($options['payment_method'], $instance->paymentMethod->toArray());
-            self::assertSame($options['payment_method'], $instance->payment_method->toArray());
-        } else {
-            self::assertSame($options['payment_method'], $instance->getPaymentMethod());
-            self::assertSame($options['payment_method'], $instance->paymentMethod);
-            self::assertSame($options['payment_method'], $instance->payment_method);
-        }
-
-        $instance = new Payment();
-        $instance->paymentMethod = $options['payment_method'];
-        if (is_array($options['payment_method'])) {
-            self::assertSame($options['payment_method'], $instance->getPaymentMethod()->toArray());
-            self::assertSame($options['payment_method'], $instance->paymentMethod->toArray());
-            self::assertSame($options['payment_method'], $instance->payment_method->toArray());
-        } else {
-            self::assertSame($options['payment_method'], $instance->getPaymentMethod());
-            self::assertSame($options['payment_method'], $instance->paymentMethod);
-            self::assertSame($options['payment_method'], $instance->payment_method);
-        }
-
-        $instance = new Payment();
-        $instance->payment_method = $options['payment_method'];
-        if (is_array($options['payment_method'])) {
-            self::assertSame($options['payment_method'], $instance->getPaymentMethod()->toArray());
-            self::assertSame($options['payment_method'], $instance->paymentMethod->toArray());
-            self::assertSame($options['payment_method'], $instance->payment_method->toArray());
-        } else {
-            self::assertSame($options['payment_method'], $instance->getPaymentMethod());
-            self::assertSame($options['payment_method'], $instance->paymentMethod);
-            self::assertSame($options['payment_method'], $instance->payment_method);
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getRefundedAmount());
+        self::assertEmpty($instance->refunded_amount);
+        $instance->setRefundedAmount($value);
+        self::assertEquals($value, is_array($value) ? $instance->getRefundedAmount()->toArray() : $instance->getRefundedAmount());
+        self::assertEquals($value, is_array($value) ? $instance->refunded_amount->toArray() : $instance->refunded_amount);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getRefundedAmount());
+            self::assertNotNull($instance->refunded_amount);
         }
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "refunded_amount"
+     * @dataProvider invalidRefundedAmountDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidPaymentMethod($value): void
-    {
-        $this->expectException(InvalidPropertyValueTypeException::class);
-        $instance = new Payment();
-        $instance->setPaymentMethod($value['payment_method']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetterInvalidPaymentMethod($value): void
+    public function testInvalidRefundedAmount(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidPropertyValueTypeException::class);
-        $instance = new Payment();
-        $instance->paymentMethod = $value['payment_method'];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setRefundedAmount($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validRefundedAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_refunded_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidRefundedAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_refunded_amount'));
+    }
+
+    /**
+     * Test property "paid"
+     * @dataProvider validPaidDataProvider
+     * @param mixed $value
      *
+     * @return void
+     * @throws Exception
+     */
+    public function testPaid(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setPaid($value);
+        self::assertNotNull($instance->getPaid());
+        self::assertNotNull($instance->paid);
+        self::assertEquals($value, is_array($value) ? $instance->getPaid()->toArray() : $instance->getPaid());
+        self::assertEquals($value, is_array($value) ? $instance->paid->toArray() : $instance->paid);
+        self::assertIsBool($instance->getPaid());
+        self::assertIsBool($instance->paid);
+    }
+
+    /**
+     * Test invalid property "paid"
+     * @dataProvider invalidPaidDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidSnakePaymentMethod($value): void
-    {
-        $this->expectException(InvalidPropertyValueTypeException::class);
-        $instance = new Payment();
-        $instance->payment_method = $value['payment_method'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetCreatedAt(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setCreatedAt($options['created_at']);
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-
-        $instance = new Payment();
-        $instance->createdAt = $options['created_at'];
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-
-        $instance = new Payment();
-        $instance->created_at = $options['created_at'];
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidCreatedAt($value): void
+    public function testInvalidPaid(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setCreatedAt($value['created_at']);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPaid($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPaidDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_paid'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPaidDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_paid'));
+    }
+
+    /**
+     * Test property "refundable"
+     * @dataProvider validRefundableDataProvider
+     * @param mixed $value
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidCreatedAt($value): void
+    public function testRefundable(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->createdAt = $value['created_at'];
+        $instance = $this->getTestInstance();
+        $instance->setRefundable($value);
+        self::assertNotNull($instance->getRefundable());
+        self::assertNotNull($instance->refundable);
+        self::assertEquals($value, is_array($value) ? $instance->getRefundable()->toArray() : $instance->getRefundable());
+        self::assertEquals($value, is_array($value) ? $instance->refundable->toArray() : $instance->refundable);
+        self::assertIsBool($instance->getRefundable());
+        self::assertIsBool($instance->refundable);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * Test invalid property "refundable"
+     * @dataProvider invalidRefundableDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
      *
+     * @return void
+     */
+    public function testInvalidRefundable(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setRefundable($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validRefundableDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_refundable'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidRefundableDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_refundable'));
+    }
+
+    /**
+     * Test property "receipt_registration"
+     * @dataProvider validReceiptRegistrationDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidSnakeCreatedAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->created_at = $value['created_at'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetCapturedAt(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setCapturedAt($options['captured_at']);
-        if (null === $options['captured_at'] || '' === $options['captured_at']) {
-            self::assertNull($instance->getCapturedAt());
-            self::assertNull($instance->capturedAt);
-            self::assertNull($instance->captured_at);
-        } else {
-            self::assertSame($options['captured_at'], $instance->getCapturedAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['captured_at'], $instance->capturedAt->format(YOOKASSA_DATE));
-            self::assertSame($options['captured_at'], $instance->captured_at->format(YOOKASSA_DATE));
-        }
-
-        $instance = new Payment();
-        $instance->capturedAt = $options['captured_at'];
-        if (null === $options['captured_at'] || '' === $options['captured_at']) {
-            self::assertNull($instance->getCapturedAt());
-            self::assertNull($instance->capturedAt);
-            self::assertNull($instance->captured_at);
-        } else {
-            self::assertSame($options['captured_at'], $instance->getCapturedAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['captured_at'], $instance->capturedAt->format(YOOKASSA_DATE));
-            self::assertSame($options['captured_at'], $instance->captured_at->format(YOOKASSA_DATE));
-        }
-
-        $instance = new Payment();
-        $instance->captured_at = $options['captured_at'];
-        if (null === $options['captured_at'] || '' === $options['captured_at']) {
-            self::assertNull($instance->getCapturedAt());
-            self::assertNull($instance->capturedAt);
-            self::assertNull($instance->captured_at);
-        } else {
-            self::assertSame($options['captured_at'], $instance->getCapturedAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['captured_at'], $instance->capturedAt->format(YOOKASSA_DATE));
-            self::assertSame($options['captured_at'], $instance->captured_at->format(YOOKASSA_DATE));
-        }
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidCapturedAt($value): void
+    public function testReceiptRegistration(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setCapturedAt($value['captured_at']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidCapturedAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->capturedAt = $value['captured_at'];
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeCapturedAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->captured_at = $value['captured_at'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetConfirmation(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setConfirmation($options['confirmation']);
-        self::assertSame($options['confirmation'], $instance->getConfirmation());
-        self::assertSame($options['confirmation'], $instance->confirmation);
-
-        $instance = new Payment();
-        $instance->confirmation = $options['confirmation'];
-        self::assertSame($options['confirmation'], $instance->getConfirmation());
-        self::assertSame($options['confirmation'], $instance->confirmation);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidConfirmation($value): void
-    {
-        $this->expectException(ValidatorParameterException::class);
-        $instance = new Payment();
-        $instance->confirmation = $value['confirmation'];
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidConfirmation($value): void
-    {
-        $this->expectException(ValidatorParameterException::class);
-        $instance = new Payment();
-        $instance->confirmation = $value['confirmation'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetRefundedAmount(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setRefundedAmount($options['refunded_amount']);
-        self::assertSame($options['refunded_amount'], $instance->getRefundedAmount());
-        self::assertSame($options['refunded_amount'], $instance->refundedAmount);
-        self::assertSame($options['refunded_amount'], $instance->refunded_amount);
-
-        $instance = new Payment();
-        $instance->refundedAmount = $options['refunded_amount'];
-        self::assertSame($options['refunded_amount'], $instance->getRefundedAmount());
-        self::assertSame($options['refunded_amount'], $instance->refundedAmount);
-        self::assertSame($options['refunded_amount'], $instance->refunded_amount);
-
-        $instance = new Payment();
-        $instance->refunded_amount = $options['refunded_amount'];
-        self::assertSame($options['refunded_amount'], $instance->getRefundedAmount());
-        self::assertSame($options['refunded_amount'], $instance->refundedAmount);
-        self::assertSame($options['refunded_amount'], $instance->refunded_amount);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidRefundedAmount($value): void
-    {
-        $this->expectException(ValidatorParameterException::class);
-        $instance = new Payment();
-        $instance->refundedAmount = $value['refunded_amount'];
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidRefundedAmount($value): void
-    {
-        $this->expectException(ValidatorParameterException::class);
-        $instance = new Payment();
-        $instance->refundedAmount = $value['refunded_amount'];
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeRefundedAmount($value): void
-    {
-        $this->expectException(ValidatorParameterException::class);
-        $instance = new Payment();
-        $instance->refundedAmount = $value['refunded_amount'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetPaid(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setPaid($options['paid']);
-        self::assertSame($options['paid'], $instance->getPaid());
-        self::assertSame($options['paid'], $instance->paid);
-
-        $instance = new Payment();
-        $instance->paid = $options['paid'];
-        self::assertSame($options['paid'], $instance->getPaid());
-        self::assertSame($options['paid'], $instance->paid);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetTest(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setTest($options['test']);
-        self::assertSame($options['test'], $instance->getTest());
-        self::assertSame($options['test'], $instance->test);
-
-        $instance = new Payment();
-        $instance->test = $options['test'];
-        self::assertSame($options['test'], $instance->getTest());
-        self::assertSame($options['test'], $instance->test);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetRefundable(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setRefundable($options['refundable']);
-        self::assertSame($options['refundable'], $instance->getRefundable());
-        self::assertSame($options['refundable'], $instance->refundable);
-
-        $instance = new Payment();
-        $instance->refundable = $options['refundable'];
-        self::assertSame($options['refundable'], $instance->getRefundable());
-        self::assertSame($options['refundable'], $instance->refundable);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetReceiptRegistration(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setReceiptRegistration($options['receipt_registration']);
-        if (null === $options['receipt_registration'] || '' === $options['receipt_registration']) {
-            self::assertNull($instance->getReceiptRegistration());
-            self::assertNull($instance->receiptRegistration);
-            self::assertNull($instance->receipt_registration);
-        } else {
-            self::assertSame($options['receipt_registration'], $instance->getReceiptRegistration());
-            self::assertSame($options['receipt_registration'], $instance->receiptRegistration);
-            self::assertSame($options['receipt_registration'], $instance->receipt_registration);
-        }
-
-        $instance = new Payment();
-        $instance->receiptRegistration = $options['receipt_registration'];
-        if (null === $options['receipt_registration'] || '' === $options['receipt_registration']) {
-            self::assertNull($instance->getReceiptRegistration());
-            self::assertNull($instance->receiptRegistration);
-            self::assertNull($instance->receipt_registration);
-        } else {
-            self::assertSame($options['receipt_registration'], $instance->getReceiptRegistration());
-            self::assertSame($options['receipt_registration'], $instance->receiptRegistration);
-            self::assertSame($options['receipt_registration'], $instance->receipt_registration);
-        }
-
-        $instance = new Payment();
-        $instance->receipt_registration = $options['receipt_registration'];
-        if (null === $options['receipt_registration'] || '' === $options['receipt_registration']) {
-            self::assertNull($instance->getReceiptRegistration());
-            self::assertNull($instance->receiptRegistration);
-            self::assertNull($instance->receipt_registration);
-        } else {
-            self::assertSame($options['receipt_registration'], $instance->getReceiptRegistration());
-            self::assertSame($options['receipt_registration'], $instance->receiptRegistration);
-            self::assertSame($options['receipt_registration'], $instance->receipt_registration);
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getReceiptRegistration());
+        self::assertEmpty($instance->receipt_registration);
+        $instance->setReceiptRegistration($value);
+        self::assertEquals($value, is_array($value) ? $instance->getReceiptRegistration()->toArray() : $instance->getReceiptRegistration());
+        self::assertEquals($value, is_array($value) ? $instance->receipt_registration->toArray() : $instance->receipt_registration);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getReceiptRegistration());
+            self::assertNotNull($instance->receipt_registration);
         }
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "receipt_registration"
+     * @dataProvider invalidReceiptRegistrationDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidReceiptRegistration($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setReceiptRegistration($value['receipt_registration']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetterInvalidReceiptRegistration($value): void
+    public function testInvalidReceiptRegistration(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->receiptRegistration = $value['receipt_registration'];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setReceiptRegistration($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validReceiptRegistrationDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_receipt_registration'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidReceiptRegistrationDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_receipt_registration'));
+    }
+
+    /**
+     * Test property "metadata"
+     * @dataProvider validMetadataDataProvider
+     * @param mixed $value
      *
+     * @return void
+     * @throws Exception
+     */
+    public function testMetadata(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMetadata());
+        self::assertEmpty($instance->metadata);
+        $instance->setMetadata($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMetadata());
+            self::assertNotNull($instance->metadata);
+            foreach ($value as $key => $element) {
+                if (!empty($element)) {
+                    self::assertEquals($element, $instance->getMetadata()[$key]);
+                    self::assertEquals($element, $instance->metadata[$key]);
+                    self::assertIsObject($instance->getMetadata());
+                    self::assertIsObject($instance->metadata);
+                }
+            }
+            self::assertCount(count($value), $instance->getMetadata());
+            self::assertCount(count($value), $instance->metadata);
+            if ($instance->getMetadata() instanceof Metadata) {
+                self::assertEquals($value, $instance->getMetadata()->toArray());
+                self::assertEquals($value, $instance->metadata->toArray());
+                self::assertCount(count($value), $instance->getMetadata());
+                self::assertCount(count($value), $instance->metadata);
+            }
+        }
+    }
+
+    /**
+     * Test invalid property "metadata"
+     * @dataProvider invalidMetadataDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterInvalidSnakeReceiptRegistration($value): void
+    public function testInvalidMetadata(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->receipt_registration = $value['receipt_registration'];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setMetadata($value);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetMetadata(array $options): void
+    public function validMetadataDataProvider(): array
     {
-        $instance = new Payment();
-
-        $instance->setMetadata($options['metadata']);
-        self::assertSame($options['metadata'], $instance->getMetadata());
-        self::assertSame($options['metadata'], $instance->metadata);
-
-        $instance = new Payment();
-        $instance->metadata = $options['metadata'];
-        self::assertSame($options['metadata'], $instance->getMetadata());
-        self::assertSame($options['metadata'], $instance->metadata);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_metadata'));
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetAddTransfers(array $options): void
+    public function invalidMetadataDataProvider(): array
     {
-        $instance = new Payment();
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_metadata'));
+    }
 
+    /**
+     * Test property "cancellation_details"
+     * @dataProvider validCancellationDetailsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCancellationDetails(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCancellationDetails());
+        self::assertEmpty($instance->cancellation_details);
+        $instance->setCancellationDetails($value);
+        self::assertEquals($value, is_array($value) ? $instance->getCancellationDetails()->toArray() : $instance->getCancellationDetails());
+        self::assertEquals($value, is_array($value) ? $instance->cancellation_details->toArray() : $instance->cancellation_details);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCancellationDetails());
+            self::assertNotNull($instance->cancellation_details);
+        }
+    }
+
+    /**
+     * Test invalid property "cancellation_details"
+     * @dataProvider invalidCancellationDetailsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCancellationDetails(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCancellationDetails($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCancellationDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_cancellation_details'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCancellationDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_cancellation_details'));
+    }
+
+    /**
+     * Test property "authorization_details"
+     * @dataProvider validAuthorizationDetailsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAuthorizationDetails(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAuthorizationDetails());
+        self::assertEmpty($instance->authorization_details);
+        $instance->setAuthorizationDetails($value);
+        self::assertEquals($value, is_array($value) ? $instance->getAuthorizationDetails()->toArray() : $instance->getAuthorizationDetails());
+        self::assertEquals($value, is_array($value) ? $instance->authorization_details->toArray() : $instance->authorization_details);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getAuthorizationDetails());
+            self::assertNotNull($instance->authorization_details);
+        }
+    }
+
+    /**
+     * Test invalid property "authorization_details"
+     * @dataProvider invalidAuthorizationDetailsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAuthorizationDetails(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAuthorizationDetails($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAuthorizationDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_authorization_details'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAuthorizationDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_authorization_details'));
+    }
+
+    /**
+     * Test property "transfers"
+     * @dataProvider validTransfersDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testTransfers(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
         self::assertEmpty($instance->getTransfers());
         self::assertEmpty($instance->transfers);
-
-        $instance->setTransfers($options['transfers']);
-        foreach ($options['transfers'] as $key => $transfer) {
-            if (is_array($transfer)) {
-                self::assertSame($transfer, $instance->getTransfers()->get($key)->toArray());
-                self::assertSame($transfer, $instance->getTransfers()[$key]->toArray());
-            } else {
-                self::assertSame($transfer, $instance->getTransfers()->get($key));
-                self::assertSame($transfer, $instance->getTransfers()[$key]);
+        self::assertIsObject($instance->getTransfers());
+        self::assertIsObject($instance->transfers);
+        self::assertCount(0, $instance->getTransfers());
+        self::assertCount(0, $instance->transfers);
+        $instance->setTransfers($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getTransfers());
+            self::assertNotNull($instance->transfers);
+            foreach ($value as $key => $element) {
+                if (is_array($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getTransfers()[$key]->toArray());
+                    self::assertEquals($element, $instance->transfers[$key]->toArray());
+                    self::assertIsArray($instance->getTransfers()[$key]->toArray());
+                    self::assertIsArray($instance->transfers[$key]->toArray());
+                }
+                if (is_object($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getTransfers()->get($key));
+                    self::assertIsObject($instance->getTransfers()->get($key));
+                    self::assertIsObject($instance->transfers->get($key));
+                    self::assertIsObject($instance->getTransfers());
+                    self::assertIsObject($instance->transfers);
+                }
             }
-        }
-
-        $instance = new Payment();
-        $instance->transfers = $options['transfers'];
-        foreach ($options['transfers'] as $key => $transfer) {
-            if (is_array($transfer)) {
-                self::assertSame($transfer, $instance->getTransfers()->get($key)->toArray());
-                self::assertSame($transfer, $instance->getTransfers()[$key]->toArray());
-            } else {
-                self::assertSame($transfer, $instance->getTransfers()->get($key));
-                self::assertSame($transfer, $instance->getTransfers()[$key]);
-            }
+            self::assertCount(count($value), $instance->getTransfers());
+            self::assertCount(count($value), $instance->transfers);
         }
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     */
-    public function testInvalidTransfers(array $options): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setTransfers($options['transfers']);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetIncomeAmount(array $options): void
-    {
-        $instance = new Payment();
-        $instance->setIncomeAmount($options['amount']);
-        self::assertEquals($options['amount'], $instance->getIncomeAmount());
-    }
-
-    public static function validDataProvider()
-    {
-        $result = [];
-        $cancellationDetailsParties = CancellationDetailsPartyCode::getValidValues();
-        $countCancellationDetailsParties = count($cancellationDetailsParties);
-        $cancellationDetailsReasons = CancellationDetailsReasonCode::getValidValues();
-        $countCancellationDetailsReasons = count($cancellationDetailsReasons);
-        for ($i = 0; $i < 20; $i++) {
-            $payment = [
-                'id' => Random::str(36),
-                'status' => Random::value(PaymentStatus::getValidValues()),
-                'recipient' => new Recipient([
-                    'account_id' => Random::str(2, 15),
-                ]),
-                'amount' => new MonetaryAmount(['value' => Random::int(1, 10000), 'currency' => CurrencyCode::RUB]),
-                'description' => (0 === $i ? null : (1 === $i ? '' : (2 === $i ? Random::str(Payment::MAX_LENGTH_DESCRIPTION)
-                    : Random::str(2, Payment::MAX_LENGTH_DESCRIPTION)))),
-                'payment_method' => (0 === $i ? new PaymentMethodQiwi() : [
-                    'type' => Random::value(PaymentMethodType::getValidValues()),
-                    'id' => Random::str(10),
-                    'saved' => Random::bool(),
-                    'title' => Random::str(10),
-                ]),
-                'reference_id' => (0 === $i ? null : (1 === $i ? '' : Random::str(10, 20, 'abcdef0123456789'))),
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'captured_at' => (0 === $i ? null : date(YOOKASSA_DATE, Random::int(1, time()))),
-                'expires_at' => (0 === $i ? null : date(YOOKASSA_DATE, Random::int(1, time()))),
-                'confirmation' => new ConfirmationRedirect([
-                    'confirmation_url' => 'https://test.com',
-                ]),
-                'charge' => new MonetaryAmount(['value' => Random::int(1, 10000), 'currency' => CurrencyCode::EUR]),
-                'income' => new MonetaryAmount(['value' => Random::int(1, 10000), 'currency' => CurrencyCode::EUR]),
-                'refunded_amount' => new ReceiptItemAmount(['value' => Random::int(1, 10000), 'currency' => CurrencyCode::EUR]),
-                'paid' => Random::bool(),
-                'test' => Random::bool(),
-                'refundable' => Random::bool(),
-                'receipt_registration' => 0 === $i ? null : Random::value(ReceiptRegistrationStatus::getValidValues()),
-                'metadata' => new Metadata(),
-                'cancellation_details' => new CancellationDetails([
-                    'party' => $cancellationDetailsParties[$i % $countCancellationDetailsParties],
-                    'reason' => $cancellationDetailsReasons[$i % $countCancellationDetailsReasons],
-                ]),
-                'authorization_details' => (0 === $i ? null : new AuthorizationDetails([
-                    'rrn' => Random::str(10),
-                    'auth_code' => Random::str(10),
-                    'three_d_secure' => ['applied' => Random::bool()],
-                ])),
-                'deal' => (0 === $i ? null : new PaymentDealInfo([
-                    'id' => Random::str(36, 50),
-                    'settlements' => [
-                        [
-                            'type' => Random::value(SettlementPayoutPaymentType::getValidValues()),
-                            'amount' => [
-                                'value' => round(Random::float(1.00, 100.00), 2),
-                                'currency' => 'RUB',
-                            ],
-                        ],
-                    ],
-                ])),
-                'transfers' => [
-                    [
-                        'account_id' => Random::str(36),
-                        'amount' => ['value' => '123.00', 'currency' => CurrencyCode::EUR],
-                        'status' => TransferStatus::PENDING,
-                        'description' => Random::str(2, Transfer::MAX_LENGTH_DESCRIPTION),
-                        'release_funds' => false
-                    ],
-                    new Transfer([
-                        'account_id' => Random::str(36),
-                        'amount' => new MonetaryAmount(['value' => Random::int(1, 10000), 'currency' => CurrencyCode::EUR]),
-                        'platform_fee_amount' => new MonetaryAmount(['value' => Random::int(1, 10000), 'currency' => CurrencyCode::EUR]),
-                        'description' => Random::str(2, Transfer::MAX_LENGTH_DESCRIPTION),
-                    ]),
-                ],
-                'merchant_customer_id' => (0 === $i ? null : Random::str(2, Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID))
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
-    }
-
-    public static function invalidDataProvider()
-    {
-        $result = [
-            [
-                [
-                    'id' => '',
-                    'status' => '',
-                    'recipient' => new stdClass(),
-                    'amount' => '',
-                    'payment_method' => 1,
-                    'reference_id' => [],
-                    'confirmation' => 2,
-                    'charge' => '',
-                    'income' => '',
-                    'refunded_amount' => 3,
-                    'paid' => '',
-                    'refundable' => '',
-                    'created_at' => -Random::int(),
-                    'captured_at' => '23423-234-234',
-                    'receipt_registration' => Random::str(5),
-                    'transfers' => Random::str(5),
-                    'test' => '',
-                ],
-            ],
-        ];
-        for ($i = 0; $i < 10; $i++) {
-            $payment = [
-                'id' => Random::str($i < 5 ? Random::int(1, 35) : Random::int(37, 64)),
-                'status' => Random::str(2, 35),
-                'recipient' => new stdClass(),
-                'amount' => 'test',
-                'payment_method' => 'test',
-                'reference_id' => Random::str(66, 128),
-                'confirmation' => 'test',
-                'charge' => 'test',
-                'income' => 'test',
-                'refunded_amount' => 'test',
-                'paid' => 0 === $i ? [] : new stdClass(),
-                'refundable' => 0 === $i ? [] : new stdClass(),
-                'created_at' => 0 === $i ? '23423-234-32' : -Random::int(),
-                'captured_at' => -Random::int(),
-                'receipt_registration' => 0 === $i ? true : Random::str(5),
-                'transfers' => $i % 2 ? Random::str(2, 35) : new stdClass(),
-                'test' => [],
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetExpiresAt(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setExpiresAt($options['expires_at']);
-        if (null === $options['expires_at'] || '' === $options['expires_at']) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expiresAt);
-            self::assertNull($instance->expires_at);
-        } else {
-            self::assertSame($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expiresAt->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expires_at->format(YOOKASSA_DATE));
-        }
-
-        $instance = new Payment();
-        $instance->expiresAt = $options['expires_at'];
-        if (null === $options['expires_at'] || '' === $options['expires_at']) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expiresAt);
-            self::assertNull($instance->expires_at);
-        } else {
-            self::assertSame($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expiresAt->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expires_at->format(YOOKASSA_DATE));
-        }
-
-        $instance = new Payment();
-        $instance->expires_at = $options['expires_at'];
-        if (null === $options['expires_at'] || '' === $options['expires_at']) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expiresAt);
-            self::assertNull($instance->expires_at);
-        } else {
-            self::assertSame($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expiresAt->format(YOOKASSA_DATE));
-            self::assertSame($options['expires_at'], $instance->expires_at->format(YOOKASSA_DATE));
-        }
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "transfers"
+     * @dataProvider invalidTransfersDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidExpiresAt($value): void
+    public function testInvalidTransfers(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->setExpiresAt($value['captured_at']);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setTransfers($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validTransfersDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_transfers'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTransfersDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_transfers'));
+    }
+
+    /**
+     * Test property "deal"
+     * @dataProvider validDealDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidExpiresAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->expiresAt = $value['captured_at'];
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidSnakeExpiresAt($value): void
+    public function testDeal(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $instance->expires_at = $value['captured_at'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testSetDescription($options): void
-    {
-        $instance = new Payment();
-        $instance->setDescription($options['description']);
-
-        if (empty($options['description']) && ('0' !== $options['description'])) {
-            self::assertEmpty($instance->getDescription());
-        } else {
-            self::assertEquals($options['description'], $instance->getDescription());
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getDeal());
+        self::assertEmpty($instance->deal);
+        $instance->setDeal($value);
+        self::assertEquals($value, is_array($value) ? $instance->getDeal()->toArray() : $instance->getDeal());
+        self::assertEquals($value, is_array($value) ? $instance->deal->toArray() : $instance->deal);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getDeal());
+            self::assertNotNull($instance->deal);
         }
     }
 
-    public function testSetInvalidLengthDescription(): void
+    /**
+     * Test invalid property "deal"
+     * @dataProvider invalidDealDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidDeal(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $description = Random::str(Payment::MAX_LENGTH_DESCRIPTION + 1);
-        $instance->setDescription($description);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setDeal($value);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetMerchantCustomerId($options): void
+    public function validDealDataProvider(): array
     {
-        $instance = new Payment();
-        $instance->setMerchantCustomerId($options['merchant_customer_id']);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_deal'));
+    }
 
-        if (empty($options['merchant_customer_id'])) {
-            self::assertEmpty($instance->getMerchantCustomerId());
-        } else {
-            self::assertEquals($options['merchant_customer_id'], $instance->getMerchantCustomerId());
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidDealDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_deal'));
+    }
+
+    /**
+     * Test property "merchant_customer_id"
+     * @dataProvider validMerchantCustomerIdDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testMerchantCustomerId(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMerchantCustomerId());
+        self::assertEmpty($instance->merchant_customer_id);
+        $instance->setMerchantCustomerId($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMerchantCustomerId()->toArray() : $instance->getMerchantCustomerId());
+        self::assertEquals($value, is_array($value) ? $instance->merchant_customer_id->toArray() : $instance->merchant_customer_id);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMerchantCustomerId());
+            self::assertNotNull($instance->merchant_customer_id);
         }
     }
 
-    public function testSetInvalidLengthMerchantCustomerId(): void
+    /**
+     * Test invalid property "merchant_customer_id"
+     * @dataProvider invalidMerchantCustomerIdDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidMerchantCustomerId(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new Payment();
-        $merchant_customer_id = Random::str(Payment::MAX_LENGTH_MERCHANT_CUSTOMER_ID + 1);
-        $instance->setMerchantCustomerId($merchant_customer_id);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setMerchantCustomerId($value);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetDeal(array $options): void
+    public function validMerchantCustomerIdDataProvider(): array
     {
-        $instance = new Payment();
-
-        $instance->setDeal($options['deal']);
-        self::assertSame($options['deal'], $instance->getDeal());
-        self::assertSame($options['deal'], $instance->deal);
-
-        $instance = new Payment();
-        $instance->deal = $options['deal'];
-        self::assertSame($options['deal'], $instance->getDeal());
-        self::assertSame($options['deal'], $instance->deal);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_merchant_customer_id'));
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetAuthorizationDetails(array $options): void
+    public function invalidMerchantCustomerIdDataProvider(): array
     {
-        $instance = new Payment();
-
-        $instance->setAuthorizationDetails($options['authorization_details']);
-        self::assertSame($options['authorization_details'], $instance->getAuthorizationDetails());
-        self::assertSame($options['authorization_details'], $instance->authorizationDetails);
-        self::assertSame($options['authorization_details'], $instance->authorization_details);
-
-        $instance = new Payment();
-        $instance->authorizationDetails = $options['authorization_details'];
-        self::assertSame($options['authorization_details'], $instance->getAuthorizationDetails());
-        self::assertSame($options['authorization_details'], $instance->authorizationDetails);
-        self::assertSame($options['authorization_details'], $instance->authorization_details);
-
-        $instance = new Payment();
-        $instance->authorization_details = $options['authorization_details'];
-        self::assertSame($options['authorization_details'], $instance->getAuthorizationDetails());
-        self::assertSame($options['authorization_details'], $instance->authorizationDetails);
-        self::assertSame($options['authorization_details'], $instance->authorization_details);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetCancellationDetails(array $options): void
-    {
-        $instance = new Payment();
-
-        $instance->setCancellationDetails($options['cancellation_details']);
-        self::assertSame($options['cancellation_details'], $instance->getCancellationDetails());
-        self::assertSame($options['cancellation_details'], $instance->cancellationDetails);
-        self::assertSame($options['cancellation_details'], $instance->cancellation_details);
-
-        $instance = new Payment();
-        $instance->cancellationDetails = $options['cancellation_details'];
-        self::assertSame($options['cancellation_details'], $instance->getCancellationDetails());
-        self::assertSame($options['cancellation_details'], $instance->cancellationDetails);
-        self::assertSame($options['cancellation_details'], $instance->cancellation_details);
-
-        $instance = new Payment();
-        $instance->cancellation_details = $options['cancellation_details'];
-        self::assertSame($options['cancellation_details'], $instance->getCancellationDetails());
-        self::assertSame($options['cancellation_details'], $instance->cancellationDetails);
-        self::assertSame($options['cancellation_details'], $instance->cancellation_details);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_merchant_customer_id'));
     }
 }

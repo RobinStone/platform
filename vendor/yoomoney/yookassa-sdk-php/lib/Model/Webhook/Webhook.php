@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -99,9 +99,9 @@ class Webhook extends AbstractObject implements WebhookInterface
     /**
      * Возвращает событие, о котором уведомляет ЮKassa.
      *
-     * @return string Событие, о котором уведомляет ЮKassa
+     * @return string|null Событие, о котором уведомляет ЮKassa
      */
-    public function getEvent(): string
+    public function getEvent(): ?string
     {
         return $this->_event;
     }
@@ -122,9 +122,9 @@ class Webhook extends AbstractObject implements WebhookInterface
     /**
      * Возвращает URL, на который ЮKassa будет отправлять уведомления.
      *
-     * @return string URL, на который ЮKassa будет отправлять уведомления
+     * @return string|null URL, на который ЮKassa будет отправлять уведомления
      */
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->_url;
     }

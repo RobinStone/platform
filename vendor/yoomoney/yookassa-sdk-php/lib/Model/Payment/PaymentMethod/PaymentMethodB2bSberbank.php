@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@
 namespace YooKassa\Model\Payment\PaymentMethod;
 
 use YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\PayerBankDetails;
-use YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData;
+use YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData;
 use YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatDataFactory;
 use YooKassa\Model\Payment\PaymentMethodType;
 use YooKassa\Validator\Constraints as Assert;
@@ -44,7 +44,8 @@ use YooKassa\Validator\Constraints as Assert;
  *
  * @property string $paymentPurpose Назначение платежа
  * @property string $payment_purpose Назначение платежа
- * @property VatData $vatData Данные об НДС
+ * @property AbstractVatData $vatData Данные об НДС
+ * @property AbstractVatData $vat_data Данные об НДС
  * @property PayerBankDetails $payerBankDetails Банковские реквизиты плательщика
  * @property PayerBankDetails $payer_bank_details Банковские реквизиты плательщика
  */
@@ -60,12 +61,12 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     private ?string $_payment_purpose = null;
 
     /**
-     * @var VatData|null Данные об НДС
+     * @var AbstractVatData|null Данные об НДС
      */
     #[Assert\NotBlank]
     #[Assert\Valid]
-    #[Assert\Type(VatData::class)]
-    private ?VatData $_vat_data = null;
+    #[Assert\Type(AbstractVatData::class)]
+    private ?AbstractVatData $_vat_data = null;
 
     /**
      * @var PayerBankDetails|null Банковские реквизиты плательщика (юридического лица или ИП)
@@ -106,9 +107,9 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     /**
      * Возвращает назначение платежа.
      *
-     * @return VatData|null Данные об НДС
+     * @return AbstractVatData|null Данные об НДС
      */
-    public function getVatData(): ?VatData
+    public function getVatData(): ?AbstractVatData
     {
         return $this->_vat_data;
     }
@@ -116,7 +117,7 @@ class PaymentMethodB2bSberbank extends AbstractPaymentMethod
     /**
      * Устанавливает назначение платежа.
      *
-     * @param VatData|array|null $vat_data Данные об НДС
+     * @param AbstractVatData|array|null $vat_data Данные об НДС
      *
      * @return self
      */

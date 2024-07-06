@@ -1,249 +1,231 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Refund;
 
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\AmountInterface;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\MonetaryAmount;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Refund\Source;
 
 /**
- * @internal
+ * SourceTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class SourceTest extends TestCase
+class SourceTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testFromArray(array $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->fromArray($value);
-
-        self::assertSame($value['account_id'], $instance->getAccountId());
-        self::assertSame($value['account_id'], $instance->accountId);
-        self::assertSame($value['amount'], $instance->getAmount()->jsonSerialize());
-        self::assertSame($value['amount'], $instance->amount->jsonSerialize());
-        self::assertSame($value['platform_fee_amount'], $instance->getPlatformFeeAmount()->jsonSerialize());
-        self::assertSame($value['platform_fee_amount'], $instance->platform_fee_amount->jsonSerialize());
-        self::assertTrue($instance->hasAmount());
-        self::assertTrue($instance->hasPlatformFeeAmount());
-
-        self::assertSame($value, $instance->jsonSerialize());
-    }
+    protected Source $object;
 
     /**
-     * @dataProvider validDataProvider
+     * @return Source
      */
-    public function testGetSetAccountId(array $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setAccountId($value['account_id']);
-        self::assertSame($value['account_id'], $instance->getAccountId());
-        self::assertSame($value['account_id'], $instance->accountId);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testSetterAccountId(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->accountId = $value['account_id'];
-        self::assertSame($value['account_id'], $instance->getAccountId());
-        self::assertSame($value['account_id'], $instance->accountId);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function validDataProvider(): array
-    {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $result[] = [
-                'account_id' => (string) Random::int(11111111, 99999999),
-                'amount' => [
-                    'value' => sprintf('%.2f', round(Random::float(0.1, 99.99), 2)),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-                'platform_fee_amount' => [
-                    'value' => sprintf('%.2f', round(Random::float(0.1, 99.99), 2)),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-            ];
-        }
-
-        return [$result];
-    }
-
-    /**
-     * @dataProvider invalidAccountIdProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetInvalidAccountId($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setAccountId($value);
-    }
-
-    /**
-     * @dataProvider invalidAccountIdProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidAccountId($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->accountId = $value;
-    }
-
-    public static function invalidAccountIdProvider(): array
-    {
-        return [
-            [null],
-            [''],
-            [[]],
-            [new stdClass()],
-        ];
-    }
-
-    /**
-     * @dataProvider validAmountDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetAmount($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setAmount($value);
-        self::assertSame($value, $instance->getAmount());
-        self::assertSame($value, $instance->amount);
-    }
-
-    /**
-     * @dataProvider validAmountDataProvider
-     */
-    public function testSetterAmount(AmountInterface $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->amount = $value;
-        self::assertSame($value, $instance->getAmount());
-        self::assertSame($value, $instance->amount);
-    }
-
-    /**
-     * @dataProvider validAmountDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetPlatformFeeAmount($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setPlatformFeeAmount($value);
-        self::assertSame($value, $instance->getPlatformFeeAmount());
-        self::assertSame($value, $instance->platform_fee_amount);
-    }
-
-    /**
-     * @dataProvider validAmountDataProvider
-     */
-    public function testSetterPlatformFeeAmount(AmountInterface $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->platform_fee_amount = $value;
-        self::assertSame($value, $instance->getPlatformFeeAmount());
-        self::assertSame($value, $instance->platform_fee_amount);
-    }
-
-    /**
-     * @return MonetaryAmount[][]
-     *
-     * @throws Exception
-     */
-    public static function validAmountDataProvider(): array
-    {
-        return [
-            [
-                new MonetaryAmount(
-                    Random::int(1, 100),
-                    Random::value(CurrencyCode::getValidValues())
-                ),
-            ],
-            [
-                new MonetaryAmount(),
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidAmountDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidAmount($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setAmount($value);
-    }
-
-    /**
-     * @dataProvider invalidAmountDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidAmount($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->amount = $value;
-    }
-
-    /**
-     * @dataProvider invalidAmountDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidPlatformFeeAmount($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setPlatformFeeAmount($value);
-    }
-
-    /**
-     * @dataProvider invalidAmountDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidPlatformFeeAmount($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->platform_fee_amount = $value;
-    }
-
-    public static function invalidAmountDataProvider(): array
-    {
-        return [
-            ['null'],
-            [1.0],
-            [1],
-            [true],
-            [false],
-            [new stdClass()],
-        ];
-    }
-
     protected function getTestInstance(): Source
     {
         return new Source();
+    }
+
+    /**
+     * @return void
+     */
+    public function testSourceClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(Source::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(Source::class));
+        $this->assertInstanceOf(Source::class, $this->object);
+    }
+
+    /**
+     * Test property "account_id"
+     * @dataProvider validAccountIdDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAccountId(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setAccountId($value);
+        self::assertNotNull($instance->getAccountId());
+        self::assertNotNull($instance->account_id);
+        self::assertEquals($value, is_array($value) ? $instance->getAccountId()->toArray() : $instance->getAccountId());
+        self::assertEquals($value, is_array($value) ? $instance->account_id->toArray() : $instance->account_id);
+    }
+
+    /**
+     * Test invalid property "account_id"
+     * @dataProvider invalidAccountIdDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAccountId(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAccountId($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAccountIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_account_id'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAccountIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_account_id'));
+    }
+
+    /**
+     * Test property "amount"
+     * @dataProvider validAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setAmount($value);
+        self::assertNotNull($instance->getAmount());
+        self::assertNotNull($instance->amount);
+        self::assertTrue($instance->hasAmount());
+        self::assertEquals($value, is_array($value) ? $instance->getAmount()->toArray() : $instance->getAmount());
+        self::assertEquals($value, is_array($value) ? $instance->amount->toArray() : $instance->amount);
+    }
+
+    /**
+     * Test invalid property "amount"
+     * @dataProvider invalidAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAmount($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * Test property "platform_fee_amount"
+     * @dataProvider validPlatformFeeAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPlatformFeeAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPlatformFeeAmount());
+        self::assertEmpty($instance->platform_fee_amount);
+        $instance->setPlatformFeeAmount($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPlatformFeeAmount()->toArray() : $instance->getPlatformFeeAmount());
+        self::assertEquals($value, is_array($value) ? $instance->platform_fee_amount->toArray() : $instance->platform_fee_amount);
+        if (!empty($value)) {
+            self::assertTrue($instance->hasPlatformFeeAmount());
+            self::assertNotNull($instance->getPlatformFeeAmount());
+            self::assertNotNull($instance->platform_fee_amount);
+        }
+    }
+
+    /**
+     * Test invalid property "platform_fee_amount"
+     * @dataProvider invalidPlatformFeeAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidPlatformFeeAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPlatformFeeAmount($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPlatformFeeAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_platform_fee_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPlatformFeeAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_platform_fee_amount'));
     }
 }

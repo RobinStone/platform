@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payouts;
 
 use Exception;
@@ -19,7 +43,11 @@ use YooKassa\Request\Payouts\PayoutDestinationData\PayoutDestinationDataFactory;
 use YooKassa\Request\Payouts\PayoutSelfEmployedInfo;
 
 /**
- * @internal
+ * CreatePayoutRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class CreatePayoutRequestBuilderTest extends TestCase
 {
@@ -30,7 +58,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetDeal($options): void
+    public function testSetDeal(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -51,7 +79,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetSelfEmployed($options): void
+    public function testSetSelfEmployed(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -76,7 +104,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptData($options): void
+    public function testSetReceiptData(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -101,7 +129,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetAmount($options): void
+    public function testSetAmount(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -131,7 +159,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidAmount($value): void
+    public function testSetInvalidAmount(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePayoutRequestBuilder();
@@ -145,7 +173,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetPayoutToken($options): void
+    public function testSetPayoutToken(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -166,7 +194,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetPaymentMethodId($options): void
+    public function testSetPaymentMethodId(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -187,7 +215,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetPayoutDestinationData($options): void
+    public function testSetPayoutDestinationData(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -212,7 +240,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetMetadata($options): void
+    public function testSetMetadata(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -351,7 +379,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetDescription($options): void
+    public function testSetDescription(mixed $options): void
     {
         $builder = new CreatePayoutRequestBuilder();
         $builder->setOptions($options);
@@ -393,7 +421,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidDeal($value): void
+    public function testSetInvalidDeal(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePayoutRequestBuilder();
@@ -421,7 +449,7 @@ class CreatePayoutRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidSelfEmployed($value): void
+    public function testSetInvalidSelfEmployed(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePayoutRequestBuilder();

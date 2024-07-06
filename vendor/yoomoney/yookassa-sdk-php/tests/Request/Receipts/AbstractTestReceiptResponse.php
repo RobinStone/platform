@@ -1,10 +1,35 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Receipts;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use TypeError;
+use YooKassa\Common\ListObject;
 use YooKassa\Helpers\ProductCode;
 use YooKassa\Helpers\Random;
 use YooKassa\Model\Receipt\IndustryDetails;
@@ -20,6 +45,13 @@ use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
 use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
 use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
 
+/**
+ * AbstractTestReceiptResponse
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
+ */
 abstract class AbstractTestReceiptResponse extends TestCase
 {
     protected string $type;
@@ -127,7 +159,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         }
     }
 
-    public function validDataProvider()
+    public function validDataProvider(): array
     {
         date_default_timezone_set('UTC');
         $this->valid = true;
@@ -139,7 +171,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $receipts;
     }
 
-    public function invalidDataProvider()
+    public function invalidDataProvider(): array
     {
         $this->valid = false;
         $receipts = [];
@@ -150,7 +182,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $receipts;
     }
 
-    public function invalidAllDataProvider()
+    public function invalidAllDataProvider(): array
     {
         return [
             [[new ProductCode()]],
@@ -162,7 +194,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         ];
     }
 
-    public function invalidBoolDataProvider()
+    public function invalidBoolDataProvider(): array
     {
         return [
             [true],
@@ -170,14 +202,14 @@ abstract class AbstractTestReceiptResponse extends TestCase
         ];
     }
 
-    public function invalidBoolNullDataProvider()
+    public function invalidBoolNullDataProvider(): array
     {
         return [
             [new \stdClass()],
         ];
     }
 
-    public function invalidSettlementsDataProvider()
+    public function invalidSettlementsDataProvider(): array
     {
         return [
             [[[]], EmptyPropertyValueException::class],
@@ -185,7 +217,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         ];
     }
 
-    public function invalidItemsDataProvider()
+    public function invalidItemsDataProvider(): array
     {
         return [
             [[[]], EmptyPropertyValueException::class],
@@ -193,7 +225,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         ];
     }
 
-    public function invalidFromArray()
+    public function invalidFromArray(): array
     {
         return [
             [
@@ -227,15 +259,15 @@ abstract class AbstractTestReceiptResponse extends TestCase
     /**
      * @param mixed $options
      */
-    abstract protected function getTestInstance($options): ReceiptResponseInterface;
+    abstract protected function getTestInstance(mixed $options): ReceiptResponseInterface;
 
     /**
      * @param mixed $i
      * @param mixed $options
      */
-    abstract protected function addSpecificProperties($options, $i): array;
+    abstract protected function addSpecificProperties(mixed $options, mixed $i): array;
 
-    private function generateReceipts($type, $valid)
+    private function generateReceipts($type, $valid): array
     {
         $this->valid = $valid;
         $return = [];
@@ -248,7 +280,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $return;
     }
 
-    private function generateReceipt($type, $index)
+    private function generateReceipt($type, $index): array
     {
         $receipt = [
             'id' => Random::str(39),
@@ -285,7 +317,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $this->addSpecificProperties($receipt, $index);
     }
 
-    private function generateItems()
+    private function generateItems(): array
     {
         $return = [];
         $count = Random::int(1, 10);
@@ -297,7 +329,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $return;
     }
 
-    private function generateItem()
+    private function generateItem(): array
     {
         $item = [
             'description' => Random::str(1, 128),
@@ -333,7 +365,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $item;
     }
 
-    private function generateSettlements()
+    private function generateSettlements(): array
     {
         $return = [];
         $count = Random::int(1, 10);
@@ -345,7 +377,7 @@ abstract class AbstractTestReceiptResponse extends TestCase
         return $return;
     }
 
-    private function generateSettlement()
+    private function generateSettlement(): array
     {
         return [
             'type' => Random::value(SettlementType::getValidValues()),

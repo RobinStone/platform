@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -98,7 +98,7 @@ class Supplier extends AbstractObject implements SupplierInterface
      *
      * @return self
      */
-    public function setPhone(mixed $phone = null): self
+    public function setPhone(?string $phone = null): self
     {
         $this->_phone = $this->validatePropertyValue('_phone', $phone);
         return $this;
@@ -114,7 +114,7 @@ class Supplier extends AbstractObject implements SupplierInterface
      *
      * @return self
      */
-    public function setInn(mixed $inn = null): self
+    public function setInn(?string $inn = null): self
     {
         $this->_inn = $this->validatePropertyValue('_inn', $inn);
         return $this;

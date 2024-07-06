@@ -81,10 +81,10 @@ public setId(string|null $id = null) : self
 
 
 <a name="method_getEvent" class="anchor"></a>
-#### public getEvent() : string
+#### public getEvent() : string|null
 
 ```php
-public getEvent() : string
+public getEvent() : string|null
 ```
 
 **Summary**
@@ -94,7 +94,7 @@ public getEvent() : string
 **Details:**
 * Inherited From: [\YooKassa\Model\Webhook\WebhookInterface](../classes/YooKassa-Model-Webhook-WebhookInterface.md)
 
-**Returns:** string - Событие, о котором уведомляет ЮKassa
+**Returns:** string|null - Событие, о котором уведомляет ЮKassa
 
 
 <a name="method_setEvent" class="anchor"></a>
@@ -120,10 +120,10 @@ public setEvent(string|null $event = null) : self
 
 
 <a name="method_getUrl" class="anchor"></a>
-#### public getUrl() : string
+#### public getUrl() : string|null
 
 ```php
-public getUrl() : string
+public getUrl() : string|null
 ```
 
 **Summary**
@@ -133,7 +133,7 @@ public getUrl() : string
 **Details:**
 * Inherited From: [\YooKassa\Model\Webhook\WebhookInterface](../classes/YooKassa-Model-Webhook-WebhookInterface.md)
 
-**Returns:** string - URL, на который ЮKassa будет отправлять уведомления
+**Returns:** string|null - URL, на который ЮKassa будет отправлять уведомления
 
 
 <a name="method_setUrl" class="anchor"></a>
@@ -171,10 +171,10 @@ public setUrl(string|null $url = null) : self
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

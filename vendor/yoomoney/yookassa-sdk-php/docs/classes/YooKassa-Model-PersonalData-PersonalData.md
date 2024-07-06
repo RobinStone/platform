@@ -299,9 +299,12 @@
 ***Description***
 
 Возможные значения:
-* `waiting_for_operation` — данные сохранены, но не использованы при проведении выплаты;
-* `active` — данные сохранены и использованы при проведении выплаты; данные можно использовать повторно до срока, указанного в параметре `expires_at`;
-* `canceled` — хранение данных отменено, данные удалены, инициатор и причина отмены указаны в объекте `cancellation_details` (финальный и неизменяемый статус).
+ * `waiting_for_operation` — данные сохранены, но не использованы при проведении выплаты;
+ * `active` — данные сохранены и использованы при проведении выплаты; данные можно использовать повторно до срока, указанного в параметре `expires_at`;
+ * `canceled` — хранение данных отменено, данные удалены, инициатор и причина отмены указаны в объекте `cancellation_details` (финальный и неизменяемый статус).
+
+Жизненный цикл персональных данных зависит от назначения данных: [передача данных получателя выплаты](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send#lifecircle)
+для выписки из реестра или [проверка получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check#lifecircle) при выплатах через СБП.
 
 **Type:** <a href="../?string"><abbr title="?string">?string</abbr></a>
 
@@ -317,8 +320,9 @@
 
 ***Description***
 
-Возможное значение:
-`sbp_payout_recipient` — выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check).
+Возможные значение:
+- `sbp_payout_recipient` — [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check)(только для выплат через СБП);
+- `payout_statement_recipient` — [выплаты с передачей данных получателя выплаты для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send).
 
 **Type:** <a href="../?string"><abbr title="?string">?string</abbr></a>
 
@@ -919,10 +923,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

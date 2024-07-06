@@ -1,640 +1,765 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
 use Exception;
-use PHPUnit\Framework\TestCase;
-use TypeError;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
-use YooKassa\Helpers\Random;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Receipt\MarkCodeInfo;
 
 /**
- * @internal
+ * MarkCodeInfoTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class MarkCodeInfoTest extends TestCase
+class MarkCodeInfoTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validArrayDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testConstructor($options): void
-    {
-        $instance = self::getInstance($options);
+    protected MarkCodeInfo $object;
 
-        self::assertEquals($options['mark_code_raw'], $instance->getMarkCodeRaw());
-        self::assertEquals($options['unknown'], $instance->getUnknown());
+    /**
+     * @param mixed|null $value
+     * @return MarkCodeInfo
+     */
+    protected function getTestInstance(mixed $value = null): MarkCodeInfo
+    {
+        return new MarkCodeInfo($value);
     }
 
     /**
-     * @dataProvider validArrayDataProvider
+     * @return void
      */
-    public function testGetSetMarkCodeRaw(array $options): void
+    public function testMarkCodeInfoClassExists(): void
     {
-        $expected = $options['mark_code_raw'];
-
-        $instance = self::getInstance();
-
-        $instance->setMarkCodeRaw($expected);
-        self::assertEquals($expected, $instance->getMarkCodeRaw());
-        self::assertEquals($expected, $instance->mark_code_raw);
-
-        $instance = self::getInstance();
-        $instance->mark_code_raw = $expected;
-        self::assertEquals($expected, $instance->getMarkCodeRaw());
-        self::assertEquals($expected, $instance->mark_code_raw);
+        $this->object = $this->getMockBuilder(MarkCodeInfo::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(MarkCodeInfo::class));
+        $this->assertInstanceOf(MarkCodeInfo::class, $this->object);
     }
 
     /**
-     * @dataProvider invalidMarkCodeRawDataProvider
-     *
+     * Test property "mark_code_raw"
+     * @dataProvider validMarkCodeRawDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidMarkCodeRaw($value, string $exceptionClassDocumentNumber): void
+    public function testMarkCodeRaw(mixed $value): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMarkCodeRaw());
+        self::assertEmpty($instance->mark_code_raw);
+        $instance->setMarkCodeRaw($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMarkCodeRaw()->toArray() : $instance->getMarkCodeRaw());
+        self::assertEquals($value, is_array($value) ? $instance->mark_code_raw->toArray() : $instance->mark_code_raw);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMarkCodeRaw());
+            self::assertNotNull($instance->mark_code_raw);
+        }
+    }
 
-        self::expectException($exceptionClassDocumentNumber);
+    /**
+     * Test invalid property "mark_code_raw"
+     * @dataProvider invalidMarkCodeRawDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidMarkCodeRaw(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setMarkCodeRaw($value);
     }
 
     /**
-     * @dataProvider invalidMarkCodeRawDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validMarkCodeRawDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_code_raw'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidMarkCodeRawDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_code_raw'));
+    }
+
+    /**
+     * Test property "unknown"
+     * @dataProvider validUnknownDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidMarkCodeRaw($value, string $exceptionClassDocumentNumber): void
+    public function testUnknown(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        self::expectException($exceptionClassDocumentNumber);
-        $instance->mark_code_raw = $value;
-    }
-
-    public static function invalidMarkCodeRawDataProvider()
-    {
-        return [
-            [[], TypeError::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getUnknown());
+        self::assertEmpty($instance->unknown);
+        $instance->setUnknown($value);
+        self::assertEquals($value, is_array($value) ? $instance->getUnknown()->toArray() : $instance->getUnknown());
+        self::assertEquals($value, is_array($value) ? $instance->unknown->toArray() : $instance->unknown);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getUnknown());
+            self::assertNotNull($instance->unknown);
+            self::assertLessThanOrEqual(32, is_string($instance->getUnknown()) ? mb_strlen($instance->getUnknown()) : $instance->getUnknown());
+            self::assertLessThanOrEqual(32, is_string($instance->unknown) ? mb_strlen($instance->unknown) : $instance->unknown);
+            self::assertGreaterThanOrEqual(1, is_string($instance->getUnknown()) ? mb_strlen($instance->getUnknown()) : $instance->getUnknown());
+            self::assertGreaterThanOrEqual(1, is_string($instance->unknown) ? mb_strlen($instance->unknown) : $instance->unknown);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetUnknown(array $options): void
-    {
-        $expected = $options['unknown'];
-
-        $instance = self::getInstance();
-
-        $instance->setUnknown($expected);
-        self::assertEquals($expected, $instance->getUnknown());
-        self::assertEquals($expected, $instance->unknown);
-
-        $instance = self::getInstance();
-        $instance->unknown = $expected;
-        self::assertEquals($expected, $instance->getUnknown());
-        self::assertEquals($expected, $instance->unknown);
-    }
-
-    /**
+     * Test invalid property "unknown"
      * @dataProvider invalidUnknownDataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidUnknown($value, string $exceptionClassDocumentNumber): void
+    public function testInvalidUnknown(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        self::expectException($exceptionClassDocumentNumber);
+        $this->expectException($exceptionClass);
         $instance->setUnknown($value);
     }
 
     /**
-     * @dataProvider invalidUnknownDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validUnknownDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_unknown'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidUnknownDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_unknown'));
+    }
+
+    /**
+     * Test property "ean_8"
+     * @dataProvider validEan8DataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidUnknown($value, string $exceptionClassDocumentNumber): void
+    public function testEan8(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        self::expectException($exceptionClassDocumentNumber);
-        $instance->unknown = $value;
-    }
-
-    public static function invalidUnknownDataProvider()
-    {
-        return [
-            [[], TypeError::class],
-            [fopen(__FILE__, 'r'), TypeError::class],
-            [Random::str(MarkCodeInfo::MAX_UNKNOWN_LENGTH + 1), InvalidPropertyValueException::class]
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getEan8());
+        self::assertEmpty($instance->ean_8);
+        $instance->setEan8($value);
+        self::assertEquals($value, is_array($value) ? $instance->getEan8()->toArray() : $instance->getEan8());
+        self::assertEquals($value, is_array($value) ? $instance->ean_8->toArray() : $instance->ean_8);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getEan8());
+            self::assertNotNull($instance->ean_8);
+            self::assertLessThanOrEqual(8, is_string($instance->getEan8()) ? mb_strlen($instance->getEan8()) : $instance->getEan8());
+            self::assertLessThanOrEqual(8, is_string($instance->ean_8) ? mb_strlen($instance->ean_8) : $instance->ean_8);
+            self::assertGreaterThanOrEqual(8, is_string($instance->getEan8()) ? mb_strlen($instance->getEan8()) : $instance->getEan8());
+            self::assertGreaterThanOrEqual(8, is_string($instance->ean_8) ? mb_strlen($instance->ean_8) : $instance->ean_8);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetEan8(array $options): void
-    {
-        $expected = $options['ean_8'];
-
-        $instance = self::getInstance();
-
-        $instance->setEan8($expected);
-        self::assertEquals($expected, $instance->getEan8());
-        self::assertEquals($expected, $instance->ean_8);
-
-        $instance = self::getInstance();
-        $instance->ean_8 = $expected;
-        self::assertEquals($expected, $instance->getEan8());
-        self::assertEquals($expected, $instance->ean_8);
-    }
-
-    /**
+     * Test invalid property "ean_8"
      * @dataProvider invalidEan8DataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidEan8($value, string $exception): void
+    public function testInvalidEan8(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setEan8($value);
     }
 
     /**
-     * @dataProvider invalidEan8DataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validEan8DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_ean_8'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidEan8DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_ean_8'));
+    }
+
+    /**
+     * Test property "ean_13"
+     * @dataProvider validEan13DataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidEan8($value, string $exception): void
+    public function testEan13(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        self::expectException($exception);
-        $instance->ean_8 = $value;
-    }
-
-    public static function invalidEan8DataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::EAN_8_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getEan13());
+        self::assertEmpty($instance->ean_13);
+        $instance->setEan13($value);
+        self::assertEquals($value, is_array($value) ? $instance->getEan13()->toArray() : $instance->getEan13());
+        self::assertEquals($value, is_array($value) ? $instance->ean_13->toArray() : $instance->ean_13);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getEan13());
+            self::assertNotNull($instance->ean_13);
+            self::assertLessThanOrEqual(13, is_string($instance->getEan13()) ? mb_strlen($instance->getEan13()) : $instance->getEan13());
+            self::assertLessThanOrEqual(13, is_string($instance->ean_13) ? mb_strlen($instance->ean_13) : $instance->ean_13);
+            self::assertGreaterThanOrEqual(13, is_string($instance->getEan13()) ? mb_strlen($instance->getEan13()) : $instance->getEan13());
+            self::assertGreaterThanOrEqual(13, is_string($instance->ean_13) ? mb_strlen($instance->ean_13) : $instance->ean_13);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetEan13(array $options): void
-    {
-        $expected = $options['ean_13'];
-
-        $instance = self::getInstance();
-
-        $instance->setEan13($expected);
-        self::assertEquals($expected, $instance->getEan13());
-        self::assertEquals($expected, $instance->ean_13);
-
-        $instance = self::getInstance();
-        $instance->ean_13 = $expected;
-        self::assertEquals($expected, $instance->getEan13());
-        self::assertEquals($expected, $instance->ean_13);
-    }
-
-    /**
+     * Test invalid property "ean_13"
      * @dataProvider invalidEan13DataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidEan13($value, string $exception): void
+    public function testInvalidEan13(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setEan13($value);
     }
 
     /**
-     * @dataProvider invalidEan13DataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validEan13DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_ean_13'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidEan13DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_ean_13'));
+    }
+
+    /**
+     * Test property "itf_14"
+     * @dataProvider validItf14DataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidEan13($value, string $exception): void
+    public function testItf14(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->ean_13 = $value;
-    }
-
-    public static function invalidEan13DataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::EAN_13_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getItf14());
+        self::assertEmpty($instance->itf_14);
+        $instance->setItf14($value);
+        self::assertEquals($value, is_array($value) ? $instance->getItf14()->toArray() : $instance->getItf14());
+        self::assertEquals($value, is_array($value) ? $instance->itf_14->toArray() : $instance->itf_14);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getItf14());
+            self::assertNotNull($instance->itf_14);
+            self::assertLessThanOrEqual(14, is_string($instance->getItf14()) ? mb_strlen($instance->getItf14()) : $instance->getItf14());
+            self::assertLessThanOrEqual(14, is_string($instance->itf_14) ? mb_strlen($instance->itf_14) : $instance->itf_14);
+            self::assertGreaterThanOrEqual(14, is_string($instance->getItf14()) ? mb_strlen($instance->getItf14()) : $instance->getItf14());
+            self::assertGreaterThanOrEqual(14, is_string($instance->itf_14) ? mb_strlen($instance->itf_14) : $instance->itf_14);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetItf14(array $options): void
-    {
-        $expected = $options['itf_14'];
-
-        $instance = self::getInstance();
-
-        $instance->setItf14($expected);
-        self::assertEquals($expected, $instance->getItf14());
-        self::assertEquals($expected, $instance->itf_14);
-
-        $instance = self::getInstance();
-        $instance->itf_14 = $expected;
-        self::assertEquals($expected, $instance->getItf14());
-        self::assertEquals($expected, $instance->itf_14);
-    }
-
-    /**
+     * Test invalid property "itf_14"
      * @dataProvider invalidItf14DataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidItf14($value, string $exception): void
+    public function testInvalidItf14(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setItf14($value);
     }
 
     /**
-     * @dataProvider invalidItf14DataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validItf14DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_itf_14'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidItf14DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_itf_14'));
+    }
+
+    /**
+     * Test property "gs_10"
+     * @dataProvider validGs10DataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidItf14($value, string $exception): void
+    public function testGs10(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->itf_14 = $value;
-    }
-
-    public static function invalidItf14DataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::ITF_14_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getGs10());
+        self::assertEmpty($instance->gs_10);
+        $instance->setGs10($value);
+        self::assertEquals($value, is_array($value) ? $instance->getGs10()->toArray() : $instance->getGs10());
+        self::assertEquals($value, is_array($value) ? $instance->gs_10->toArray() : $instance->gs_10);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getGs10());
+            self::assertNotNull($instance->gs_10);
+            self::assertLessThanOrEqual(38, is_string($instance->getGs10()) ? mb_strlen($instance->getGs10()) : $instance->getGs10());
+            self::assertLessThanOrEqual(38, is_string($instance->gs_10) ? mb_strlen($instance->gs_10) : $instance->gs_10);
+            self::assertGreaterThanOrEqual(1, is_string($instance->getGs10()) ? mb_strlen($instance->getGs10()) : $instance->getGs10());
+            self::assertGreaterThanOrEqual(1, is_string($instance->gs_10) ? mb_strlen($instance->gs_10) : $instance->gs_10);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetGs10(array $options): void
-    {
-        $expected = $options['gs_10'];
-
-        $instance = self::getInstance();
-
-        $instance->setGs10($expected);
-        self::assertEquals($expected, $instance->getGs10());
-        self::assertEquals($expected, $instance->gs_10);
-
-        $instance = self::getInstance();
-        $instance->gs_10 = $expected;
-        self::assertEquals($expected, $instance->getGs10());
-        self::assertEquals($expected, $instance->gs_10);
-    }
-
-    /**
+     * Test invalid property "gs_10"
      * @dataProvider invalidGs10DataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidGs10($value, string $exception): void
+    public function testInvalidGs10(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setGs10($value);
     }
 
     /**
-     * @dataProvider invalidGs10DataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validGs10DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_gs_10'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidGs10DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_gs_10'));
+    }
+
+    /**
+     * Test property "gs_1m"
+     * @dataProvider validGs1mDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidGs10($value, string $exception): void
+    public function testGs1m(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->gs_10 = $value;
-    }
-
-    public static function invalidGs10DataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::MAX_GS_10_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getGs1m());
+        self::assertEmpty($instance->gs_1m);
+        $instance->setGs1m($value);
+        self::assertEquals($value, is_array($value) ? $instance->getGs1m()->toArray() : $instance->getGs1m());
+        self::assertEquals($value, is_array($value) ? $instance->gs_1m->toArray() : $instance->gs_1m);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getGs1m());
+            self::assertNotNull($instance->gs_1m);
+            self::assertLessThanOrEqual(200, is_string($instance->getGs1m()) ? mb_strlen($instance->getGs1m()) : $instance->getGs1m());
+            self::assertLessThanOrEqual(200, is_string($instance->gs_1m) ? mb_strlen($instance->gs_1m) : $instance->gs_1m);
+            self::assertGreaterThanOrEqual(1, is_string($instance->getGs1m()) ? mb_strlen($instance->getGs1m()) : $instance->getGs1m());
+            self::assertGreaterThanOrEqual(1, is_string($instance->gs_1m) ? mb_strlen($instance->gs_1m) : $instance->gs_1m);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetGs1m(array $options): void
-    {
-        $expected = $options['gs_1m'];
-
-        $instance = self::getInstance();
-
-        $instance->setGs1m($expected);
-        self::assertEquals($expected, $instance->getGs1m());
-        self::assertEquals($expected, $instance->gs_1m);
-
-        $instance = self::getInstance();
-        $instance->gs_1m = $expected;
-        self::assertEquals($expected, $instance->getGs1m());
-        self::assertEquals($expected, $instance->gs_1m);
-    }
-
-    /**
+     * Test invalid property "gs_1m"
      * @dataProvider invalidGs1mDataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidGs1m($value, string $exception): void
+    public function testInvalidGs1m(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setGs1m($value);
     }
 
     /**
-     * @dataProvider invalidGs1mDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validGs1mDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_gs_1m'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidGs1mDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_gs_1m'));
+    }
+
+    /**
+     * Test property "short"
+     * @dataProvider validShortDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidGs1m($value, string $exception): void
+    public function testShort(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->gs_1m = $value;
-    }
-
-    public static function invalidGs1mDataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::MAX_GS_1M_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getShort());
+        self::assertEmpty($instance->short);
+        $instance->setShort($value);
+        self::assertEquals($value, is_array($value) ? $instance->getShort()->toArray() : $instance->getShort());
+        self::assertEquals($value, is_array($value) ? $instance->short->toArray() : $instance->short);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getShort());
+            self::assertNotNull($instance->short);
+            self::assertLessThanOrEqual(38, is_string($instance->getShort()) ? mb_strlen($instance->getShort()) : $instance->getShort());
+            self::assertLessThanOrEqual(38, is_string($instance->short) ? mb_strlen($instance->short) : $instance->short);
+            self::assertGreaterThanOrEqual(1, is_string($instance->getShort()) ? mb_strlen($instance->getShort()) : $instance->getShort());
+            self::assertGreaterThanOrEqual(1, is_string($instance->short) ? mb_strlen($instance->short) : $instance->short);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetShort(array $options): void
-    {
-        $expected = $options['short'];
-
-        $instance = self::getInstance();
-
-        $instance->setShort($expected);
-        self::assertEquals($expected, $instance->getShort());
-        self::assertEquals($expected, $instance->short);
-
-        $instance = self::getInstance();
-        $instance->short = $expected;
-        self::assertEquals($expected, $instance->getShort());
-        self::assertEquals($expected, $instance->short);
-    }
-
-    /**
+     * Test invalid property "short"
      * @dataProvider invalidShortDataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidShort($value, string $exception): void
+    public function testInvalidShort(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setShort($value);
     }
 
     /**
-     * @dataProvider invalidShortDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validShortDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_short'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidShortDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_short'));
+    }
+
+    /**
+     * Test property "fur"
+     * @dataProvider validFurDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidShort($value, string $exception): void
+    public function testFur(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->short = $value;
-    }
-
-    public static function invalidShortDataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::MAX_SHORT_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getFur());
+        self::assertEmpty($instance->fur);
+        $instance->setFur($value);
+        self::assertEquals($value, is_array($value) ? $instance->getFur()->toArray() : $instance->getFur());
+        self::assertEquals($value, is_array($value) ? $instance->fur->toArray() : $instance->fur);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getFur());
+            self::assertNotNull($instance->fur);
+            self::assertLessThanOrEqual(20, is_string($instance->getFur()) ? mb_strlen($instance->getFur()) : $instance->getFur());
+            self::assertLessThanOrEqual(20, is_string($instance->fur) ? mb_strlen($instance->fur) : $instance->fur);
+            self::assertGreaterThanOrEqual(20, is_string($instance->getFur()) ? mb_strlen($instance->getFur()) : $instance->getFur());
+            self::assertGreaterThanOrEqual(20, is_string($instance->fur) ? mb_strlen($instance->fur) : $instance->fur);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetFur(array $options): void
-    {
-        $expected = $options['fur'];
-
-        $instance = self::getInstance();
-
-        $instance->setFur($expected);
-        self::assertEquals($expected, $instance->getFur());
-        self::assertEquals($expected, $instance->fur);
-
-        $instance = self::getInstance();
-        $instance->fur = $expected;
-        self::assertEquals($expected, $instance->getFur());
-        self::assertEquals($expected, $instance->fur);
-    }
-
-    /**
+     * Test invalid property "fur"
      * @dataProvider invalidFurDataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidFur($value, string $exception): void
+    public function testInvalidFur(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setFur($value);
     }
 
     /**
-     * @dataProvider invalidFurDataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validFurDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_fur'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidFurDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_fur'));
+    }
+
+    /**
+     * Test property "egais_20"
+     * @dataProvider validEgais20DataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidFur($value, string $exception): void
+    public function testEgais20(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->fur = $value;
-    }
-
-    public static function invalidFurDataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::FUR_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getEgais20());
+        self::assertEmpty($instance->egais_20);
+        $instance->setEgais20($value);
+        self::assertEquals($value, is_array($value) ? $instance->getEgais20()->toArray() : $instance->getEgais20());
+        self::assertEquals($value, is_array($value) ? $instance->egais_20->toArray() : $instance->egais_20);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getEgais20());
+            self::assertNotNull($instance->egais_20);
+            self::assertLessThanOrEqual(33, is_string($instance->getEgais20()) ? mb_strlen($instance->getEgais20()) : $instance->getEgais20());
+            self::assertLessThanOrEqual(33, is_string($instance->egais_20) ? mb_strlen($instance->egais_20) : $instance->egais_20);
+            self::assertGreaterThanOrEqual(33, is_string($instance->getEgais20()) ? mb_strlen($instance->getEgais20()) : $instance->getEgais20());
+            self::assertGreaterThanOrEqual(33, is_string($instance->egais_20) ? mb_strlen($instance->egais_20) : $instance->egais_20);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetEgais20(array $options): void
-    {
-        $expected = $options['egais_20'];
-
-        $instance = self::getInstance();
-
-        $instance->setEgais20($expected);
-        self::assertEquals($expected, $instance->getEgais20());
-        self::assertEquals($expected, $instance->egais_20);
-
-        $instance = self::getInstance();
-        $instance->egais_20 = $expected;
-        self::assertEquals($expected, $instance->getEgais20());
-        self::assertEquals($expected, $instance->egais_20);
-    }
-
-    /**
+     * Test invalid property "egais_20"
      * @dataProvider invalidEgais20DataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidEgais20($value, string $exception): void
+    public function testInvalidEgais20(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setEgais20($value);
     }
 
     /**
-     * @dataProvider invalidEgais20DataProvider
-     *
+     * @return array[]
+     * @throws Exception
+     */
+    public function validEgais20DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_egais_20'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidEgais20DataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_egais_20'));
+    }
+
+    /**
+     * Test property "egais_30"
+     * @dataProvider validEgais30DataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidEgais20($value, string $exception): void
+    public function testEgais30(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->egais_20 = $value;
-    }
-
-    public static function invalidEgais20DataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::EGAIS_20_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getEgais30());
+        self::assertEmpty($instance->egais_30);
+        $instance->setEgais30($value);
+        self::assertEquals($value, is_array($value) ? $instance->getEgais30()->toArray() : $instance->getEgais30());
+        self::assertEquals($value, is_array($value) ? $instance->egais_30->toArray() : $instance->egais_30);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getEgais30());
+            self::assertNotNull($instance->egais_30);
+            self::assertLessThanOrEqual(14, is_string($instance->getEgais30()) ? mb_strlen($instance->getEgais30()) : $instance->getEgais30());
+            self::assertLessThanOrEqual(14, is_string($instance->egais_30) ? mb_strlen($instance->egais_30) : $instance->egais_30);
+            self::assertGreaterThanOrEqual(14, is_string($instance->getEgais30()) ? mb_strlen($instance->getEgais30()) : $instance->getEgais30());
+            self::assertGreaterThanOrEqual(14, is_string($instance->egais_30) ? mb_strlen($instance->egais_30) : $instance->egais_30);
+        }
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetEgais30(array $options): void
-    {
-        $expected = $options['egais_30'];
-
-        $instance = self::getInstance();
-
-        $instance->setEgais30($expected);
-        self::assertEquals($expected, $instance->getEgais30());
-        self::assertEquals($expected, $instance->egais_30);
-
-        $instance = self::getInstance();
-        $instance->egais_30 = $expected;
-        self::assertEquals($expected, $instance->getEgais30());
-        self::assertEquals($expected, $instance->egais_30);
-    }
-
-    /**
+     * Test invalid property "egais_30"
      * @dataProvider invalidEgais30DataProvider
-     *
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidEgais30($value, string $exception): void
+    public function testInvalidEgais30(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exception);
+        $this->expectException($exceptionClass);
         $instance->setEgais30($value);
     }
 
     /**
-     * @dataProvider invalidEgais30DataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidEgais30($value, string $exception): void
+    public function validEgais30DataProvider(): array
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exception);
-        $instance->egais_30 = $value;
-    }
-
-    public static function invalidEgais30DataProvider()
-    {
-        return [
-            [Random::str(MarkCodeInfo::EGAIS_30_LENGTH + 1), InvalidPropertyValueException::class],
-        ];
-    }
-
-    public static function validArrayDataProvider()
-    {
-        $result = [];
-        foreach (range(1, 10) as $i) {
-            $result[$i][] = [
-                'mark_code_raw' => Random::str(1, 256),
-                'unknown' => Random::str(1, MarkCodeInfo::MAX_UNKNOWN_LENGTH),
-                'ean_8' => Random::str(MarkCodeInfo::EAN_8_LENGTH),
-                'ean_13' => Random::str(MarkCodeInfo::EAN_13_LENGTH),
-                'itf_14' => Random::str(MarkCodeInfo::ITF_14_LENGTH),
-                'gs_10' => Random::str(MarkCodeInfo::MAX_GS_10_LENGTH),
-                'gs_1m' => Random::str(MarkCodeInfo::MAX_GS_1M_LENGTH),
-                'short' => Random::str(MarkCodeInfo::MAX_SHORT_LENGTH),
-                'fur' => Random::str(MarkCodeInfo::FUR_LENGTH),
-                'egais_20' => Random::str(MarkCodeInfo::EGAIS_20_LENGTH),
-                'egais_30' => Random::str(MarkCodeInfo::EGAIS_30_LENGTH),
-            ];
-        }
-
-        return $result;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_egais_30'));
     }
 
     /**
-     * @dataProvider validArrayDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testJsonSerialize(array $options): void
+    public function invalidEgais30DataProvider(): array
     {
-        $instance = self::getInstance($options);
-        $expected = $options;
-        self::assertEquals($expected, $instance->jsonSerialize());
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_egais_30'));
     }
 
-    protected static function getInstance($options = [])
+    /**
+     * Test valid method "jsonSerialize"
+     * @dataProvider validClassDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function testJsonSerialize(mixed $value): void
     {
-        return new MarkCodeInfo($options);
+        $instance = $this->getTestInstance($value);
+        self::assertEquals($value, $instance->jsonSerialize());
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function validClassDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return [$this->getValidDataProviderByClass($instance)];
     }
 }

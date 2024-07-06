@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Notification;
 
 use Exception;
@@ -35,7 +59,11 @@ if (!defined('YOOKASSA_DATE')) {
 }
 
 /**
- * @internal
+ * NotificationFactoryTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class NotificationFactoryTest extends TestCase
 {
@@ -44,7 +72,7 @@ class NotificationFactoryTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testInvalidFactory($options): void
+    public function testInvalidFactory(mixed $options): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = $this->getTestInstance();
@@ -109,7 +137,7 @@ class NotificationFactoryTest extends TestCase
         return $result;
     }
 
-    public static function invalidDataArrayDataProvider()
+    public static function invalidDataArrayDataProvider(): array
     {
         return [
             [[]],
@@ -137,7 +165,7 @@ class NotificationFactoryTest extends TestCase
         return Random::value(NotificationEventType::getEnabledValues());
     }
 
-    private function getRefundNotification()
+    private function getRefundNotification(): array
     {
         $statuses = RefundStatus::getValidValues();
         $receiptRegistrations = ReceiptRegistrationStatus::getValidValues();
@@ -164,7 +192,7 @@ class NotificationFactoryTest extends TestCase
         ];
     }
 
-    private function getPaymentNotification($type)
+    private function getPaymentNotification($type): array
     {
         $statuses = PaymentStatus::getValidValues();
         $receiptRegistrations = ReceiptRegistrationStatus::getValidValues();
@@ -221,7 +249,7 @@ class NotificationFactoryTest extends TestCase
         ];
     }
 
-    private function getPayoutNotification($type)
+    private function getPayoutNotification($type): array
     {
         $cancellationDetailsParties = PayoutCancellationDetailsPartyCode::getValidValues();
         $cancellationDetailsReasons = PayoutCancellationDetailsReasonCode::getValidValues();
@@ -265,7 +293,7 @@ class NotificationFactoryTest extends TestCase
         ];
     }
 
-    private function getDealNotification()
+    private function getDealNotification(): array
     {
         $statuses = DealStatus::getValidValues();
         $types = DealType::getValidValues();
@@ -307,7 +335,7 @@ class NotificationFactoryTest extends TestCase
      *
      * @throws Exception
      */
-    private function assertObject($event, $object, $value): void
+    private function assertObject(mixed $event, mixed $object, mixed $value): void
     {
         self::assertNotNull($object);
 

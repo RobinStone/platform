@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -51,9 +51,9 @@ class VatDataFactory
      *
      * @param string|null $type Тип данных об НДС
      *
-     * @return VatData
+     * @return AbstractVatData
      */
-    public function factory(?string $type = null, ?array $data = []): VatData
+    public function factory(?string $type = null, ?array $data = []): AbstractVatData
     {
         if (!is_string($type)) {
             throw new InvalidArgumentException('Invalid payment type value in payment factory');
@@ -72,7 +72,7 @@ class VatDataFactory
      * @param array|null $data Массив данных об НДС
      * @param string|null $type Тип данных об НДС
      */
-    public function factoryFromArray(?array $data = [], ?string $type = null): VatData
+    public function factoryFromArray(?array $data = [], ?string $type = null): AbstractVatData
     {
         if (null === $type) {
             if (array_key_exists('type', $data)) {
@@ -84,11 +84,6 @@ class VatDataFactory
                 );
             }
         }
-//        foreach ($data as $key => $value) {
-//            if ($paymentData->offsetExists($key)) {
-//                $paymentData->offsetSet($key, $value);
-//            }
-//        }
 
         return $this->factory($type, $data);
     }

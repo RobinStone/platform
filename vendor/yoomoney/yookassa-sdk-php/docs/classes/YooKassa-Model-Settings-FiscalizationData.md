@@ -382,7 +382,7 @@ public offsetUnset(string $offset) : void
 #### public setEnabled() : self
 
 ```php
-public setEnabled(bool|array|null $enabled = null) : self
+public setEnabled(bool|null $enabled = null) : self
 ```
 
 **Summary**
@@ -395,7 +395,7 @@ public setEnabled(bool|array|null $enabled = null) : self
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">bool OR array OR null</code> | enabled  | В настройках магазина включена отправка чеков. |
+| <code lang="php">bool OR null</code> | enabled  | В настройках магазина включена отправка чеков. |
 
 **Returns:** self - 
 
@@ -488,10 +488,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

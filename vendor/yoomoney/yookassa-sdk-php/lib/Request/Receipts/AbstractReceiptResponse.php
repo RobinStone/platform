@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -393,7 +393,7 @@ abstract class AbstractReceiptResponse extends AbstractObject implements Receipt
     public function getItems(): ListObjectInterface
     {
         if ($this->_items === null) {
-            $this->_items = new ListObject(Settlement::class);
+            $this->_items = new ListObject(ReceiptResponseItem::class);
         }
         return $this->_items;
     }

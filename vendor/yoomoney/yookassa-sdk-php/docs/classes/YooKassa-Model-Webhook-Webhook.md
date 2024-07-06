@@ -241,10 +241,10 @@ public fromArray(array|\Traversable $sourceArray) : void
 
 
 <a name="method_getEvent" class="anchor"></a>
-#### public getEvent() : string
+#### public getEvent() : string|null
 
 ```php
-public getEvent() : string
+public getEvent() : string|null
 ```
 
 **Summary**
@@ -254,7 +254,7 @@ public getEvent() : string
 **Details:**
 * Inherited From: [\YooKassa\Model\Webhook\Webhook](../classes/YooKassa-Model-Webhook-Webhook.md)
 
-**Returns:** string - Событие, о котором уведомляет ЮKassa
+**Returns:** string|null - Событие, о котором уведомляет ЮKassa
 
 
 <a name="method_getId" class="anchor"></a>
@@ -275,10 +275,10 @@ public getId() : string|null
 
 
 <a name="method_getUrl" class="anchor"></a>
-#### public getUrl() : string
+#### public getUrl() : string|null
 
 ```php
-public getUrl() : string
+public getUrl() : string|null
 ```
 
 **Summary**
@@ -288,7 +288,7 @@ public getUrl() : string
 **Details:**
 * Inherited From: [\YooKassa\Model\Webhook\Webhook](../classes/YooKassa-Model-Webhook-Webhook.md)
 
-**Returns:** string - URL, на который ЮKassa будет отправлять уведомления
+**Returns:** string|null - URL, на который ЮKassa будет отправлять уведомления
 
 
 <a name="method_getValidator" class="anchor"></a>
@@ -542,10 +542,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

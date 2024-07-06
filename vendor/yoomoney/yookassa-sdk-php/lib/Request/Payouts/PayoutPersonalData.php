@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,8 +32,10 @@ use YooKassa\Validator\Constraints as Assert;
 /**
  * Класс, представляющий модель PayoutPersonalData.
  *
- * Персональные данные получателя выплаты. Необходимо передавать,
- * если вы делаете выплату с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check). Только для обычных выплат.
+ * Персональные данные получателя выплаты. Только для обычных выплат.
+ * Необходимо передавать в этих сценариях:
+ *  * [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check);
+ *  * [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send).
  *
  * @category Class
  * @package  YooKassa\Request

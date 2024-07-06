@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,13 +40,18 @@ use YooKassa\Validator\Constraints as Assert;
  * @link     https://yookassa.ru/developers/api
  *
  * @property string $fullName Полное наименование организации
+ * @property string $full_name Полное наименование организации
  * @property string $shortName Сокращенное наименование организации
+ * @property string $short_name Сокращенное наименование организации
  * @property string $address Адрес организации
  * @property string $inn ИНН организации
  * @property string $kpp КПП организации
  * @property string $bankName Наименование банка организации
+ * @property string $bank_name Наименование банка организации
  * @property string $bankBranch Отделение банка организации
+ * @property string $bank_branch Отделение банка организации
  * @property string $bankBik БИК банка организации
+ * @property string $bank_bik БИК банка организации
  * @property string $account Номер счета организации
  */
 class PayerBankDetails extends AbstractObject implements PayerBankDetailsInterface

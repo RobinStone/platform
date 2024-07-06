@@ -1,282 +1,126 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Deals;
 
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\Deal\DealInterface;
-use YooKassa\Model\Deal\DealStatus;
-use YooKassa\Model\Deal\DealType;
-use YooKassa\Model\Deal\FeeMoment;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Request\Deals\DealsResponse;
 
 /**
- * @internal
+ * DealsResponseTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class DealsResponseTest extends TestCase
+class DealsResponseTest extends AbstractTestCase
 {
+    protected DealsResponse $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @param mixed|null $value
+     * @return DealsResponse
      */
-    public function testGetItems(array $options): void
+    protected function getTestInstance(mixed $value = null): DealsResponse
     {
-        $instance = new DealsResponse($options);
-        if (!empty($options['items'])) {
-            self::assertEquals(count($options['items']), count($instance->getItems()));
-            foreach ($instance->getItems() as $index => $item) {
-                self::assertInstanceOf(DealInterface::class, $item);
-                self::assertArrayHasKey($index, $options['items']);
-                self::assertEquals($options['items'][$index]['id'], $item->getId());
-                self::assertEquals($options['items'][$index]['type'], $item->getType());
-                self::assertEquals($options['items'][$index]['status'], $item->getStatus());
-                self::assertEquals($options['items'][$index]['fee_moment'], $item->getFeeMoment());
-                self::assertEquals($options['items'][$index]['balance']['value'], $item->getBalance()->getValue());
-                self::assertEquals($options['items'][$index]['balance']['currency'], $item->getBalance()->getCurrency());
-                self::assertEquals($options['items'][$index]['payout_balance']['value'], $item->getPayoutBalance()->getValue());
-                self::assertEquals($options['items'][$index]['payout_balance']['currency'], $item->getPayoutBalance()->getCurrency());
-                self::assertEquals($options['items'][$index]['created_at'], $item->getCreatedAt()->format(YOOKASSA_DATE));
-                self::assertEquals($options['items'][$index]['expires_at'], $item->getExpiresAt()->format(YOOKASSA_DATE));
-                self::assertEquals($options['items'][$index]['test'], $item->getTest());
-                self::assertEquals($options['items'][$index]['description'], $item->getDescription());
+        return new DealsResponse($value);
+    }
+
+    /**
+     * @return void
+     */
+    public function testDealsResponseClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(DealsResponse::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(DealsResponse::class));
+        $this->assertInstanceOf(DealsResponse::class, $this->object);
+    }
+
+    /**
+     * Test property "items"
+     * @dataProvider validClassDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testItems(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertIsObject($instance->getItems());
+        self::assertIsObject($instance->items);
+        self::assertNotNull($instance->getItems());
+        self::assertNotNull($instance->items);
+        $instance = $this->getTestInstance($value);
+        self::assertIsObject($instance->getItems());
+        self::assertIsObject($instance->items);
+        self::assertNotNull($instance->getItems());
+        self::assertNotNull($instance->items);
+        foreach ($value['items'] as $key => $element) {
+            if (is_array($element) && !empty($element)) {
+                self::assertEquals($element, $instance->getItems()[$key]->toArray());
+                self::assertEquals($element, $instance->items[$key]->toArray());
+                self::assertIsArray($instance->getItems()[$key]->toArray());
+                self::assertIsArray($instance->items[$key]->toArray());
             }
-        } else {
-            self::assertEmpty($instance->getItems());
+            if (is_object($element) && !empty($element)) {
+                self::assertEquals($element, $instance->getItems()->get($key));
+                self::assertIsObject($instance->getItems()->get($key));
+                self::assertIsObject($instance->items->get($key));
+                self::assertIsObject($instance->getItems());
+                self::assertIsObject($instance->items);
+            }
         }
+        self::assertCount(count($value['items']), $instance->getItems());
+        self::assertCount(count($value['items']), $instance->items);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetNextCursor(array $options): void
+    public function validItemsDataProvider(): array
     {
-        $instance = new DealsResponse($options);
-        if (empty($options['next_cursor'])) {
-            self::assertNull($instance->getNextCursor());
-        } else {
-            self::assertEquals($options['next_cursor'], $instance->getNextCursor());
-        }
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testHasNext(array $options): void
-    {
-        $instance = new DealsResponse($options);
-        if (empty($options['next_cursor'])) {
-            self::assertFalse($instance->hasNextCursor());
-        } else {
-            self::assertTrue($instance->hasNextCursor());
-        }
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetType(array $options): void
-    {
-        $instance = new DealsResponse($options);
-        if (empty($options['type'])) {
-            self::assertEquals('list', $instance->getType());
-        } else {
-            self::assertEquals($options['type'], $instance->getType());
-        }
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     */
-    public function testInvalidData(array $options): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        new DealsResponse($options);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_items'));
     }
 
     /**
      * @return array
      * @throws Exception
      */
-    public static function validDataProvider(): array
+    public function validClassDataProvider(): array
     {
-        $statuses = DealStatus::getValidValues();
-        $types = DealType::getValidValues();
-
-        return [
-            [
-                [
-                    'items' => [],
-                ],
-            ],
-            [
-                [
-                    'items' => [
-                        [
-                            'id' => Random::str(36),
-                            'type' => Random::value($types),
-                            'status' => Random::value($statuses),
-                            'description' => Random::str(128),
-                            'balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'payout_balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                            'test' => Random::bool(),
-                            'metadata' => [],
-                        ],
-                    ],
-                    'next_cursor' => uniqid('', true),
-                    'type' => 'list'
-                ],
-            ],
-            [
-                [
-                    'items' => [
-                        [
-                            'id' => Random::str(36),
-                            'type' => Random::value($types),
-                            'status' => Random::value($statuses),
-                            'description' => Random::str(128),
-                            'balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'payout_balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                            'test' => Random::bool(),
-                            'metadata' => [],
-                        ],
-                        [
-                            'id' => Random::str(36),
-                            'type' => Random::value($types),
-                            'status' => Random::value($statuses),
-                            'description' => Random::str(128),
-                            'balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'payout_balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                            'test' => Random::bool(),
-                            'metadata' => [],
-                        ],
-                    ],
-                    'next_cursor' => uniqid('', true),
-                ],
-            ],
-            [
-                [
-                    'items' => [
-                        [
-                            'id' => Random::str(36),
-                            'type' => Random::value($types),
-                            'status' => Random::value($statuses),
-                            'description' => Random::str(128),
-                            'balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'payout_balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                            'test' => Random::bool(),
-                            'metadata' => [],
-                        ],
-                        [
-                            'id' => Random::str(36),
-                            'type' => Random::value($types),
-                            'status' => Random::value($statuses),
-                            'description' => Random::str(128),
-                            'balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'payout_balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                            'test' => Random::bool(),
-                            'metadata' => [],
-                        ],
-                        [
-                            'id' => Random::str(36),
-                            'type' => Random::value($types),
-                            'status' => Random::value($statuses),
-                            'description' => Random::str(128),
-                            'balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'payout_balance' => [
-                                'value' => number_format(Random::float(0.01, 1000000.0), 2, '.', ''),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                            'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                            'test' => Random::bool(),
-                            'metadata' => [],
-                        ],
-                    ],
-                    'next_cursor' => uniqid('', true),
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public static function invalidDataProvider(): array
-    {
-        return [
-            [
-                [
-                    'next_cursor' => uniqid('', true),
-                    'items' => [
-                        [
-                            'id' => 'null',
-                            'type' => 'null',
-                            'status' => null,
-                            'description' => [],
-                            'balance' => null,
-                            'payout_balance' => null,
-                            'created_at' => [],
-                            'expires_at' => [],
-                            'fee_moment' => Random::bool(),
-                            'test' => null,
-                            'metadata' => 'test',
-                        ],
-                    ],
-                ],
-            ],
-        ];
+        $result = [];
+        for ($i = 0; $i < 4; $i++) {
+            $result[] = $this->getValidDataProviderByClass(new DealsResponse());
+        }
+        return $result;
     }
 }

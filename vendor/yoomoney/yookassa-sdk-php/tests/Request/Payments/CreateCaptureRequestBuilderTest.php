@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments;
 
 use InvalidArgumentException;
@@ -19,7 +43,11 @@ use YooKassa\Request\Payments\CreateCaptureRequestBuilder;
 use YooKassa\Request\Payments\TransferData;
 
 /**
- * @internal
+ * CreateCaptureRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class CreateCaptureRequestBuilderTest extends TestCase
 {
@@ -28,7 +56,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetAmountValue($options): void
+    public function testSetAmountValue(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
         $builder->setAmount($options['amount']);
@@ -47,7 +75,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetDeal($options): void
+    public function testSetDeal(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
         $builder->setDeal($options['deal']);
@@ -66,7 +94,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetAirline($options): void
+    public function testSetAirline(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
         $builder->setAirline($options['airline']);
@@ -110,7 +138,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidAmount($value): void
+    public function testSetInvalidAmount(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateCaptureRequestBuilder();
@@ -122,7 +150,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetAmountCurrency($options): void
+    public function testSetAmountCurrency(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -138,7 +166,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidCurrency($value): void
+    public function testSetInvalidCurrency(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateCaptureRequestBuilder();
@@ -150,7 +178,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetReceiptItems($options): void
+    public function testSetReceiptItems(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -172,7 +200,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testAddReceiptItems($options): void
+    public function testAddReceiptItems(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -208,7 +236,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testAddReceiptShipping($options): void
+    public function testAddReceiptShipping(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -248,7 +276,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         $builder->setReceiptItems($items);
     }
 
-    public static function invalidItemsDataProvider()
+    public static function invalidItemsDataProvider(): array
     {
         return [
             [
@@ -305,7 +333,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetReceiptEmail($options): void
+    public function testSetReceiptEmail(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -327,7 +355,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetReceiptPhone($options): void
+    public function testSetReceiptPhone(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -349,7 +377,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetReceiptTaxSystemCode($options): void
+    public function testSetReceiptTaxSystemCode(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
 
@@ -372,7 +400,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidTaxSystemId($value): void
+    public function testSetInvalidTaxSystemId(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateCaptureRequestBuilder();
@@ -428,14 +456,14 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceipt($value): void
+    public function testSetInvalidReceipt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateCaptureRequestBuilder();
         $builder->setReceipt($value);
     }
 
-    public static function invalidReceiptDataProvider()
+    public static function invalidReceiptDataProvider(): array
     {
         return [
             [null],
@@ -453,7 +481,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testBuild($options): void
+    public function testBuild(mixed $options): void
     {
         $builder = new CreateCaptureRequestBuilder();
         $instance = $builder->build($options);
@@ -466,7 +494,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         }
     }
 
-    public static function validDataProvider()
+    public static function validDataProvider(): array
     {
         $receiptItem = new ReceiptItem();
         $receiptItem->setPrice(new ReceiptItemAmount(1, CurrencyCode::USD));
@@ -568,7 +596,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         return $result;
     }
 
-    public static function validAmountDataProvider()
+    public static function validAmountDataProvider(): array
     {
         return [
             [new MonetaryAmount(Random::int(1, 1000000))],
@@ -576,7 +604,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidAmountDataProvider()
+    public static function invalidAmountDataProvider(): array
     {
         return [
             [-1],
@@ -587,7 +615,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidCurrencyDataProvider()
+    public static function invalidCurrencyDataProvider(): array
     {
         return [
             [''],
@@ -598,7 +626,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidVatIdDataProvider()
+    public static function invalidVatIdDataProvider(): array
     {
         return [
             [false],
@@ -627,7 +655,7 @@ class CreateCaptureRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidDeal($value): void
+    public function testSetInvalidDeal(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateCaptureRequestBuilder();

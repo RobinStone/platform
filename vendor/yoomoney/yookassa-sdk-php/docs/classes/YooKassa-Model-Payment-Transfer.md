@@ -732,7 +732,7 @@ public setDescription(string|null $value = null) : self
 #### public setMetadata() : self
 
 ```php
-public setMetadata(string|array|null $value = null) : self
+public setMetadata(\YooKassa\Model\Metadata|array|null $value = null) : self
 ```
 
 **Summary**
@@ -745,7 +745,7 @@ public setMetadata(string|array|null $value = null) : self
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">string OR array OR null</code> | value  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). Передаются в виде набора пар «ключ-значение» и возвращаются в ответе от ЮKassa. Ограничения: максимум 16 ключей, имя ключа не больше 32 символов, значение ключа не больше 512 символов, тип данных — строка в формате UTF-8. |
+| <code lang="php">\YooKassa\Model\Metadata OR array OR null</code> | value  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). Передаются в виде набора пар «ключ-значение» и возвращаются в ответе от ЮKassa. Ограничения: максимум 16 ключей, имя ключа не больше 32 символов, значение ключа не больше 512 символов, тип данных — строка в формате UTF-8. |
 
 **Returns:** self - 
 
@@ -776,7 +776,7 @@ public setPlatformFeeAmount(\YooKassa\Model\AmountInterface|array|null $value = 
 #### public setReleaseFunds() : self
 
 ```php
-public setReleaseFunds(bool|array|null $value = null) : self
+public setReleaseFunds(bool|null $value = null) : self
 ```
 
 **Summary**
@@ -789,7 +789,7 @@ public setReleaseFunds(bool|array|null $value = null) : self
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">bool OR array OR null</code> | value  | Порядок перевода денег продавцам: ~`true` — перевести сразу, ~`false` — сначала захолдировать. |
+| <code lang="php">bool OR null</code> | value  | Порядок перевода денег продавцам: ~`true` — перевести сразу, ~`false` — сначала захолдировать. |
 
 **Returns:** self - 
 
@@ -882,10 +882,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

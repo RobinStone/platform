@@ -1,123 +1,126 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Refunds;
 
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\Payment\ReceiptRegistrationStatus;
-use YooKassa\Model\Refund\RefundInterface;
-use YooKassa\Model\Refund\RefundStatus;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Request\Refunds\RefundsResponse;
 
 /**
- * @internal
+ * RefundsResponseTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class RefundsResponseTest extends TestCase
+class RefundsResponseTest extends AbstractTestCase
 {
+    protected RefundsResponse $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @param mixed|null $value
+     * @return RefundsResponse
      */
-    public function testGetItems(array $options): void
+    protected function getTestInstance(mixed $value = null): RefundsResponse
     {
-        $instance = new RefundsResponse($options);
-        self::assertSameSize($options['items'], $instance->getItems());
-        foreach ($instance->getItems() as $index => $item) {
-            self::assertInstanceOf(RefundInterface::class, $item);
-            self::assertArrayHasKey($index, $options['items']);
-            self::assertEquals($options['items'][$index]['id'], $item->getId());
-            self::assertEquals($options['items'][$index]['payment_id'], $item->getPaymentId());
-            self::assertEquals($options['items'][$index]['status'], $item->getStatus());
-            self::assertEquals($options['items'][$index]['amount']['value'], $item->getAmount()->getValue());
-            self::assertEquals($options['items'][$index]['amount']['currency'], $item->getAmount()->getCurrency());
-            self::assertEquals($options['items'][$index]['created_at'], $item->getCreatedAt()->format(YOOKASSA_DATE));
-        }
+        return new RefundsResponse($value);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return void
      */
-    public function testGetNextCursor(array $options): void
+    public function testRefundsResponseClassExists(): void
     {
-        $instance = new RefundsResponse($options);
-        if (empty($options['next_cursor'])) {
-            self::assertNull($instance->getNextCursor());
-        } else {
-            self::assertEquals($options['next_cursor'], $instance->getNextCursor());
-        }
+        $this->object = $this->getMockBuilder(RefundsResponse::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(RefundsResponse::class));
+        $this->assertInstanceOf(RefundsResponse::class, $this->object);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test property "items"
+     * @dataProvider validClassDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testHasNextCursor(array $options): void
+    public function testItems(mixed $value): void
     {
-        $instance = new RefundsResponse($options);
-        if (empty($options['next_cursor'])) {
-            self::assertFalse($instance->hasNextCursor());
-        } else {
-            self::assertTrue($instance->hasNextCursor());
+        $instance = $this->getTestInstance();
+        self::assertIsObject($instance->getItems());
+        self::assertIsObject($instance->items);
+        self::assertNotNull($instance->getItems());
+        self::assertNotNull($instance->items);
+        $instance = $this->getTestInstance($value);
+        self::assertIsObject($instance->getItems());
+        self::assertIsObject($instance->items);
+        self::assertNotNull($instance->getItems());
+        self::assertNotNull($instance->items);
+        foreach ($value['items'] as $key => $element) {
+            if (is_array($element) && !empty($element)) {
+                self::assertEquals($element, $instance->getItems()[$key]->toArray());
+                self::assertEquals($element, $instance->items[$key]->toArray());
+                self::assertIsArray($instance->getItems()[$key]->toArray());
+                self::assertIsArray($instance->items[$key]->toArray());
+            }
+            if (is_object($element) && !empty($element)) {
+                self::assertEquals($element, $instance->getItems()->get($key));
+                self::assertIsObject($instance->getItems()->get($key));
+                self::assertIsObject($instance->items->get($key));
+                self::assertIsObject($instance->getItems());
+                self::assertIsObject($instance->items);
+            }
         }
+        self::assertCount(count($value['items']), $instance->getItems());
+        self::assertCount(count($value['items']), $instance->items);
     }
 
-    public static function validDataProvider()
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validItemsDataProvider(): array
     {
-        return [
-            [
-                [
-                    'type' => 'list',
-                    'items' => [],
-                ],
-            ],
-            [
-                [
-                    'type' => 'list',
-                    'items' => [
-                        [
-                            'id' => Random::str(36),
-                            'payment_id' => Random::str(36),
-                            'status' => RefundStatus::SUCCEEDED,
-                            'amount' => [
-                                'value' => Random::int(1, 100),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(0, time())),
-                        ],
-                    ],
-                    'next_cursor' => Random::str(1, 64),
-                ],
-            ],
-            [
-                [
-                    'type' => 'list',
-                    'items' => [
-                        [
-                            'id' => Random::str(36),
-                            'payment_id' => Random::str(36),
-                            'status' => RefundStatus::SUCCEEDED,
-                            'amount' => [
-                                'value' => Random::int(1, 100),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE),
-                        ],
-                        [
-                            'id' => Random::str(36),
-                            'payment_id' => Random::str(36),
-                            'status' => RefundStatus::SUCCEEDED,
-                            'amount' => [
-                                'value' => Random::int(1, 100),
-                                'currency' => Random::value(CurrencyCode::getValidValues()),
-                            ],
-                            'created_at' => date(YOOKASSA_DATE, Random::int(0, time())),
-                            'authorized_at' => date(YOOKASSA_DATE, Random::int(0, time())),
-                            'receipt_registered' => Random::value(ReceiptRegistrationStatus::getValidValues()),
-                            'description' => Random::str(64, 250),
-                        ],
-                    ],
-                    'next_cursor' => Random::str(1, 64),
-                ],
-            ],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_items'));
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function validClassDataProvider(): array
+    {
+        $result = [];
+        for ($i = 0; $i < 4; $i++) {
+            $result[] = $this->getValidDataProviderByClass(new RefundsResponse());
+        }
+        return $result;
     }
 }

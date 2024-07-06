@@ -1,157 +1,179 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
 use Exception;
-use PHPUnit\Framework\TestCase;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
-use YooKassa\Helpers\Random;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Receipt\MarkQuantity;
 
 /**
- * @internal
+ * MarkQuantityTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class MarkQuantityTest extends TestCase
+class MarkQuantityTest extends AbstractTestCase
 {
+    protected MarkQuantity $object;
+
     /**
-     * @dataProvider validArrayDataProvider
+     * @return MarkQuantity
+     */
+    protected function getTestInstance(): MarkQuantity
+    {
+        return new MarkQuantity();
+    }
+
+    /**
+     * @return void
+     */
+    public function testMarkQuantityClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(MarkQuantity::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(MarkQuantity::class));
+        $this->assertInstanceOf(MarkQuantity::class, $this->object);
+    }
+
+    /**
+     * Test property "numerator"
+     * @dataProvider validNumeratorDataProvider
+     * @param mixed $value
      *
-     * @param mixed $options
+     * @return void
+     * @throws Exception
      */
-    public function testConstructor($options): void
+    public function testNumerator(mixed $value): void
     {
-        $instance = self::getInstance($options);
-
-        self::assertEquals($options['numerator'], $instance->getNumerator());
-        self::assertEquals($options['denominator'], $instance->getDenominator());
+        $instance = $this->getTestInstance();
+        $instance->setNumerator($value);
+        self::assertNotNull($instance->getNumerator());
+        self::assertNotNull($instance->numerator);
+        self::assertEquals($value, is_array($value) ? $instance->getNumerator()->toArray() : $instance->getNumerator());
+        self::assertEquals($value, is_array($value) ? $instance->numerator->toArray() : $instance->numerator);
+        self::assertGreaterThanOrEqual(1, is_string($instance->getNumerator()) ? mb_strlen($instance->getNumerator()) : $instance->getNumerator());
+        self::assertGreaterThanOrEqual(1, is_string($instance->numerator) ? mb_strlen($instance->numerator) : $instance->numerator);
+        self::assertIsNumeric($instance->getNumerator());
+        self::assertIsNumeric($instance->numerator);
     }
 
     /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetDenominator(array $options): void
-    {
-        $expected = $options['denominator'];
-
-        $instance = self::getInstance();
-
-        $instance->setDenominator($expected);
-        self::assertEquals($expected, $instance->getDenominator());
-        self::assertEquals($expected, $instance->denominator);
-
-        $instance = self::getInstance();
-        $instance->denominator = $expected;
-        self::assertEquals($expected, $instance->getDenominator());
-        self::assertEquals($expected, $instance->denominator);
-    }
-
-    /**
-     * @dataProvider invalidDenominatorDataProvider
-     *
-     * @param mixed $denominator
-     */
-    public function testSetInvalidDenominator($denominator, string $exceptionClassDocumentNumber): void
-    {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassDocumentNumber);
-        $instance->setDenominator($denominator);
-    }
-
-    /**
-     * @dataProvider invalidDenominatorDataProvider
-     *
-     * @param mixed $denominator
-     */
-    public function testSetterInvalidDenominator($denominator, string $exceptionClassDocumentNumber): void
-    {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassDocumentNumber);
-        $instance->denominator = $denominator;
-    }
-
-    /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testGetSetNumerator(array $options): void
-    {
-        $instance = self::getInstance();
-
-        $instance->setNumerator($options['numerator']);
-        self::assertEquals($options['numerator'], $instance->getNumerator());
-        self::assertEquals($options['numerator'], $instance->numerator);
-    }
-
-    /**
+     * Test invalid property "numerator"
      * @dataProvider invalidNumeratorDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidNumerator(mixed $numerator, string $exceptionClassNumerator): void
+    public function testInvalidNumerator(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exceptionClassNumerator);
-        $instance->setNumerator($numerator);
+        $this->expectException($exceptionClass);
+        $instance->setNumerator($value);
     }
 
     /**
-     * @dataProvider invalidNumeratorDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidNumerator(mixed $numerator, string $exceptionClassNumerator): void
+    public function validNumeratorDataProvider(): array
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassNumerator);
-        $instance->numerator = $numerator;
-    }
-
-    public static function validArrayDataProvider()
-    {
-        $result = [];
-        foreach (range(1, 10) as $i) {
-            $result[$i][] = [
-                'numerator' => Random::int(MarkQuantity::MIN_VALUE, 100),
-                'denominator' => Random::int(MarkQuantity::MIN_VALUE, 100),
-            ];
-        }
-
-        return $result;
-    }
-
-    public static function invalidDenominatorDataProvider()
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            [Random::int(-100, MarkQuantity::MIN_VALUE - 1), InvalidPropertyValueException::class],
-            [-1, InvalidPropertyValueException::class],
-            [0.0, InvalidPropertyValueException::class],
-            [0, InvalidPropertyValueException::class],
-        ];
-    }
-
-    public static function invalidNumeratorDataProvider()
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            [Random::int(-100, MarkQuantity::MIN_VALUE - 1), InvalidPropertyValueException::class],
-            [0.0, InvalidPropertyValueException::class],
-            [0, InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_numerator'));
     }
 
     /**
-     * @dataProvider validArrayDataProvider
+     * @return array[]
+     * @throws Exception
      */
-    public function testJsonSerialize(array $options): void
+    public function invalidNumeratorDataProvider(): array
     {
-        $instance = self::getInstance($options);
-        $expected = $options;
-        self::assertEquals($expected, $instance->jsonSerialize());
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_numerator'));
     }
 
-    protected static function getInstance($options = [])
+    /**
+     * Test property "denominator"
+     * @dataProvider validDenominatorDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testDenominator(mixed $value): void
     {
-        return new MarkQuantity($options);
+        $instance = $this->getTestInstance();
+        $instance->setDenominator($value);
+        self::assertNotNull($instance->getDenominator());
+        self::assertNotNull($instance->denominator);
+        self::assertEquals($value, is_array($value) ? $instance->getDenominator()->toArray() : $instance->getDenominator());
+        self::assertEquals($value, is_array($value) ? $instance->denominator->toArray() : $instance->denominator);
+        self::assertGreaterThanOrEqual(1, is_string($instance->getDenominator()) ? mb_strlen($instance->getDenominator()) : $instance->getDenominator());
+        self::assertGreaterThanOrEqual(1, is_string($instance->denominator) ? mb_strlen($instance->denominator) : $instance->denominator);
+        self::assertIsNumeric($instance->getDenominator());
+        self::assertIsNumeric($instance->denominator);
+    }
+
+    /**
+     * Test invalid property "denominator"
+     * @dataProvider invalidDenominatorDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidDenominator(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setDenominator($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validDenominatorDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_denominator'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidDenominatorDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_denominator'));
     }
 }

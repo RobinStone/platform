@@ -53,8 +53,9 @@ use YooKassa\Request\Payouts\CreatePayoutRequest;
 use YooKassa\Request\Payouts\CreatePayoutResponse;
 use YooKassa\Request\Payouts\PayoutResponse;
 use YooKassa\Request\Payouts\SbpBanksResponse;
-use YooKassa\Request\PersonalData\CreatePersonalDataRequest;
 use YooKassa\Request\PersonalData\PersonalDataResponse;
+use YooKassa\Request\PersonalData\PersonalDataType\PayoutStatementRecipientPersonalDataRequest;
+use YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest;
 use YooKassa\Request\Receipts\AbstractReceiptResponse;
 use YooKassa\Request\Receipts\CreatePostReceiptRequest;
 use YooKassa\Request\Refunds\CreateRefundRequest;
@@ -1837,8 +1838,7 @@ class ClientTest extends TestCase
 
     public function testCreatePersonalData(): void
     {
-        $personalData = CreatePersonalDataRequest::builder()
-            ->setType(PersonalDataType::SBP_PAYOUT_RECIPIENT)
+        $personalData = SbpPayoutRecipientPersonalDataRequest::builder()
             ->setLastName('Иванов')
             ->setFirstName('Иван')
             ->setMiddleName('Иванович')
@@ -1867,11 +1867,11 @@ class ClientTest extends TestCase
         self::assertSame($curlClientStub, $apiClient->getApiClient());
         self::assertInstanceOf(PersonalDataResponse::class, $response);
 
-        $personalData = CreatePersonalDataRequest::builder()
-            ->setType(PersonalDataType::SBP_PAYOUT_RECIPIENT)
+        $personalData = PayoutStatementRecipientPersonalDataRequest::builder()
             ->setLastName('Иванов')
             ->setFirstName('Иван')
             ->setMiddleName('Иванович')
+            ->setBirthdate('2000-01-02')
             ->setMetadata(['recipient_id' => '37'])
             ->build()
         ;
@@ -1913,10 +1913,11 @@ class ClientTest extends TestCase
             ->setApiClient($curlClientStub)
             ->setAuth('123456', 'shopPassword')
             ->createPersonalData([
-                'type' => 'sbp_payout_recipient',
+                'type' => PersonalDataType::PAYOUT_STATEMENT_RECIPIENT,
                 'last_name' => 'Иванов',
                 'first_name' => 'Иван',
                 'middle_name' => 'Иванович',
+                'birthdate' => '2000-01-02',
                 'metadata' => ['recipient_id' => '37'],
             ], 123)
         ;

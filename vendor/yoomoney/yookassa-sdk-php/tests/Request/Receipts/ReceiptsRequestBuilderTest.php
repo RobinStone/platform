@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Receipts;
 
 use PHPUnit\Framework\TestCase;
@@ -10,7 +34,11 @@ use YooKassa\Request\Receipts\ReceiptsRequest;
 use YooKassa\Request\Receipts\ReceiptsRequestBuilder;
 
 /**
- * @internal
+ * ReceiptsRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class ReceiptsRequestBuilderTest extends TestCase
 {
@@ -19,7 +47,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetRefundId($value): void
+    public function testSetRefundId(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setRefundId($value['refundId']);
@@ -38,7 +66,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetPaymentId($value): void
+    public function testSetPaymentId(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setPaymentId($value['paymentId']);
@@ -57,7 +85,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetStatus($value): void
+    public function testSetStatus(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setStatus($value['status']);
@@ -76,7 +104,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetLimit($value): void
+    public function testSetLimit(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setLimit($value['limit']);
@@ -95,7 +123,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetCursor($value): void
+    public function testSetCursor(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setCursor($value['cursor']);
@@ -114,7 +142,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetCreatedAtGt($value): void
+    public function testSetCreatedAtGt(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setCreatedAtGt($value['createdAtGt']);
@@ -133,7 +161,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetCreatedAtGte($value): void
+    public function testSetCreatedAtGte(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setCreatedAtGte($value['createdAtGte']);
@@ -152,7 +180,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetCreatedAtLt($value): void
+    public function testSetCreatedAtLt(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setCreatedAtLt($value['createdAtLt']);
@@ -171,7 +199,7 @@ class ReceiptsRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetCreatedAtLte($value): void
+    public function testSetCreatedAtLte(mixed $value): void
     {
         $builder = new ReceiptsRequestBuilder();
         $builder->setCreatedAtLte($value['createdAtLte']);
@@ -185,7 +213,7 @@ class ReceiptsRequestBuilderTest extends TestCase
         }
     }
 
-    public static function validDataProvider()
+    public static function validDataProvider(): array
     {
         $result = [
             [

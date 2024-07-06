@@ -1,168 +1,483 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\PersonalData;
 
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\PersonalData\PersonalDataCancellationDetailsPartyCode;
-use YooKassa\Model\PersonalData\PersonalDataCancellationDetailsReasonCode;
-use YooKassa\Model\PersonalData\PersonalDataStatus;
-use YooKassa\Model\PersonalData\PersonalDataType;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Request\PersonalData\PersonalDataResponse;
 
 /**
- * @internal
+ * PersonalDataResponseTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class PersonalDataResponseTest extends TestCase
+class PersonalDataResponseTest extends AbstractTestCase
 {
+    protected PersonalDataResponse $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return PersonalDataResponse
      */
-    public function testGetId(array $options): void
+    protected function getTestInstance(): PersonalDataResponse
     {
-        $instance = $this->getTypeInstance($options);
-        self::assertEquals($options['id'], $instance->getId());
+        return new PersonalDataResponse();
     }
 
     /**
-     * @dataProvider validDataProvider
+     * @return void
      */
-    public function testGetStatus(array $options): void
+    public function testPersonalDataResponseClassExists(): void
     {
-        $instance = $this->getTypeInstance($options);
-        self::assertEquals($options['status'], $instance->getStatus());
+        $this->object = $this->getMockBuilder(PersonalDataResponse::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(PersonalDataResponse::class));
+        $this->assertInstanceOf(PersonalDataResponse::class, $this->object);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test property "id"
+     * @dataProvider validIdDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testGetType(array $options): void
+    public function testId(mixed $value): void
     {
-        $instance = $this->getTypeInstance($options);
-        self::assertEquals($options['type'], $instance->getType());
+        $instance = $this->getTestInstance();
+        $instance->setId($value);
+        self::assertNotNull($instance->getId());
+        self::assertNotNull($instance->id);
+        self::assertEquals($value, is_array($value) ? $instance->getId()->toArray() : $instance->getId());
+        self::assertEquals($value, is_array($value) ? $instance->id->toArray() : $instance->id);
+        self::assertLessThanOrEqual(50, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertLessThanOrEqual(50, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+        self::assertGreaterThanOrEqual(36, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertGreaterThanOrEqual(36, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test invalid property "id"
+     * @dataProvider invalidIdDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testGetCreatedAt(array $options): void
+    public function testInvalidId(mixed $value, string $exceptionClass): void
     {
-        $instance = $this->getTypeInstance($options);
-        if (empty($options['created_at'])) {
-            self::assertNull($instance->getCreatedAt());
-            self::assertNull($instance->created_at);
-            self::assertNull($instance->createdAt);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setId($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * Test property "type"
+     * @dataProvider validTypeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testType(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setType($value);
+        self::assertNotNull($instance->getType());
+        self::assertNotNull($instance->type);
+        self::assertEquals($value, is_array($value) ? $instance->getType()->toArray() : $instance->getType());
+        self::assertEquals($value, is_array($value) ? $instance->type->toArray() : $instance->type);
+    }
+
+    /**
+     * Test invalid property "type"
+     * @dataProvider invalidTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidType(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setType($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
+
+    /**
+     * Test property "status"
+     * @dataProvider validStatusDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testStatus(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setStatus($value);
+        self::assertNotNull($instance->getStatus());
+        self::assertNotNull($instance->status);
+        self::assertEquals($value, is_array($value) ? $instance->getStatus()->toArray() : $instance->getStatus());
+        self::assertEquals($value, is_array($value) ? $instance->status->toArray() : $instance->status);
+        self::assertContains($instance->getStatus(), ['waiting_for_operation', 'active', 'canceled']);
+        self::assertContains($instance->status, ['waiting_for_operation', 'active', 'canceled']);
+    }
+
+    /**
+     * Test invalid property "status"
+     * @dataProvider invalidStatusDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidStatus(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setStatus($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * Test property "cancellation_details"
+     * @dataProvider validCancellationDetailsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCancellationDetails(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCancellationDetails());
+        self::assertEmpty($instance->cancellation_details);
+        $instance->setCancellationDetails($value);
+        self::assertEquals($value, is_array($value) ? $instance->getCancellationDetails()->toArray() : $instance->getCancellationDetails());
+        self::assertEquals($value, is_array($value) ? $instance->cancellation_details->toArray() : $instance->cancellation_details);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCancellationDetails());
+            self::assertNotNull($instance->cancellation_details);
+        }
+    }
+
+    /**
+     * Test invalid property "cancellation_details"
+     * @dataProvider invalidCancellationDetailsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCancellationDetails(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCancellationDetails($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCancellationDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_cancellation_details'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCancellationDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_cancellation_details'));
+    }
+
+    /**
+     * Test property "created_at"
+     * @dataProvider validCreatedAtDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCreatedAt(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setCreatedAt($value);
+        self::assertNotNull($instance->getCreatedAt());
+        self::assertNotNull($instance->created_at);
+        if ($value instanceof Datetime) {
+            self::assertEquals($value, $instance->getCreatedAt());
+            self::assertEquals($value, $instance->created_at);
         } else {
-            self::assertEquals($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
+            self::assertEquals(new Datetime($value), $instance->getCreatedAt());
+            self::assertEquals(new Datetime($value), $instance->created_at);
         }
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test invalid property "created_at"
+     * @dataProvider invalidCreatedAtDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testGetExpiresAt(array $options): void
+    public function testInvalidCreatedAt(mixed $value, string $exceptionClass): void
     {
-        $instance = $this->getTypeInstance($options);
-        if (empty($options['expires_at'])) {
-            self::assertNull($instance->getExpiresAt());
-            self::assertNull($instance->expires_at);
-            self::assertNull($instance->expiresAt);
-        } else {
-            self::assertEquals($options['expires_at'], $instance->getExpiresAt()->format(YOOKASSA_DATE));
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCreatedAt($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCreatedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCreatedAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
+
+    /**
+     * Test property "expires_at"
+     * @dataProvider validExpiresAtDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testExpiresAt(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getExpiresAt());
+        self::assertEmpty($instance->expires_at);
+        $instance->setExpiresAt($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getExpiresAt());
+            self::assertNotNull($instance->expires_at);
+            if ($value instanceof Datetime) {
+                self::assertEquals($value, $instance->getExpiresAt());
+                self::assertEquals($value, $instance->expires_at);
+            } else {
+                self::assertEquals(new Datetime($value), $instance->getExpiresAt());
+                self::assertEquals(new Datetime($value), $instance->expires_at);
+            }
         }
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test invalid property "expires_at"
+     * @dataProvider invalidExpiresAtDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testGetCancellationDetails(array $options): void
+    public function testInvalidExpiresAt(mixed $value, string $exceptionClass): void
     {
-        $instance = $this->getTypeInstance($options);
-        if (empty($options['cancellation_details'])) {
-            self::assertNull($instance->getCancellationDetails());
-        } else {
-            self::assertEquals(
-                $options['cancellation_details']['party'],
-                $instance->getCancellationDetails()->getParty()
-            );
-            self::assertEquals(
-                $options['cancellation_details']['reason'],
-                $instance->getCancellationDetails()->getReason()
-            );
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setExpiresAt($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validExpiresAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_expires_at'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidExpiresAtDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_expires_at'));
+    }
+
+    /**
+     * Test property "metadata"
+     * @dataProvider validMetadataDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testMetadata(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMetadata());
+        self::assertEmpty($instance->metadata);
+        $instance->setMetadata($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMetadata());
+            self::assertNotNull($instance->metadata);
+            foreach ($value as $key => $element) {
+                if (!empty($element)) {
+                    self::assertEquals($element, $instance->getMetadata()[$key]);
+                    self::assertEquals($element, $instance->metadata[$key]);
+                    self::assertIsObject($instance->getMetadata());
+                    self::assertIsObject($instance->metadata);
+                }
+            }
+            self::assertCount(count($value), $instance->getMetadata());
+            self::assertCount(count($value), $instance->metadata);
+            if ($instance->getMetadata() instanceof Metadata) {
+                self::assertEquals($value, $instance->getMetadata()->toArray());
+                self::assertEquals($value, $instance->metadata->toArray());
+                self::assertCount(count($value), $instance->getMetadata());
+                self::assertCount(count($value), $instance->metadata);
+            }
         }
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test invalid property "metadata"
+     * @dataProvider invalidMetadataDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testGetMetadata(array $options): void
+    public function testInvalidMetadata(mixed $value, string $exceptionClass): void
     {
-        $instance = $this->getTypeInstance($options);
-        if (empty($options['metadata'])) {
-            self::assertNull($instance->getMetadata());
-        } else {
-            self::assertEquals($options['metadata'], $instance->getMetadata()->toArray());
-        }
-    }
+        $instance = $this->getTestInstance();
 
-    public static function validDataProvider()
-    {
-        $result = [];
-        $cancellationDetailsParties = PersonalDataCancellationDetailsPartyCode::getValidValues();
-        $countCancellationDetailsParties = count($cancellationDetailsParties);
-        $cancellationDetailsReasons = PersonalDataCancellationDetailsReasonCode::getValidValues();
-        $countCancellationDetailsReasons = count($cancellationDetailsReasons);
-
-        $result[] = [
-            [
-                'id' => Random::str(36, 50),
-                'status' => Random::value(PersonalDataStatus::getValidValues()),
-                'type' => Random::value(PersonalDataType::getValidValues()),
-                'created_at' => date(YOOKASSA_DATE, Random::int(111111111, time())),
-                'expires_at' => date(YOOKASSA_DATE, Random::int(111111111, time())),
-                'metadata' => ['order_id' => '37'],
-                'cancellation_details' => [
-                    'party' => Random::value($cancellationDetailsParties),
-                    'reason' => Random::value($cancellationDetailsReasons),
-                ],
-            ],
-        ];
-        $result[] = [
-            [
-                'id' => Random::str(36, 50),
-                'status' => Random::value(PersonalDataStatus::getValidValues()),
-                'type' => Random::value(PersonalDataType::getValidValues()),
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'metadata' => null,
-                'cancellation_details' => null,
-            ],
-        ];
-
-        for ($i = 0; $i < 20; $i++) {
-            $data = [
-                'id' => Random::str(36, 50),
-                'status' => Random::value(PersonalDataStatus::getValidValues()),
-                'type' => Random::value(PersonalDataType::getValidValues()),
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'metadata' => [Random::str(3, 128, 'abcdefghijklmnopqrstuvwxyz') => Random::str(1, 512)],
-                'cancellation_details' => [
-                    'party' => $cancellationDetailsParties[$i % $countCancellationDetailsParties],
-                    'reason' => $cancellationDetailsReasons[$i % $countCancellationDetailsReasons],
-                ],
-            ];
-            $result[] = [$data];
-        }
-
-        return $result;
+        $this->expectException($exceptionClass);
+        $instance->setMetadata($value);
     }
 
     /**
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    private function getTypeInstance($options): PersonalDataResponse
+    public function validMetadataDataProvider(): array
     {
-        return new PersonalDataResponse($options);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_metadata'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidMetadataDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_metadata'));
     }
 }

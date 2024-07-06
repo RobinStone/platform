@@ -1,108 +1,164 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Payment\PaymentMethod;
 
-use InvalidArgumentException;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Payment\PaymentMethod\PaymentMethodYooMoney;
-use YooKassa\Model\Payment\PaymentMethodType;
 
 /**
- * @internal
+ * PaymentMethodYooMoneyTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class PaymentMethodYooMoneyTest extends AbstractTestPaymentMethod
+class PaymentMethodYooMoneyTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validAccountNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetAccountNumber($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setAccountNumber($value);
-        self::assertEquals($value, $instance->getAccountNumber());
-        self::assertEquals($value, $instance->accountNumber);
-        self::assertEquals($value, $instance->account_number);
-
-        $instance = $this->getTestInstance();
-        $instance->accountNumber = $value;
-        self::assertEquals($value, $instance->getAccountNumber());
-        self::assertEquals($value, $instance->accountNumber);
-        self::assertEquals($value, $instance->account_number);
-
-        $instance = $this->getTestInstance();
-        $instance->account_number = $value;
-        self::assertEquals($value, $instance->getAccountNumber());
-        self::assertEquals($value, $instance->accountNumber);
-        self::assertEquals($value, $instance->account_number);
-    }
+    protected PaymentMethodYooMoney $object;
 
     /**
-     * @dataProvider invalidAccountNumberDataProvider
-     *
-     * @param mixed $value
+     * @return PaymentMethodYooMoney
      */
-    public function testSetInvalidAccountNumber($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = $this->getTestInstance();
-        $instance->setAccountNumber($value);
-    }
-
-    /**
-     * @dataProvider invalidAccountNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidAccountNumber($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = $this->getTestInstance();
-        $instance->accountNumber = $value;
-    }
-
-    /**
-     * @dataProvider invalidAccountNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeAccountNumber($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = $this->getTestInstance();
-        $instance->account_number = $value;
-    }
-
-    public static function validAccountNumberDataProvider()
-    {
-        return [
-            [Random::str(11, '0123456789')],
-            [Random::str(12, '0123456789')],
-            [Random::str(13, '0123456789')],
-            [Random::str(31, '0123456789')],
-            [Random::str(32, '0123456789')],
-            [Random::str(33, '0123456789')],
-        ];
-    }
-
-    public static function invalidAccountNumberDataProvider()
-    {
-        return [
-            [true],
-            [Random::str(10, '0123456789')],
-            [Random::str(34, '0123456789')],
-        ];
-    }
-
     protected function getTestInstance(): PaymentMethodYooMoney
     {
         return new PaymentMethodYooMoney();
     }
 
-    protected function getExpectedType(): string
+    /**
+     * @return void
+     */
+    public function testPaymentMethodYooMoneyClassExists(): void
     {
-        return PaymentMethodType::YOO_MONEY;
+        $this->object = $this->getMockBuilder(PaymentMethodYooMoney::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(PaymentMethodYooMoney::class));
+        $this->assertInstanceOf(PaymentMethodYooMoney::class, $this->object);
+    }
+
+    /**
+     * Test property "type"
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testType(): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertContains($instance->getType(), ['yoo_money']);
+        self::assertContains($instance->type, ['yoo_money']);
+        self::assertNotNull($instance->getType());
+        self::assertNotNull($instance->type);
+    }
+
+    /**
+     * Test invalid property "type"
+     * @dataProvider invalidTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidType(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setType($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
+
+    /**
+     * Test property "account_number"
+     * @dataProvider validAccountNumberDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAccountNumber(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAccountNumber());
+        self::assertEmpty($instance->account_number);
+        $instance->setAccountNumber($value);
+        self::assertEquals($value, is_array($value) ? $instance->getAccountNumber()->toArray() : $instance->getAccountNumber());
+        self::assertEquals($value, is_array($value) ? $instance->account_number->toArray() : $instance->account_number);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getAccountNumber());
+            self::assertNotNull($instance->account_number);
+            self::assertMatchesRegularExpression("/[0-9]{11,33}/", $instance->getAccountNumber());
+            self::assertMatchesRegularExpression("/[0-9]{11,33}/", $instance->account_number);
+        }
+    }
+
+    /**
+     * Test invalid property "account_number"
+     * @dataProvider invalidAccountNumberDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAccountNumber(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAccountNumber($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAccountNumberDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_account_number'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAccountNumberDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_account_number'));
     }
 }

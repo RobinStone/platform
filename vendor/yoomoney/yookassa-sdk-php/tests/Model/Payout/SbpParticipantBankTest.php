@@ -1,248 +1,231 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Payout;
 
 use Exception;
-use TypeError;
-use YooKassa\Helpers\Random;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Payout\SbpParticipantBank;
-use PHPUnit\Framework\TestCase;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
 
-class SbpParticipantBankTest extends TestCase
+/**
+ * SbpParticipantBankTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
+ */
+class SbpParticipantBankTest extends AbstractTestCase
 {
+    protected SbpParticipantBank $object;
+
     /**
-     * @param array $options
      * @return SbpParticipantBank
      */
-    protected static function getInstance(array $options = []): SbpParticipantBank
+    protected function getTestInstance(): SbpParticipantBank
     {
-        return new SbpParticipantBank($options);
+        return new SbpParticipantBank();
     }
 
     /**
-     * @dataProvider validDataProvider
-     * @param array $value
      * @return void
      */
-    public function testGetSetName(array $value): void
+    public function testSbpParticipantBankClassExists(): void
     {
-        $instance = self::getInstance();
-        $instance->setName($value['name']);
-        self::assertEquals($value['name'], $instance->getName());
-        self::assertEquals($value['name'], $instance->name);
-
-        $instance->name = $value['name'];
-        self::assertEquals($value['name'], $instance->getName());
-        self::assertEquals($value['name'], $instance->name);
+        $this->object = $this->getMockBuilder(SbpParticipantBank::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(SbpParticipantBank::class));
+        $this->assertInstanceOf(SbpParticipantBank::class, $this->object);
     }
 
     /**
-     * @dataProvider validDataProvider
-     * @param array $value
-     * @return void
-     */
-    public function testGetSetBic(array $value): void
-    {
-        $instance = self::getInstance();
-        $instance->setBic($value['bic']);
-        self::assertEquals($value['bic'], $instance->getBic());
-        self::assertEquals($value['bic'], $instance->bic);
-
-        $instance->bic = $value['bic'];
-        self::assertEquals($value['bic'], $instance->getBic());
-        self::assertEquals($value['bic'], $instance->bic);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     * @param array $value
-     * @return void
-     */
-    public function testGetSetBankId(array $value): void
-    {
-        $instance = self::getInstance();
-        $instance->setBankId($value['bank_id']);
-        self::assertEquals($value['bank_id'], $instance->getBankId());
-        self::assertEquals($value['bank_id'], $instance->bank_id);
-
-        $instance->bank_id = $value['bank_id'];
-        self::assertEquals($value['bank_id'], $instance->getBankId());
-        self::assertEquals($value['bank_id'], $instance->bank_id);
-    }
-
-    /**
-     * @dataProvider validArrayDataProvider
-     */
-    public function testJsonSerialize(array $options): void
-    {
-        $instance = self::getInstance($options);
-        $expected = $options;
-        self::assertEquals($expected, $instance->jsonSerialize());
-    }
-
-    /**
-     * @dataProvider invalidNameDataProvider
-     *
+     * Test property "bank_id"
+     * @dataProvider validBankIdDataProvider
      * @param mixed $value
-     * @param string $exceptionClassName
-     */
-    public function testSetInvalidName(mixed $value, string $exceptionClassName): void
-    {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassName);
-        $instance->setName($value);
-    }
-
-    /**
-     * @dataProvider invalidNameDataProvider
      *
-     * @param mixed $value
-     * @param string $exceptionClassName
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidName(mixed $value, string $exceptionClassName): void
+    public function testBankId(mixed $value): void
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassName);
-        $instance->name = $value;
+        $instance = $this->getTestInstance();
+        $instance->setBankId($value);
+        self::assertNotNull($instance->getBankId());
+        self::assertNotNull($instance->bank_id);
+        self::assertEquals($value, is_array($value) ? $instance->getBankId()->toArray() : $instance->getBankId());
+        self::assertEquals($value, is_array($value) ? $instance->bank_id->toArray() : $instance->bank_id);
+        self::assertLessThanOrEqual(12, is_string($instance->getBankId()) ? mb_strlen($instance->getBankId()) : $instance->getBankId());
+        self::assertLessThanOrEqual(12, is_string($instance->bank_id) ? mb_strlen($instance->bank_id) : $instance->bank_id);
     }
 
     /**
+     * Test invalid property "bank_id"
      * @dataProvider invalidBankIdDataProvider
-     *
      * @param mixed $value
-     * @param string $exceptionClassBankId
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidBankId(mixed $value, string $exceptionClassBankId): void
+    public function testInvalidBankId(mixed $value, string $exceptionClass): void
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
 
-        $this->expectException($exceptionClassBankId);
+        $this->expectException($exceptionClass);
         $instance->setBankId($value);
     }
 
     /**
-     * @dataProvider invalidBankIdDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassBankId
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidBankId(mixed $value, string $exceptionClassBankId): void
+    public function validBankIdDataProvider(): array
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassBankId);
-        $instance->bank_id = $value;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_bank_id'));
     }
 
     /**
-     * @dataProvider invalidBicDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassBic
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetInvalidBic(mixed $value, string $exceptionClassBic): void
+    public function invalidBankIdDataProvider(): array
     {
-        $instance = self::getInstance();
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_bank_id'));
+    }
 
-        $this->expectException($exceptionClassBic);
+    /**
+     * Test property "name"
+     * @dataProvider validNameDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testName(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setName($value);
+        self::assertNotNull($instance->getName());
+        self::assertNotNull($instance->name);
+        self::assertEquals($value, is_array($value) ? $instance->getName()->toArray() : $instance->getName());
+        self::assertEquals($value, is_array($value) ? $instance->name->toArray() : $instance->name);
+        self::assertLessThanOrEqual(128, is_string($instance->getName()) ? mb_strlen($instance->getName()) : $instance->getName());
+        self::assertLessThanOrEqual(128, is_string($instance->name) ? mb_strlen($instance->name) : $instance->name);
+    }
+
+    /**
+     * Test invalid property "name"
+     * @dataProvider invalidNameDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidName(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setName($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_name'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidNameDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_name'));
+    }
+
+    /**
+     * Test property "bic"
+     * @dataProvider validBicDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testBic(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setBic($value);
+        self::assertNotNull($instance->getBic());
+        self::assertNotNull($instance->bic);
+        self::assertEquals($value, is_array($value) ? $instance->getBic()->toArray() : $instance->getBic());
+        self::assertEquals($value, is_array($value) ? $instance->bic->toArray() : $instance->bic);
+        self::assertMatchesRegularExpression("/\\d{9}/", $instance->getBic());
+        self::assertMatchesRegularExpression("/\\d{9}/", $instance->bic);
+    }
+
+    /**
+     * Test invalid property "bic"
+     * @dataProvider invalidBicDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidBic(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setBic($value);
     }
 
     /**
-     * @dataProvider invalidBicDataProvider
-     *
-     * @param mixed $value
-     * @param string $exceptionClassBic
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidBic(mixed $value, string $exceptionClassBic): void
+    public function validBicDataProvider(): array
     {
-        $instance = self::getInstance();
-
-        $this->expectException($exceptionClassBic);
-        $instance->bic = $value;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_bic'));
     }
 
     /**
-     * @return array
+     * @return array[]
      * @throws Exception
      */
-    public static function validDataProvider(): array
+    public function invalidBicDataProvider(): array
     {
-        $sbpParticipantBank = [];
-        for ($i = 0; $i < 10; $i++) {
-            $array = [
-                'bank_id' => Random::str(SbpParticipantBank::MAX_LENGTH_BANK_ID),
-                'name' => Random::str(SbpParticipantBank::MAX_LENGTH_NAME),
-                'bic' => Random::str(9, 9, '0123456789'),
-            ];
-            $sbpParticipantBank[] = [$array];
-        }
-
-        return $sbpParticipantBank;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public static function validArrayDataProvider(): array
-    {
-        $result = [];
-        foreach (range(1, 10) as $i) {
-            $result[$i][] = [
-                'bank_id' => Random::str(SbpParticipantBank::MAX_LENGTH_BANK_ID),
-                'name' => Random::str(SbpParticipantBank::MAX_LENGTH_NAME),
-                'bic' => Random::str(9, 9, '0123456789'),
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public static function invalidNameDataProvider(): array
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            ['', EmptyPropertyValueException::class],
-            [Random::str(SbpParticipantBank::MAX_LENGTH_NAME + 1), InvalidPropertyValueException::class],
-            [[], TypeError::class],
-            [new \stdClass(), TypeError::class],
-        ];
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public static function invalidBankIdDataProvider(): array
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            ['', EmptyPropertyValueException::class],
-            [Random::str(SbpParticipantBank::MAX_LENGTH_BANK_ID + 1), InvalidPropertyValueException::class],
-            [[], TypeError::class],
-            [new \stdClass(), TypeError::class],
-        ];
-    }
-
-    /**
-     * @return array
-     * @throws Exception
-     */
-    public static function invalidBicDataProvider(): array
-    {
-        return [
-            [null, EmptyPropertyValueException::class],
-            ['', EmptyPropertyValueException::class],
-            [true, InvalidPropertyValueException::class],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_bic'));
     }
 }

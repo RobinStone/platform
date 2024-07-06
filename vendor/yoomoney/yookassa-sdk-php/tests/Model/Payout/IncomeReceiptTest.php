@@ -1,249 +1,295 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Payout;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\MonetaryAmount;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Payout\IncomeReceipt;
 
 /**
- * @internal
+ * IncomeReceiptTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class IncomeReceiptTest extends TestCase
+class IncomeReceiptTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testGetSetAmount($options): void
-    {
-        $instance = new IncomeReceipt();
+    protected IncomeReceipt $object;
 
-        $instance->setAmount($options['amount']);
-        if (empty($options['amount'])) {
-            self::assertNull($instance->getAmount());
-            self::assertNull($instance->amount);
-        } else {
-            if (is_array($options['amount'])) {
-                self::assertEquals($options['amount'], $instance->getAmount()->toArray());
-                self::assertEquals($options['amount'], $instance->amount->toArray());
-            } else {
-                self::assertEquals($options['amount'], $instance->getAmount());
-                self::assertEquals($options['amount'], $instance->amount);
-            }
-        }
+    /**
+     * @return IncomeReceipt
+     */
+    protected function getTestInstance(): IncomeReceipt
+    {
+        return new IncomeReceipt();
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return void
      */
-    public function testSetterAmount($options): void
+    public function testIncomeReceiptClassExists(): void
     {
-        $instance = new IncomeReceipt();
-
-        $instance->amount = $options['amount'];
-        if (empty($options['amount'])) {
-            self::assertNull($instance->getAmount());
-            self::assertNull($instance->amount);
-        } else {
-            if (is_array($options['amount'])) {
-                self::assertEquals($options['amount'], $instance->getAmount()->toArray());
-                self::assertEquals($options['amount'], $instance->amount->toArray());
-            } else {
-                self::assertEquals($options['amount'], $instance->getAmount());
-                self::assertEquals($options['amount'], $instance->amount);
-            }
-        }
+        $this->object = $this->getMockBuilder(IncomeReceipt::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(IncomeReceipt::class));
+        $this->assertInstanceOf(IncomeReceipt::class, $this->object);
     }
 
     /**
-     * @dataProvider invalidAmountProvider
-     *
+     * Test property "service_name"
+     * @dataProvider validServiceNameDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidAmount($value): void
+    public function testServiceName(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new IncomeReceipt();
-        $instance->setAmount($value);
+        $instance = $this->getTestInstance();
+        $instance->setServiceName($value);
+        self::assertNotNull($instance->getServiceName());
+        self::assertNotNull($instance->service_name);
+        self::assertEquals($value, is_array($value) ? $instance->getServiceName()->toArray() : $instance->getServiceName());
+        self::assertEquals($value, is_array($value) ? $instance->service_name->toArray() : $instance->service_name);
+        self::assertLessThanOrEqual(50, is_string($instance->getServiceName()) ? mb_strlen($instance->getServiceName()) : $instance->getServiceName());
+        self::assertLessThanOrEqual(50, is_string($instance->service_name) ? mb_strlen($instance->service_name) : $instance->service_name);
+        self::assertGreaterThanOrEqual(1, is_string($instance->getServiceName()) ? mb_strlen($instance->getServiceName()) : $instance->getServiceName());
+        self::assertGreaterThanOrEqual(1, is_string($instance->service_name) ? mb_strlen($instance->service_name) : $instance->service_name);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testGetSetServiceName($options): void
-    {
-        $instance = new IncomeReceipt();
-
-        $instance->setServiceName($options['service_name']);
-        self::assertEquals($options['service_name'], $instance->getServiceName());
-        self::assertEquals($options['service_name'], $instance->service_name);
-        self::assertEquals($options['service_name'], $instance->serviceName);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testSetterServiceName($options): void
-    {
-        $instance = new IncomeReceipt();
-
-        $instance->service_name = $options['service_name'];
-        self::assertEquals($options['service_name'], $instance->getServiceName());
-        self::assertEquals($options['service_name'], $instance->service_name);
-        self::assertEquals($options['service_name'], $instance->serviceName);
-
-        $instance->serviceName = $options['service_name'];
-        self::assertEquals($options['service_name'], $instance->getServiceName());
-        self::assertEquals($options['service_name'], $instance->service_name);
-        self::assertEquals($options['service_name'], $instance->serviceName);
-    }
-
-    /**
-     * @dataProvider invalidServiceNameProvider
-     *
+     * Test invalid property "service_name"
+     * @dataProvider invalidServiceNameDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidServiceName($value): void
+    public function testInvalidServiceName(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new IncomeReceipt();
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setServiceName($value);
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testGetSetNpdReceiptId($options): void
+    public function validServiceNameDataProvider(): array
     {
-        $instance = new IncomeReceipt();
-
-        $instance->setNpdReceiptId($options['npd_receipt_id']);
-        self::assertEquals($options['npd_receipt_id'], $instance->getNpdReceiptId());
-        self::assertEquals($options['npd_receipt_id'], $instance->npd_receipt_id);
-        self::assertEquals($options['npd_receipt_id'], $instance->npdReceiptId);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_service_name'));
     }
 
     /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterNpdReceiptId($options): void
+    public function invalidServiceNameDataProvider(): array
     {
-        $instance = new IncomeReceipt();
-
-        $instance->npd_receipt_id = $options['npd_receipt_id'];
-        self::assertEquals($options['npd_receipt_id'], $instance->getNpdReceiptId());
-        self::assertEquals($options['npd_receipt_id'], $instance->npd_receipt_id);
-        self::assertEquals($options['npd_receipt_id'], $instance->npdReceiptId);
-
-        $instance->npdReceiptId = $options['npd_receipt_id'];
-        self::assertEquals($options['npd_receipt_id'], $instance->getNpdReceiptId());
-        self::assertEquals($options['npd_receipt_id'], $instance->npd_receipt_id);
-        self::assertEquals($options['npd_receipt_id'], $instance->npdReceiptId);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_service_name'));
     }
 
     /**
-     * @dataProvider validDataProvider
+     * Test property "npd_receipt_id"
+     * @dataProvider validNpdReceiptIdDataProvider
+     * @param mixed $value
      *
-     * @param mixed $options
+     * @return void
+     * @throws Exception
      */
-    public function testGetSetUrl($options): void
+    public function testNpdReceiptId(mixed $value): void
     {
-        $instance = new IncomeReceipt();
-
-        $instance->setUrl($options['url']);
-        self::assertEquals($options['url'], $instance->getUrl());
-        self::assertEquals($options['url'], $instance->url);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $options
-     */
-    public function testSetterUrl($options): void
-    {
-        $instance = new IncomeReceipt();
-
-        $instance->url = $options['url'];
-        self::assertEquals($options['url'], $instance->getUrl());
-        self::assertEquals($options['url'], $instance->url);
-    }
-
-    public static function validDataProvider(): array
-    {
-        $result = [
-            [
-                [
-                    'service_name' => Random::str(1, IncomeReceipt::MAX_LENGTH_SERVICE_NAME),
-                    'npd_receipt_id' => null,
-                    'url' => null,
-                    'amount' => null,
-                ],
-            ],
-            [
-                [
-                    'service_name' => Random::str(1, IncomeReceipt::MAX_LENGTH_SERVICE_NAME),
-                    'npd_receipt_id' => '',
-                    'url' => 'http://test.ru',
-                    'amount' => new MonetaryAmount(['value' => Random::float(0.01, 99.99)]),
-                ],
-            ],
-            [
-                [
-                    'service_name' => Random::str(1, IncomeReceipt::MAX_LENGTH_SERVICE_NAME),
-                    'npd_receipt_id' => Random::str(1, 50),
-                    'url' => '',
-                    'amount' => new MonetaryAmount(Random::int(1, 1000000)),
-                ],
-            ],
-        ];
-        for ($i = 1; $i < 6; $i++) {
-            $receipt = [
-                'service_name' => Random::str(1, IncomeReceipt::MAX_LENGTH_SERVICE_NAME),
-                'npd_receipt_id' => Random::str(10, 50),
-                'url' => 'https://' . Random::str(1, 10, 'abcdefghijklmnopqrstuvwxyz') . '.ru',
-                'amount' => [
-                    'value' => round(Random::float(0.1, 99.99), 2),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-            ];
-            $result[] = [$receipt];
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getNpdReceiptId());
+        self::assertEmpty($instance->npd_receipt_id);
+        $instance->setNpdReceiptId($value);
+        self::assertEquals($value, is_array($value) ? $instance->getNpdReceiptId()->toArray() : $instance->getNpdReceiptId());
+        self::assertEquals($value, is_array($value) ? $instance->npd_receipt_id->toArray() : $instance->npd_receipt_id);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getNpdReceiptId());
+            self::assertNotNull($instance->npd_receipt_id);
         }
-
-        return $result;
     }
 
-    public static function invalidServiceNameProvider(): array
+    /**
+     * Test invalid property "npd_receipt_id"
+     * @dataProvider invalidNpdReceiptIdDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidNpdReceiptId(mixed $value, string $exceptionClass): void
     {
-        return [
-            [''],
-            [false],
-            [Random::str(IncomeReceipt::MAX_LENGTH_SERVICE_NAME + 1, 60)],
-        ];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setNpdReceiptId($value);
     }
 
-    public static function invalidAmountProvider(): array
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validNpdReceiptIdDataProvider(): array
     {
-        return [
-            [new stdClass()],
-            [true],
-            [false],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_npd_receipt_id'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidNpdReceiptIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_npd_receipt_id'));
+    }
+
+    /**
+     * Test property "url"
+     * @dataProvider validUrlDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testUrl(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getUrl());
+        self::assertEmpty($instance->url);
+        $instance->setUrl($value);
+        self::assertEquals($value, is_array($value) ? $instance->getUrl()->toArray() : $instance->getUrl());
+        self::assertEquals($value, is_array($value) ? $instance->url->toArray() : $instance->url);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getUrl());
+            self::assertNotNull($instance->url);
+        }
+    }
+
+    /**
+     * Test invalid property "url"
+     * @dataProvider invalidUrlDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidUrl(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setUrl($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validUrlDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_url'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidUrlDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_url'));
+    }
+
+    /**
+     * Test property "amount"
+     * @dataProvider validAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAmount());
+        self::assertEmpty($instance->amount);
+        $instance->setAmount($value);
+        self::assertEquals($value, is_array($value) ? $instance->getAmount()->toArray() : $instance->getAmount());
+        self::assertEquals($value, is_array($value) ? $instance->amount->toArray() : $instance->amount);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getAmount());
+            self::assertNotNull($instance->amount);
+        }
+    }
+
+    /**
+     * Test invalid property "amount"
+     * @dataProvider invalidAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAmount($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
     }
 }

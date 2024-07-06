@@ -1,96 +1,179 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payouts;
 
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\MonetaryAmount;
-use YooKassa\Model\Payout\IncomeReceipt;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Request\Payouts\IncomeReceiptData;
 
 /**
- * @internal
+ * IncomeReceiptDataTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class IncomeReceiptDataTest extends TestCase
+class IncomeReceiptDataTest extends AbstractTestCase
 {
+    protected IncomeReceiptData $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return IncomeReceiptData
      */
-    public function testGetServiceName(array $options): void
+    protected function getTestInstance(): IncomeReceiptData
     {
-        $instance = $this->getTestInstance($options);
-        self::assertEquals($options['service_name'], $instance->getServiceName());
-    }
-
-    public static function validDataProvider(): array
-    {
-        $result = [];
-
-        for ($i = 0; $i < 10; $i++) {
-            $deal = [
-                'service_name' => Random::str(36, IncomeReceipt::MAX_LENGTH_SERVICE_NAME),
-                'amount' => new MonetaryAmount(Random::int(1, 1000000)),
-            ];
-            $result[] = [$deal];
-        }
-
-        return $result;
+        return new IncomeReceiptData();
     }
 
     /**
-     * @dataProvider invalidServiceNameDataProvider
-     *
+     * @return void
+     */
+    public function testIncomeReceiptDataClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(IncomeReceiptData::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(IncomeReceiptData::class));
+        $this->assertInstanceOf(IncomeReceiptData::class, $this->object);
+    }
+
+    /**
+     * Test property "service_name"
+     * @dataProvider validServiceNameDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetInvalidServiceName($value): void
+    public function testServiceName(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new IncomeReceiptData();
+        $instance = $this->getTestInstance();
+        $instance->setServiceName($value);
+        self::assertNotNull($instance->getServiceName());
+        self::assertNotNull($instance->service_name);
+        self::assertEquals($value, is_array($value) ? $instance->getServiceName()->toArray() : $instance->getServiceName());
+        self::assertEquals($value, is_array($value) ? $instance->service_name->toArray() : $instance->service_name);
+        self::assertLessThanOrEqual(50, is_string($instance->getServiceName()) ? mb_strlen($instance->getServiceName()) : $instance->getServiceName());
+        self::assertLessThanOrEqual(50, is_string($instance->service_name) ? mb_strlen($instance->service_name) : $instance->service_name);
+        self::assertGreaterThanOrEqual(1, is_string($instance->getServiceName()) ? mb_strlen($instance->getServiceName()) : $instance->getServiceName());
+        self::assertGreaterThanOrEqual(1, is_string($instance->service_name) ? mb_strlen($instance->service_name) : $instance->service_name);
+    }
+
+    /**
+     * Test invalid property "service_name"
+     * @dataProvider invalidServiceNameDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidServiceName(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setServiceName($value);
     }
 
     /**
-     * @return array
+     * @return array[]
      * @throws Exception
      */
-    public static function invalidServiceNameDataProvider(): array
+    public function validServiceNameDataProvider(): array
     {
-        return [
-            [''],
-            [false],
-            [Random::str(IncomeReceipt::MAX_LENGTH_SERVICE_NAME + 1, 60)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_service_name'));
     }
 
     /**
-     * @dataProvider invalidAmountDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetInvalidAmountToken($value): void
+    public function invalidServiceNameDataProvider(): array
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new IncomeReceiptData();
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_service_name'));
+    }
+
+    /**
+     * Test property "amount"
+     * @dataProvider validAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAmount());
+        self::assertEmpty($instance->amount);
+        $instance->setAmount($value);
+        self::assertEquals($value, is_array($value) ? $instance->getAmount()->toArray() : $instance->getAmount());
+        self::assertEquals($value, is_array($value) ? $instance->amount->toArray() : $instance->amount);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getAmount());
+            self::assertNotNull($instance->amount);
+        }
+    }
+
+    /**
+     * Test invalid property "amount"
+     * @dataProvider invalidAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setAmount($value);
     }
 
-    public static function invalidAmountDataProvider(): array
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAmountDataProvider(): array
     {
-        return [
-            [false],
-            [true],
-            [new stdClass()],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
     }
 
     /**
-     * @param mixed $options
+     * @return array[]
+     * @throws Exception
      */
-    protected function getTestInstance($options): IncomeReceiptData
+    public function invalidAmountDataProvider(): array
     {
-        return new IncomeReceiptData($options);
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
     }
 }

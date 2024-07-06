@@ -11,12 +11,14 @@
 
 Тип персональных данных — цель, для которой вы будете использовать данные.
 Возможное значение:
-- `sbp_payout_recipient` — выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check).
+- `sbp_payout_recipient` — [выплаты с проверкой получателя](/developers/payouts/scenario-extensions/recipient-check)(только для выплат через СБП);
+- `payout_statement_recipient` — [выплаты с передачей данных получателя выплаты для выписок из реестра](/developers/payouts/scenario-extensions/recipient-data-send).
 
 ---
 ### Constants
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
+| public | [PAYOUT_STATEMENT_RECIPIENT](../classes/YooKassa-Model-PersonalData-PersonalDataType.md#constant_PAYOUT_STATEMENT_RECIPIENT) |  | Выплаты с передачей данных получателя |
 | public | [SBP_PAYOUT_RECIPIENT](../classes/YooKassa-Model-PersonalData-PersonalDataType.md#constant_SBP_PAYOUT_RECIPIENT) |  | Выплаты с проверкой получателя |
 
 ---
@@ -53,6 +55,15 @@
 
 ---
 ## Constants
+<a name="constant_PAYOUT_STATEMENT_RECIPIENT" class="anchor"></a>
+###### PAYOUT_STATEMENT_RECIPIENT
+Выплаты с передачей данных получателя
+
+```php
+PAYOUT_STATEMENT_RECIPIENT = 'payout_statement_recipient'
+```
+
+
 <a name="constant_SBP_PAYOUT_RECIPIENT" class="anchor"></a>
 ###### SBP_PAYOUT_RECIPIENT
 Выплаты с проверкой получателя
@@ -144,10 +155,10 @@ Static public valueExists(mixed $value) : bool
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

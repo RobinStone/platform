@@ -14,6 +14,7 @@
 | ---- | ------- |
 | [\YooKassa\Model\Payment\PaymentMethod\AbstractPaymentMethod](../classes/YooKassa-Model-Payment-PaymentMethod-AbstractPaymentMethod.md) | Класс, представляющий модель AbstractPaymentMethod. |
 | [\YooKassa\Model\Payment\PaymentMethod\BankCard](../classes/YooKassa-Model-Payment-PaymentMethod-BankCard.md) | Класс, описывающий модель BankCard. |
+| [\YooKassa\Model\Payment\PaymentMethod\BankCardProduct](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardProduct.md) | Класс, представляющий модель BankCardProduct. |
 | [\YooKassa\Model\Payment\PaymentMethod\BankCardSource](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardSource.md) | Класс, представляющий модель BankCardSource. |
 | [\YooKassa\Model\Payment\PaymentMethod\BankCardType](../classes/YooKassa-Model-Payment-PaymentMethod-BankCardType.md) | Класс, представляющий модель BankCardType. |
 | [\YooKassa\Model\Payment\PaymentMethod\PaymentMethodAlfaBank](../classes/YooKassa-Model-Payment-PaymentMethod-PaymentMethodAlfaBank.md) | Класс, представляющий модель PaymentMethodAlfabank. |
@@ -47,10 +48,10 @@
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

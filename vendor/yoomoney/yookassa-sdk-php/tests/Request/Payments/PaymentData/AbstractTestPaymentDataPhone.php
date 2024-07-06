@@ -1,10 +1,41 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments\PaymentData;
 
 use InvalidArgumentException;
 use YooKassa\Request\Payments\PaymentData\PaymentDataMobileBalance;
 
+/**
+ * AbstractTestPaymentDataPhone
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
+ */
 abstract class AbstractTestPaymentDataPhone extends AbstractTestPaymentData
 {
     /**
@@ -12,7 +43,7 @@ abstract class AbstractTestPaymentDataPhone extends AbstractTestPaymentData
      *
      * @param mixed $value
      */
-    public function testGetSetPhone($value): void
+    public function testGetSetPhone(mixed $value): void
     {
         /** @var PaymentDataMobileBalance $instance */
         $instance = $this->getTestInstance();
@@ -32,7 +63,7 @@ abstract class AbstractTestPaymentDataPhone extends AbstractTestPaymentData
      *
      * @param mixed $value
      */
-    public function testSetInvalidPhone($value): void
+    public function testSetInvalidPhone(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -46,7 +77,7 @@ abstract class AbstractTestPaymentDataPhone extends AbstractTestPaymentData
      *
      * @param mixed $value
      */
-    public function testSetterInvalidPhone($value): void
+    public function testSetterInvalidPhone(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
 
@@ -55,7 +86,7 @@ abstract class AbstractTestPaymentDataPhone extends AbstractTestPaymentData
         $instance->phone = $value;
     }
 
-    public function validPhoneDataProvider()
+    public function validPhoneDataProvider(): array
     {
         return [
             ['0123'],
@@ -73,7 +104,7 @@ abstract class AbstractTestPaymentDataPhone extends AbstractTestPaymentData
         ];
     }
 
-    public function invalidPhoneDataProvider()
+    public function invalidPhoneDataProvider(): array
     {
         return [
             [true],

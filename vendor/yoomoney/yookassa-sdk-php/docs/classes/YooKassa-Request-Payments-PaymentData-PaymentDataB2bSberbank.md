@@ -111,25 +111,25 @@
 
 
 <a name="property_vat_data"></a>
-#### public $vat_data : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
+#### public $vat_data : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData
 ---
 ***Description***
 
 Данные об НДС.
 
-**Type:** <a href="../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-VatData.html"><abbr title="\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData">VatData</abbr></a>
+**Type:** <a href="../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-AbstractVatData.html"><abbr title="\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData">AbstractVatData</abbr></a>
 
 **Details:**
 
 
 <a name="property_vatData"></a>
-#### public $vatData : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
+#### public $vatData : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData
 ---
 ***Description***
 
 Данные об НДС.
 
-**Type:** <a href="../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-VatData.html"><abbr title="\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData">VatData</abbr></a>
+**Type:** <a href="../classes/YooKassa-Model-Payment-PaymentMethod-B2b-Sberbank-AbstractVatData.html"><abbr title="\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData">AbstractVatData</abbr></a>
 
 **Details:**
 
@@ -323,10 +323,10 @@ public getValidator() : \YooKassa\Validator\Validator
 
 
 <a name="method_getVatData" class="anchor"></a>
-#### public getVatData() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData|null
+#### public getVatData() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData|null
 
 ```php
-public getVatData() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData|null
+public getVatData() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData|null
 ```
 
 **Summary**
@@ -336,7 +336,7 @@ public getVatData() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
 **Details:**
 * Inherited From: [\YooKassa\Request\Payments\PaymentData\PaymentDataB2bSberbank](../classes/YooKassa-Request-Payments-PaymentData-PaymentDataB2bSberbank.md)
 
-**Returns:** \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData|null - Данные об НДС
+**Returns:** \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData|null - Данные об НДС
 
 
 <a name="method_jsonSerialize" class="anchor"></a>
@@ -471,7 +471,7 @@ public setPaymentPurpose(string|null $payment_purpose) : self
 #### public setVatData() : self
 
 ```php
-public setVatData(\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData|array|null $vat_data) : self
+public setVatData(\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData|array|null $vat_data) : self
 ```
 
 **Summary**
@@ -484,7 +484,7 @@ public setVatData(\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData|arr
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData OR array OR null</code> | vat_data  | Данные об НДС |
+| <code lang="php">\YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData OR array OR null</code> | vat_data  | Данные об НДС |
 
 **Returns:** self - 
 
@@ -577,10 +577,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

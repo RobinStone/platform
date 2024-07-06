@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ class PaymentMethodSberLoan extends AbstractPaymentMethod
      * @var string|null
      */
     #[Assert\Type('string')]
-    #[Assert\Regex("/^loan|installments_([0-9]{1,})$/")]
+    #[Assert\Regex("/^loan|installments_([0-9]{1,2})$/")]
     private ?string $_loan_option = null;
 
     /**

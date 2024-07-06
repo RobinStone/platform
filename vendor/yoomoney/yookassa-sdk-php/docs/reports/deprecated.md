@@ -6,7 +6,9 @@
 * [lib/Model/Payment/ConfirmationType.php](../../lib/Model/Payment/ConfirmationType.php)
 * [lib/Model/Payment/PaymentMethod/PaymentMethodAlfaBank.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodAlfaBank.php)
 * [lib/Model/Payment/PaymentMethod/PaymentMethodFactory.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodFactory.php)
+* [lib/Model/Payment/PaymentMethod/PaymentMethodInstallments.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodInstallments.php)
 * [lib/Model/Payment/PaymentMethod/PaymentMethodPsb.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodPsb.php)
+* [lib/Model/Payment/PaymentMethod/PaymentMethodQiwi.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodQiwi.php)
 * [lib/Model/Payment/PaymentMethod/PaymentMethodUnknown.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodUnknown.php)
 * [lib/Model/Payment/PaymentMethod/PaymentMethodWebmoney.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodWebmoney.php)
 * [lib/Model/Payment/PaymentMethod/PaymentMethodWechat.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodWechat.php)
@@ -16,6 +18,8 @@
 * [lib/Model/Refund/RefundMethodType.php](../../lib/Model/Refund/RefundMethodType.php)
 * [lib/Model/Settings/Me.php](../../lib/Model/Settings/Me.php)
 * [lib/Request/Payments/PaymentData/PaymentDataAlfabank.php](../../lib/Request/Payments/PaymentData/PaymentDataAlfabank.php)
+* [lib/Request/Payments/PaymentData/PaymentDataInstallments.php](../../lib/Request/Payments/PaymentData/PaymentDataInstallments.php)
+* [lib/Request/Payments/PaymentData/PaymentDataQiwi.php](../../lib/Request/Payments/PaymentData/PaymentDataQiwi.php)
 
 <a id="lib/Model/Payment/CancellationDetailsPartyCode.php"></a>
 #### [lib/Model/Payment/CancellationDetailsPartyCode.php](../../lib/Model/Payment/CancellationDetailsPartyCode.php)
@@ -37,11 +41,21 @@
 | Line | Element | Description |
 | ---- | ------- | ----------- |
 | 45 | \YooKassa\Model\Payment\PaymentMethod\PaymentMethodFactory::YANDEX_MONEY | Для поддержки старых платежей |
+<a id="lib/Model/Payment/PaymentMethod/PaymentMethodInstallments.php"></a>
+#### [lib/Model/Payment/PaymentMethod/PaymentMethodInstallments.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodInstallments.php)
+| Line | Element | Description |
+| ---- | ------- | ----------- |
+| 42 | \YooKassa\Model\Payment\PaymentMethod\PaymentMethodInstallments | Будет удален в следующих версиях |
 <a id="lib/Model/Payment/PaymentMethod/PaymentMethodPsb.php"></a>
 #### [lib/Model/Payment/PaymentMethod/PaymentMethodPsb.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodPsb.php)
 | Line | Element | Description |
 | ---- | ------- | ----------- |
 | 42 | \YooKassa\Model\Payment\PaymentMethod\PaymentMethodPsb | Будет удален в следующих версиях |
+<a id="lib/Model/Payment/PaymentMethod/PaymentMethodQiwi.php"></a>
+#### [lib/Model/Payment/PaymentMethod/PaymentMethodQiwi.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodQiwi.php)
+| Line | Element | Description |
+| ---- | ------- | ----------- |
+| 42 | \YooKassa\Model\Payment\PaymentMethod\PaymentMethodQiwi | Будет удален в следующих версиях |
 <a id="lib/Model/Payment/PaymentMethod/PaymentMethodUnknown.php"></a>
 #### [lib/Model/Payment/PaymentMethod/PaymentMethodUnknown.php](../../lib/Model/Payment/PaymentMethod/PaymentMethodUnknown.php)
 | Line | Element | Description |
@@ -61,11 +75,13 @@
 #### [lib/Model/Payment/PaymentMethodType.php](../../lib/Model/Payment/PaymentMethodType.php)
 | Line | Element | Description |
 | ---- | ------- | ----------- |
-| 90 | \YooKassa\Model\Payment\PaymentMethodType::WEBMONEY | Больше недоступен |
-| 97 | \YooKassa\Model\Payment\PaymentMethodType::ALFABANK | Больше недоступен |
-| 110 | \YooKassa\Model\Payment\PaymentMethodType::PSB | Больше недоступен |
-| 120 | \YooKassa\Model\Payment\PaymentMethodType::WECHAT | Больше недоступен |
-| 133 | \YooKassa\Model\Payment\PaymentMethodType::UNKNOWN | Не используется для реальных платежей |
+| 87 | \YooKassa\Model\Payment\PaymentMethodType::QIWI | Больше недоступен |
+| 94 | \YooKassa\Model\Payment\PaymentMethodType::WEBMONEY | Больше недоступен |
+| 101 | \YooKassa\Model\Payment\PaymentMethodType::ALFABANK | Больше недоступен |
+| 114 | \YooKassa\Model\Payment\PaymentMethodType::PSB | Больше недоступен |
+| 121 | \YooKassa\Model\Payment\PaymentMethodType::INSTALLMENTS | Больше недоступен |
+| 128 | \YooKassa\Model\Payment\PaymentMethodType::WECHAT | Больше недоступен |
+| 141 | \YooKassa\Model\Payment\PaymentMethodType::UNKNOWN | Не используется для реальных платежей |
 <a id="lib/Model/Refund/RefundCancellationDetailsPartyCode.php"></a>
 #### [lib/Model/Refund/RefundCancellationDetailsPartyCode.php](../../lib/Model/Refund/RefundCancellationDetailsPartyCode.php)
 | Line | Element | Description |
@@ -92,6 +108,16 @@
 | Line | Element | Description |
 | ---- | ------- | ----------- |
 | 46 | \YooKassa\Request\Payments\PaymentData\PaymentDataAlfabank | Будет удален в следующих версиях |
+<a id="lib/Request/Payments/PaymentData/PaymentDataInstallments.php"></a>
+#### [lib/Request/Payments/PaymentData/PaymentDataInstallments.php](../../lib/Request/Payments/PaymentData/PaymentDataInstallments.php)
+| Line | Element | Description |
+| ---- | ------- | ----------- |
+| 42 | \YooKassa\Request\Payments\PaymentData\PaymentDataInstallments | Будет удален в следующих версиях |
+<a id="lib/Request/Payments/PaymentData/PaymentDataQiwi.php"></a>
+#### [lib/Request/Payments/PaymentData/PaymentDataQiwi.php](../../lib/Request/Payments/PaymentData/PaymentDataQiwi.php)
+| Line | Element | Description |
+| ---- | ------- | ----------- |
+| 45 | \YooKassa\Request\Payments\PaymentData\PaymentDataQiwi | Будет удален в следующих версиях |
 
 ---
 
@@ -104,10 +130,10 @@
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

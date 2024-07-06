@@ -1,90 +1,163 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Refund\RefundMethod;
 
-use TypeError;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Refund\RefundMethod\RefundMethodSbp;
-use YooKassa\Model\Refund\RefundMethodType;
 
 /**
- * @internal
+ * RefundMethodSbpTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class RefundMethodSbpTest extends AbstractTestRefundMethod
+class RefundMethodSbpTest extends AbstractTestCase
 {
+    protected RefundMethodSbp $object;
+
+    /**
+     * @return RefundMethodSbp
+     */
     protected function getTestInstance(): RefundMethodSbp
     {
         return new RefundMethodSbp();
     }
 
-    protected function getExpectedType(): string
+    /**
+     * @return void
+     */
+    public function testRefundMethodSbpClassExists(): void
     {
-        return RefundMethodType::SBP;
+        $this->object = $this->getMockBuilder(RefundMethodSbp::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(RefundMethodSbp::class));
+        $this->assertInstanceOf(RefundMethodSbp::class, $this->object);
     }
 
     /**
-     * @dataProvider validLoanOptionDataProvider
+     * Test property "type"
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testGetSetLoanOption(mixed $value): void
+    public function testType(): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertNotNull($instance->getType());
+        self::assertNotNull($instance->type);
+        self::assertContains($instance->getType(), ['sbp']);
+        self::assertContains($instance->type, ['sbp']);
+    }
+
+    /**
+     * Test invalid property "type"
+     * @dataProvider invalidTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidType(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
+        $this->expectException($exceptionClass);
+        $instance->setType($value);
+    }
+
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
+
+    /**
+     * Test property "sbp_operation_id"
+     * @dataProvider validSbpOperationIdDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testSbpOperationId(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getSbpOperationId());
+        self::assertEmpty($instance->sbp_operation_id);
         $instance->setSbpOperationId($value);
-        self::assertEquals($value, $instance->getSbpOperationId());
-        self::assertEquals($value, $instance->sbp_operation_id);
-
-        $instance = $this->getTestInstance();
-        $instance->sbp_operation_id = $value;
-        self::assertEquals($value, $instance->getSbpOperationId());
-        self::assertEquals($value, $instance->sbp_operation_id);
+        self::assertEquals($value, is_array($value) ? $instance->getSbpOperationId()->toArray() : $instance->getSbpOperationId());
+        self::assertEquals($value, is_array($value) ? $instance->sbp_operation_id->toArray() : $instance->sbp_operation_id);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getSbpOperationId());
+            self::assertNotNull($instance->sbp_operation_id);
+        }
     }
 
     /**
-     * @dataProvider invalidLoanOptionDataProvider
-     *
+     * Test invalid property "sbp_operation_id"
+     * @dataProvider invalidSbpOperationIdDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidLoanOption(mixed $value): void
+    public function testInvalidSbpOperationId(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(TypeError::class);
-
         $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
         $instance->setSbpOperationId($value);
     }
 
     /**
-     * @dataProvider invalidLoanOptionDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidLoanOption(mixed $value): void
+    public function validSbpOperationIdDataProvider(): array
     {
-        $this->expectException(TypeError::class);
-
         $instance = $this->getTestInstance();
-        $instance->sbpOperationId = $value;
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_sbp_operation_id'));
     }
 
-    public function validLoanOptionDataProvider(): array
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidSbpOperationIdDataProvider(): array
     {
-        return [
-            [null],
-            [''],
-            [Random::str(5)],
-            [Random::str(10)],
-            [Random::str(20)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_sbp_operation_id'));
     }
-
-    public function invalidLoanOptionDataProvider(): array
-    {
-        return [
-            [[]],
-            [new \ArrayObject()],
-            [new \stdClass()],
-        ];
-    }
-
 }

@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -117,7 +117,7 @@ class ReceiptCustomer extends AbstractObject implements ReceiptCustomerInterface
      *
      * @throws InvalidPropertyValueTypeException Выбрасывается, если в качестве значения была передана не строка
      */
-    public function setPhone(mixed $phone = null): self
+    public function setPhone(?string $phone = null): self
     {
         $this->_phone = $this->validatePropertyValue('_phone', $phone);
         return $this;
@@ -143,7 +143,7 @@ class ReceiptCustomer extends AbstractObject implements ReceiptCustomerInterface
      * @throws InvalidPropertyValueTypeException Выбрасывается, если в качестве значения была передана не строка
      * @throws InvalidPropertyValueException Выбрасывается если Email не соответствует формату
      */
-    public function setEmail(mixed $email = null): self
+    public function setEmail(?string $email = null): self
     {
         $this->_email = $this->validatePropertyValue('_email', $email);
         return $this;
@@ -169,7 +169,7 @@ class ReceiptCustomer extends AbstractObject implements ReceiptCustomerInterface
      * @throws InvalidPropertyValueTypeException Выбрасывается, если в качестве значения была передана не строка
      * @throws InvalidPropertyValueException Выбрасывается если ИНН не соответствует формату 10 или 12 цифр
      */
-    public function setInn(mixed $inn = null): self
+    public function setInn(?string $inn = null): self
     {
         $this->_inn = $this->validatePropertyValue('_inn', $inn);
         return $this;

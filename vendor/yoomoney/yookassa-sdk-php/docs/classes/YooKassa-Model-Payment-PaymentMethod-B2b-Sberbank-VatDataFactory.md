@@ -42,10 +42,10 @@
 ---
 ## Methods
 <a name="method_factory" class="anchor"></a>
-#### public factory() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
+#### public factory() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData
 
 ```php
-public factory(string|null $type = null, ?array $data = []) : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
+public factory(string|null $type = null, ?array $data = []) : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData
 ```
 
 **Summary**
@@ -61,14 +61,14 @@ public factory(string|null $type = null, ?array $data = []) : \YooKassa\Model\Pa
 | <code lang="php">string OR null</code> | type  | Тип данных об НДС |
 | <code lang="php">?array</code> | data  |  |
 
-**Returns:** \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData - 
+**Returns:** \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData - 
 
 
 <a name="method_factoryFromArray" class="anchor"></a>
-#### public factoryFromArray() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
+#### public factoryFromArray() : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData
 
 ```php
-public factoryFromArray(array|null $data = [], string|null $type = null) : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData
+public factoryFromArray(array|null $data = [], string|null $type = null) : \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData
 ```
 
 **Summary**
@@ -84,7 +84,7 @@ public factoryFromArray(array|null $data = [], string|null $type = null) : \YooK
 | <code lang="php">array OR null</code> | data  | Массив данных об НДС |
 | <code lang="php">string OR null</code> | type  | Тип данных об НДС |
 
-**Returns:** \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatData - 
+**Returns:** \YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\AbstractVatData - 
 
 
 
@@ -99,10 +99,10 @@ public factoryFromArray(array|null $data = [], string|null $type = null) : \YooK
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments;
 
 use DateTime;
@@ -28,6 +52,13 @@ use YooKassa\Model\Receipt\ReceiptItemAmount;
 use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Validator\Exceptions\ValidatorParameterException;
 
+/**
+ * AbstractTestPaymentResponse
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
+ */
 abstract class AbstractTestPaymentResponse extends TestCase
 {
     /**
@@ -52,7 +83,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidId($value): void
+    public function testSetInvalidId(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -64,7 +95,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidId($value): void
+    public function testSetterInvalidId(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -93,7 +124,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidStatus($value): void
+    public function testSetInvalidStatus(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -105,7 +136,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidStatus($value): void
+    public function testSetterInvalidStatus(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -134,7 +165,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidRecipient($value): void
+    public function testSetInvalidRecipient(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -146,7 +177,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidRecipient($value): void
+    public function testSetterInvalidRecipient(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -175,7 +206,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidAmount($value): void
+    public function testSetInvalidAmount(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -187,7 +218,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidAmount($value): void
+    public function testSetterInvalidAmount(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -224,7 +255,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidPaymentMethod($value): void
+    public function testSetInvalidPaymentMethod(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -236,7 +267,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidPaymentMethod($value): void
+    public function testSetterInvalidPaymentMethod(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -248,7 +279,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidSnakePaymentMethod($value): void
+    public function testSetterInvalidSnakePaymentMethod(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -285,7 +316,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidCreatedAt($value): void
+    public function testSetInvalidCreatedAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -297,7 +328,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidCreatedAt($value): void
+    public function testSetterInvalidCreatedAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -309,7 +340,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidSnakeCreatedAt($value): void
+    public function testSetterInvalidSnakeCreatedAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -364,7 +395,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidCapturedAt($value): void
+    public function testSetInvalidCapturedAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -376,7 +407,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidCapturedAt($value): void
+    public function testSetterInvalidCapturedAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -388,7 +419,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidSnakeCapturedAt($value): void
+    public function testSetterInvalidSnakeCapturedAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -417,7 +448,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidConfirmation($value): void
+    public function testSetInvalidConfirmation(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -429,7 +460,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidConfirmation($value): void
+    public function testSetterInvalidConfirmation(mixed $value): void
     {
         $this->expectException(InvalidPropertyValueTypeException::class);
         $instance = new Payment();
@@ -466,7 +497,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidRefundedAmount($value): void
+    public function testSetInvalidRefundedAmount(mixed $value): void
     {
         $this->expectException(ValidatorParameterException::class);
         $instance = new Payment();
@@ -478,7 +509,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidRefundedAmount($value): void
+    public function testSetterInvalidRefundedAmount(mixed $value): void
     {
         $this->expectException(ValidatorParameterException::class);
         $instance = new Payment();
@@ -490,7 +521,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidSnakeRefundedAmount($value): void
+    public function testSetterInvalidSnakeRefundedAmount(mixed $value): void
     {
         $this->expectException(ValidatorParameterException::class);
         $instance = new Payment();
@@ -596,7 +627,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceiptRegistration($value): void
+    public function testSetInvalidReceiptRegistration(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -608,7 +639,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidReceiptRegistration($value): void
+    public function testSetterInvalidReceiptRegistration(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -620,7 +651,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidSnakeReceiptRegistration($value): void
+    public function testSetterInvalidSnakeReceiptRegistration(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -861,7 +892,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidExpiresAt($value): void
+    public function testSetInvalidExpiresAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -873,7 +904,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidExpiresAt($value): void
+    public function testSetterInvalidExpiresAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -885,7 +916,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetterInvalidSnakeExpiresAt($value): void
+    public function testSetterInvalidSnakeExpiresAt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = new Payment();
@@ -897,7 +928,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetDescription($options): void
+    public function testSetDescription(mixed $options): void
     {
         $instance = new Payment();
         $instance->setDescription($options['description']);
@@ -922,7 +953,7 @@ abstract class AbstractTestPaymentResponse extends TestCase
      *
      * @param mixed $options
      */
-    public function testSetMerchantCustomerId($options): void
+    public function testSetMerchantCustomerId(mixed $options): void
     {
         $instance = new Payment();
         $instance->setMerchantCustomerId($options['merchant_customer_id']);
@@ -1011,5 +1042,5 @@ abstract class AbstractTestPaymentResponse extends TestCase
     /**
      * @param mixed $options
      */
-    abstract protected function getTestInstance($options): PaymentInterface;
+    abstract protected function getTestInstance(mixed $options): PaymentInterface;
 }

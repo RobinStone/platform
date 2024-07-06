@@ -351,7 +351,7 @@ public offsetUnset(string $offset) : void
 #### public setApplied() : self
 
 ```php
-public setApplied(bool|array|null $applied = null) : self
+public setApplied(bool|null $applied = null) : self
 ```
 
 **Summary**
@@ -364,12 +364,7 @@ public setApplied(bool|array|null $applied = null) : self
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">bool OR array OR null</code> | applied  | Отображение пользователю формы для прохождения аутентификации по 3‑D Secure. Возможные значения:  * ~`true` — ЮKassa отобразила пользователю форму, чтобы он мог пройти аутентификацию по 3‑D Secure; * ~`false` — платеж проходил без аутентификации по 3‑D Secure. |
-
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \Exception |  |
+| <code lang="php">bool OR null</code> | applied  | Отображение пользователю формы для прохождения аутентификации по 3‑D Secure. Возможные значения:  * ~`true` — ЮKassa отобразила пользователю форму, чтобы он мог пройти аутентификацию по 3‑D Secure; * ~`false` — платеж проходил без аутентификации по 3‑D Secure. |
 
 **Returns:** self - 
 
@@ -440,10 +435,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

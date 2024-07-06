@@ -37,7 +37,7 @@
 | public | [$payoutBalance](../classes/YooKassa-Model-Deal-SafeDeal.md#property_payoutBalance) |  | Сумма вознаграждения продавца. |
 | public | [$status](../classes/YooKassa-Model-Deal-SafeDeal.md#property_status) |  | Статус сделки. |
 | public | [$test](../classes/YooKassa-Model-Deal-SafeDeal.md#property_test) |  | Признак тестовой операции. |
-| public | [$type](../classes/YooKassa-Model-Deal-BaseDeal.md#property_type) |  | Тип сделки |
+| public | [$type](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md#property_type) |  | Тип сделки |
 | protected | [$_balance](../classes/YooKassa-Model-Deal-SafeDeal.md#property__balance) |  | Баланс сделки |
 | protected | [$_created_at](../classes/YooKassa-Model-Deal-SafeDeal.md#property__created_at) |  | Время создания сделки. |
 | protected | [$_description](../classes/YooKassa-Model-Deal-SafeDeal.md#property__description) |  | Описание сделки (не более 128 символов). Используется для фильтрации при [получении списка сделок](/developers/api#get_deals_list). |
@@ -48,7 +48,7 @@
 | protected | [$_payout_balance](../classes/YooKassa-Model-Deal-SafeDeal.md#property__payout_balance) |  | Сумма вознаграждения продавца |
 | protected | [$_status](../classes/YooKassa-Model-Deal-SafeDeal.md#property__status) |  | Статус сделки |
 | protected | [$_test](../classes/YooKassa-Model-Deal-SafeDeal.md#property__test) |  | Признак тестовой операции. |
-| protected | [$_type](../classes/YooKassa-Model-Deal-BaseDeal.md#property__type) |  | Тип сделки |
+| protected | [$_type](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md#property__type) |  | Тип сделки |
 
 ---
 ### Methods
@@ -70,7 +70,7 @@
 | public | [getPayoutBalance()](../classes/YooKassa-Model-Deal-SafeDeal.md#method_getPayoutBalance) |  | Возвращает сумму вознаграждения продавца. |
 | public | [getStatus()](../classes/YooKassa-Model-Deal-SafeDeal.md#method_getStatus) |  | Возвращает статус сделки. |
 | public | [getTest()](../classes/YooKassa-Model-Deal-SafeDeal.md#method_getTest) |  | Возвращает признак тестовой операции. |
-| public | [getType()](../classes/YooKassa-Model-Deal-BaseDeal.md#method_getType) |  | Возвращает тип сделки. |
+| public | [getType()](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md#method_getType) |  | Возвращает тип сделки. |
 | public | [getValidator()](../classes/YooKassa-Common-AbstractObject.md#method_getValidator) |  |  |
 | public | [jsonSerialize()](../classes/YooKassa-Common-AbstractObject.md#method_jsonSerialize) |  | Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации. |
 | public | [offsetExists()](../classes/YooKassa-Common-AbstractObject.md#method_offsetExists) |  | Проверяет наличие свойства. |
@@ -87,7 +87,7 @@
 | public | [setPayoutBalance()](../classes/YooKassa-Model-Deal-SafeDeal.md#method_setPayoutBalance) |  | Устанавливает сумму вознаграждения продавца. |
 | public | [setStatus()](../classes/YooKassa-Model-Deal-SafeDeal.md#method_setStatus) |  | Устанавливает статус сделки. |
 | public | [setTest()](../classes/YooKassa-Model-Deal-SafeDeal.md#method_setTest) |  | Устанавливает признак тестовой операции. |
-| public | [setType()](../classes/YooKassa-Model-Deal-BaseDeal.md#method_setType) |  | Устанавливает тип сделки. |
+| public | [setType()](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md#method_setType) |  | Устанавливает тип сделки. |
 | public | [toArray()](../classes/YooKassa-Common-AbstractObject.md#method_toArray) |  | Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации Является алиасом метода AbstractObject::jsonSerialize(). |
 | protected | [getUnknownProperties()](../classes/YooKassa-Common-AbstractObject.md#method_getUnknownProperties) |  | Возвращает массив свойств которые не существуют, но были заданы у объекта. |
 | protected | [validatePropertyValue()](../classes/YooKassa-Common-AbstractObject.md#method_validatePropertyValue) |  |  |
@@ -98,7 +98,7 @@
 * Package: YooKassa\Request
 * Class Hierarchy:    
   * [\YooKassa\Common\AbstractObject](../classes/YooKassa-Common-AbstractObject.md)
-  * [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+  * [\YooKassa\Model\Deal\AbstractBaseDeal](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md)
   * [\YooKassa\Model\Deal\SafeDeal](../classes/YooKassa-Model-Deal-SafeDeal.md)
   * [\YooKassa\Request\Deals\AbstractDealResponse](../classes/YooKassa-Request-Deals-AbstractDealResponse.md)
   * \YooKassa\Request\Deals\CreateDealResponse
@@ -337,7 +337,7 @@ MAX_LENGTH_DESCRIPTION = 128 : int
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
 **Details:**
-* Inherited From: [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+* Inherited From: [\YooKassa\Model\Deal\AbstractBaseDeal](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md)
 
 
 <a name="property__balance"></a>
@@ -480,7 +480,7 @@ MAX_LENGTH_DESCRIPTION = 128 : int
 **Type:** <a href="../?string"><abbr title="?string">?string</abbr></a>
 
 **Details:**
-* Inherited From: [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+* Inherited From: [\YooKassa\Model\Deal\AbstractBaseDeal](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md)
 
 
 
@@ -801,7 +801,7 @@ public getType() : string|null
 Возвращает тип сделки.
 
 **Details:**
-* Inherited From: [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+* Inherited From: [\YooKassa\Model\Deal\AbstractBaseDeal](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md)
 
 **Returns:** string|null - 
 
@@ -1157,7 +1157,7 @@ public setType(string|null $type = null) : self
 Устанавливает тип сделки.
 
 **Details:**
-* Inherited From: [\YooKassa\Model\Deal\BaseDeal](../classes/YooKassa-Model-Deal-BaseDeal.md)
+* Inherited From: [\YooKassa\Model\Deal\AbstractBaseDeal](../classes/YooKassa-Model-Deal-AbstractBaseDeal.md)
 
 ##### Parameters:
 | Type | Name | Description |
@@ -1233,10 +1233,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

@@ -67,8 +67,8 @@ var_dump($response);
 | public | [$payout_token](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_payout_token) |  | Токенизированные данные для выплаты. Например, синоним банковской карты. Обязательный параметр, если не передан payout_destination_data |
 | public | [$payoutDestinationData](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_payoutDestinationData) |  | Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token. |
 | public | [$payoutToken](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_payoutToken) |  | Токенизированные данные для выплаты. Например, синоним банковской карты. Обязательный параметр, если не передан payout_destination_data |
-| public | [$personal_data](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_personal_data) |  | Персональные данные получателя выплаты. Необходимо передавать, если вы делаете выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП). |
-| public | [$personalData](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_personalData) |  | Персональные данные получателя выплаты. Необходимо передавать, если вы делаете выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП). |
+| public | [$personal_data](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_personal_data) |  | Персональные данные получателя выплаты. Только для обычных выплат. Необходимо передавать в этих сценариях: - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП); - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send). В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных. |
+| public | [$personalData](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_personalData) |  | Персональные данные получателя выплаты. Только для обычных выплат. Необходимо передавать в этих сценариях: - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП); - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send). В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных. |
 | public | [$receipt_data](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_receipt_data) |  | Данные для формирования чека в сервисе Мой налог. Необходимо передавать, если вы делаете выплату [самозанятому](https://yookassa.ru/developers/payouts/scenario-extensions/self-employed). Только для обычных выплат. |
 | public | [$receiptData](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_receiptData) |  | Данные для формирования чека в сервисе Мой налог. Необходимо передавать, если вы делаете выплату [самозанятому](https://yookassa.ru/developers/payouts/scenario-extensions/self-employed). Только для обычных выплат. |
 | public | [$self_employed](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md#property_self_employed) |  | Данные самозанятого, который получит выплату. Необходимо передавать, если вы делаете выплату [самозанятому](https://yookassa.ru/developers/payouts/scenario-extensions/self-employed). Только для обычных выплат. |
@@ -249,13 +249,13 @@ MIN_PERSONAL_DATA = 1 : int
 
 
 <a name="property_payout_destination_data"></a>
-#### public $payout_destination_data : \YooKassa\Model\Payout\AbstractPayoutDestination
+#### public $payout_destination_data : \YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData
 ---
 ***Description***
 
 Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token.
 
-**Type:** <a href="../classes/YooKassa-Model-Payout-AbstractPayoutDestination.html"><abbr title="\YooKassa\Model\Payout\AbstractPayoutDestination">AbstractPayoutDestination</abbr></a>
+**Type:** <a href="../classes/YooKassa-Request-Payouts-PayoutDestinationData-AbstractPayoutDestinationData.html"><abbr title="\YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData">AbstractPayoutDestinationData</abbr></a>
 
 **Details:**
 
@@ -273,13 +273,13 @@ MIN_PERSONAL_DATA = 1 : int
 
 
 <a name="property_payoutDestinationData"></a>
-#### public $payoutDestinationData : \YooKassa\Model\Payout\AbstractPayoutDestination
+#### public $payoutDestinationData : \YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData
 ---
 ***Description***
 
 Данные платежного средства, на которое нужно сделать выплату. Обязательный параметр, если не передан payout_token.
 
-**Type:** <a href="../classes/YooKassa-Model-Payout-AbstractPayoutDestination.html"><abbr title="\YooKassa\Model\Payout\AbstractPayoutDestination">AbstractPayoutDestination</abbr></a>
+**Type:** <a href="../classes/YooKassa-Request-Payouts-PayoutDestinationData-AbstractPayoutDestinationData.html"><abbr title="\YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData">AbstractPayoutDestinationData</abbr></a>
 
 **Details:**
 
@@ -301,7 +301,7 @@ MIN_PERSONAL_DATA = 1 : int
 ---
 ***Description***
 
-Персональные данные получателя выплаты. Необходимо передавать, если вы делаете выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП).
+Персональные данные получателя выплаты. Только для обычных выплат. Необходимо передавать в этих сценариях: - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП); - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send). В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных.
 
 **Type:** <a href="../\YooKassa\Common\ListObjectInterface|\YooKassa\Request\Payouts\PayoutPersonalData[]"><abbr title="\YooKassa\Common\ListObjectInterface|\YooKassa\Request\Payouts\PayoutPersonalData[]">PayoutPersonalData[]</abbr></a>
 
@@ -313,7 +313,7 @@ MIN_PERSONAL_DATA = 1 : int
 ---
 ***Description***
 
-Персональные данные получателя выплаты. Необходимо передавать, если вы делаете выплаты с [проверкой получателя](/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП).
+Персональные данные получателя выплаты. Только для обычных выплат. Необходимо передавать в этих сценариях: - [выплаты с проверкой получателя](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-check) (только для выплат через СБП); - [выплаты с передачей данных получателя для выписок из реестра](https://yookassa.ru/developers/payouts/scenario-extensions/recipient-data-send). В массиве можно одновременно передать несколько идентификаторов, но только для разных типов данных.
 
 **Type:** <a href="../\YooKassa\Common\ListObjectInterface|\YooKassa\Request\Payouts\PayoutPersonalData[]"><abbr title="\YooKassa\Common\ListObjectInterface|\YooKassa\Request\Payouts\PayoutPersonalData[]">PayoutPersonalData[]</abbr></a>
 
@@ -641,10 +641,10 @@ public getPaymentMethodId() : null|string
 
 
 <a name="method_getPayoutDestinationData" class="anchor"></a>
-#### public getPayoutDestinationData() : \YooKassa\Model\Payout\AbstractPayoutDestination|null
+#### public getPayoutDestinationData() : \YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData|null
 
 ```php
-public getPayoutDestinationData() : \YooKassa\Model\Payout\AbstractPayoutDestination|null
+public getPayoutDestinationData() : \YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData|null
 ```
 
 **Summary**
@@ -654,7 +654,7 @@ public getPayoutDestinationData() : \YooKassa\Model\Payout\AbstractPayoutDestina
 **Details:**
 * Inherited From: [\YooKassa\Request\Payouts\CreatePayoutRequest](../classes/YooKassa-Request-Payouts-CreatePayoutRequest.md)
 
-**Returns:** \YooKassa\Model\Payout\AbstractPayoutDestination|null - Данные используемые для создания метода оплаты
+**Returns:** \YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData|null - Данные используемые для создания метода оплаты
 
 
 <a name="method_getPayoutToken" class="anchor"></a>
@@ -1128,7 +1128,7 @@ public setPaymentMethodId(null|string $payment_method_id = null) : self
 #### public setPayoutDestinationData() : self
 
 ```php
-public setPayoutDestinationData(\YooKassa\Model\Payout\AbstractPayoutDestination|array|null $payout_destination_data) : self
+public setPayoutDestinationData(\YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData|array|null $payout_destination_data) : self
 ```
 
 **Summary**
@@ -1141,7 +1141,7 @@ public setPayoutDestinationData(\YooKassa\Model\Payout\AbstractPayoutDestination
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">\YooKassa\Model\Payout\AbstractPayoutDestination OR array OR null</code> | payout_destination_data  | Объект создания метода оплаты или null |
+| <code lang="php">\YooKassa\Request\Payouts\PayoutDestinationData\AbstractPayoutDestinationData OR array OR null</code> | payout_destination_data  | Объект создания метода оплаты или null |
 
 **Returns:** self - 
 
@@ -1339,10 +1339,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

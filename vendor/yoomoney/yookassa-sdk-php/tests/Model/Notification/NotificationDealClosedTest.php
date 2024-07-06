@@ -1,119 +1,179 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Notification;
 
 use Exception;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\Deal\DealInterface;
-use YooKassa\Model\Deal\DealStatus;
-use YooKassa\Model\Deal\DealType;
-use YooKassa\Model\Deal\FeeMoment;
+use InvalidArgumentException;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Notification\NotificationDealClosed;
-use YooKassa\Model\Notification\NotificationEventType;
-use YooKassa\Model\Notification\NotificationType;
+use YooKassa\Model\Receipt\SettlementType;
 
 /**
- * @internal
+ * NotificationDealClosedTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class NotificationDealClosedTest extends AbstractTestNotification
+class NotificationDealClosedTest extends AbstractTestCase
 {
+    protected NotificationDealClosed $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @param mixed|null $value
+     * @return NotificationDealClosed
      */
-    public function testGetObject(array $value): void
+    protected function getTestInstance(mixed $value = null): NotificationDealClosed
     {
-        $instance = $this->getTestInstance($value);
-        self::assertInstanceOf(DealInterface::class, $instance->getObject());
-        self::assertEquals($value['object']['id'], $instance->getObject()->getId());
+        return new NotificationDealClosed($value);
     }
 
     /**
+     * @return void
+     */
+    public function testNotificationDealClosedClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(NotificationDealClosed::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(NotificationDealClosed::class));
+        $this->assertInstanceOf(NotificationDealClosed::class, $this->object);
+    }
+
+    /**
+     * Test property "object"
+     * @dataProvider validObjectDataProvider
+     * @param mixed $value
+     *
+     * @return void
      * @throws Exception
      */
-    public function validDataProvider(): array
+    public function testAmount(mixed $value): void
     {
-        $result = [];
-        $statuses = DealStatus::getValidValues();
-        $types = DealType::getValidValues();
+        $instance = $this->getTestInstance();
+        $instance->setObject($value);
+        self::assertNotNull($instance->getObject());
+        self::assertNotNull($instance->object);
+        self::assertEquals($value, is_array($value) ? $instance->getObject()->toArray() : $instance->getObject());
+        self::assertEquals($value, is_array($value) ? $instance->object->toArray() : $instance->object);
+    }
 
-        for ($i = 0; $i < 10; $i++) {
-            $deal = [
-                'id' => Random::str(36),
-                'type' => Random::value($types),
-                'status' => Random::value($statuses),
-                'description' => Random::str(128),
-                'balance' => [
-                    'value' => Random::float(0.01, 1000000.0),
-                    'currency' => Random::value(CurrencyCode::getEnabledValues()),
-                ],
-                'payout_balance' => [
-                    'value' => Random::float(0.01, 1000000.0),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                'test' => (bool) ($i % 2),
-                'metadata' => [
-                    'value' => Random::float(0.01, 1000000.0),
-                    'currency' => Random::str(1, 256),
-                ],
-            ];
-            $result[] = [
-                [
-                    'type' => $this->getExpectedType(),
-                    'event' => $this->getExpectedEvent(),
-                    'object' => $deal,
-                ],
-            ];
-        }
+    /**
+     * Test invalid property "object"
+     * @dataProvider invalidObjectDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidObject(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
 
-        $trueFalse = Random::bool();
-        $result[] = [
+        $this->expectException($exceptionClass);
+        $instance->setObject($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validObjectDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_object'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidObjectDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_object'));
+    }
+
+    /**
+     * Test valid method "fromArray"
+     * @dataProvider validClassDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function testFromArray(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->fromArray($value->toArray());
+        self::assertEquals($value['object'], $instance->getObject());
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function validClassDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        $objects = $this->validObjectDataProvider();
+        $instance->setObject(array_shift($objects[0]));
+        return [[$instance]];
+    }
+
+    /**
+     * @dataProvider invalidDataProvider
+     */
+    public function testInvalidFromArray(array $options): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->getTestInstance($options);
+    }
+
+    /**
+     * @return \array[][]
+     */
+    public static function invalidDataProvider(): array
+    {
+        return [
             [
-                'type' => $this->getExpectedType(),
-                'event' => $this->getExpectedEvent(),
-                'object' => [
-                    'id' => Random::str(36),
-                    'type' => Random::value($types),
-                    'status' => Random::value($statuses),
-                    'description' => Random::str(128),
-                    'balance' => [
-                        'value' => Random::float(0.01, 1000000.0),
-                        'currency' => Random::value(CurrencyCode::getValidValues()),
-                    ],
-                    'payout_balance' => [
-                        'value' => Random::float(0.01, 1000000.0),
-                        'currency' => Random::value(CurrencyCode::getValidValues()),
-                    ],
-                    'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                    'expires_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                    'fee_moment' => Random::value(FeeMoment::getEnabledValues()),
-                    'test' => $trueFalse,
-                    'metadata' => [],
+                [
+                    'type' => SettlementType::PREPAYMENT,
+                ],
+            ],
+            [
+                [
+                    'event' => SettlementType::PREPAYMENT,
+                ],
+            ],
+            [
+                [
+                    'object' => [],
                 ],
             ],
         ];
-
-        return $result;
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function getTestInstance(array $source): NotificationDealClosed
-    {
-        return new NotificationDealClosed($source);
-    }
-
-    protected function getExpectedType(): string
-    {
-        return NotificationType::NOTIFICATION;
-    }
-
-    protected function getExpectedEvent(): string
-    {
-        return NotificationEventType::DEAL_CLOSED;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,17 +70,17 @@ class Receipt extends AbstractObject implements ReceiptInterface
      * @var ReceiptItemInterface[]|ListObjectInterface Список товаров в заказе
      */
     #[Assert\NotBlank]
-    #[Assert\Type(ListObject::class)]
     #[Assert\Valid]
     #[Assert\AllType(ReceiptItem::class)]
+    #[Assert\Type(ListObject::class)]
     private ?ListObject $_items = null;
 
     /**
      * @var SettlementInterface[]|ListObjectInterface|null Массив оплат, обеспечивающих выдачу товара
      */
-    #[Assert\Type(ListObject::class)]
     #[Assert\Valid]
     #[Assert\AllType(Settlement::class)]
+    #[Assert\Type(ListObject::class)]
     #[Assert\Count(min: 1)]
     private ?ListObject $_settlements = null;
 
@@ -108,9 +108,9 @@ class Receipt extends AbstractObject implements ReceiptInterface
     /**
      * @var IndustryDetails[]|ListObjectInterface|null Отраслевой реквизит чека (тег в 54 ФЗ — 1261)
      */
-    #[Assert\Type(ListObject::class)]
-    #[Assert\AllType(IndustryDetails::class)]
     #[Assert\Valid]
+    #[Assert\AllType(IndustryDetails::class)]
+    #[Assert\Type(ListObject::class)]
     private ?ListObject $_receipt_industry_details = null;
 
     /**
@@ -259,7 +259,7 @@ class Receipt extends AbstractObject implements ReceiptInterface
      *
      * @return ReceiptItemInterface[]|ListObjectInterface Список товаров в заказе, являющихся доставкой
      */
-    private function getShippingItems(): ListObjectInterface
+    public function getShippingItems(): ListObjectInterface
     {
         if ($this->_shippingItems === null) {
             $this->_shippingItems = new ListObject(ReceiptItem::class);

@@ -1,112 +1,86 @@
 # [YooKassa API SDK](../home.md)
 
-# Class: \YooKassa\Request\PersonalData\CreatePersonalDataRequest
-### Namespace: [\YooKassa\Request\PersonalData](../namespaces/yookassa-request-personaldata.md)
+# Class: \YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest
+### Namespace: [\YooKassa\Request\PersonalData\PersonalDataType](../namespaces/yookassa-request-personaldata-personaldatatype.md)
 ---
 **Summary:**
 
-Класс, представляющий модель CreatePersonalDataRequest.
+Класс, представляющий модель SbpPayoutRecipientPersonalDataRequest.
 
-
----
-### Examples
-Пример использования билдера
-
-```php
-try {
-    $personalDataBuilder = \YooKassa\Request\PersonalData\CreatePersonalDataRequest::builder();
-    $personalDataBuilder
-        ->setType(\YooKassa\Model\PersonalData\PersonalDataType::SBP_PAYOUT_RECIPIENT)
-        ->setFirstName('Иван')
-        ->setLastName('Иванов')
-        ->setMiddleName('Иванович')
-        ->setMetadata(['recipient_id' => '37'])
-    ;
-
-    // Создаем объект запроса
-    $request = $personalDataBuilder->build();
-
-    $idempotenceKey = uniqid('', true);
-    $response = $client->createPersonalData($request, $idempotenceKey);
-} catch (Exception $e) {
-    $response = $e;
-}
-
-var_dump($response);
-
-```
 
 ---
 ### Constants
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
-| public | [MAX_LENGTH_LAST_NAME](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#constant_MAX_LENGTH_LAST_NAME) |  | Максимальная длина строки фамилии или отчества |
-| public | [MAX_LENGTH_FIRST_NAME](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#constant_MAX_LENGTH_FIRST_NAME) |  | Максимальная длина строки имени |
+| public | [MAX_LENGTH_LAST_NAME](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#constant_MAX_LENGTH_LAST_NAME) |  | Максимальная длина строки фамилии или отчества |
+| public | [MAX_LENGTH_FIRST_NAME](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#constant_MAX_LENGTH_FIRST_NAME) |  | Максимальная длина строки имени |
 
 ---
 ### Properties
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
-| public | [$first_name](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_first_name) |  | Имя пользователя |
-| public | [$firstName](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_firstName) |  | Имя пользователя |
-| public | [$last_name](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_last_name) |  | Фамилия пользователя |
-| public | [$lastName](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_lastName) |  | Фамилия пользователя |
-| public | [$metadata](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_metadata) |  | Метаданные персональных данных указанные мерчантом |
-| public | [$middle_name](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_middle_name) |  | Отчество пользователя |
-| public | [$middleName](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_middleName) |  | Отчество пользователя |
-| public | [$type](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property_type) |  | Тип персональных данных |
-| protected | [$_metadata](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#property__metadata) |  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). |
+| public | [$first_name](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_first_name) |  | Имя пользователя. |
+| public | [$firstName](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_firstName) |  | Имя пользователя. |
+| public | [$last_name](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_last_name) |  | Фамилия пользователя. |
+| public | [$lastName](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_lastName) |  | Фамилия пользователя. |
+| public | [$metadata](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_metadata) |  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). |
+| public | [$metadata](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#property_metadata) |  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). |
+| public | [$middle_name](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_middle_name) |  | Отчество пользователя. Обязательный параметр, если есть в паспорте. |
+| public | [$middleName](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_middleName) |  | Отчество пользователя. Обязательный параметр, если есть в паспорте. |
+| public | [$type](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#property_type) |  | Значение — `sbp_payout_recipient`. Тип персональных данных. |
+| public | [$type](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#property_type) |  | Тип персональных данных. |
+| protected | [$_metadata](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#property__metadata) |  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). |
+| protected | [$_type](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#property__type) |  | Тип персональных данных — цель, для которой вы будете использовать данные |
 
 ---
 ### Methods
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
-| public | [__construct()](../classes/YooKassa-Common-AbstractObject.md#method___construct) |  | AbstractObject constructor. |
+| public | [__construct()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method___construct) |  |  |
 | public | [__get()](../classes/YooKassa-Common-AbstractObject.md#method___get) |  | Возвращает значение свойства. |
 | public | [__isset()](../classes/YooKassa-Common-AbstractObject.md#method___isset) |  | Проверяет наличие свойства. |
 | public | [__set()](../classes/YooKassa-Common-AbstractObject.md#method___set) |  | Устанавливает значение свойства. |
 | public | [__unset()](../classes/YooKassa-Common-AbstractObject.md#method___unset) |  | Удаляет свойство. |
-| public | [builder()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_builder) |  | Возвращает билдер объектов запросов создания платежа. |
+| public | [builder()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_builder) |  | Возвращает билдер объектов запросов создания платежа. |
 | public | [clearValidationError()](../classes/YooKassa-Common-AbstractRequest.md#method_clearValidationError) |  | Очищает статус валидации текущего запроса. |
 | public | [fromArray()](../classes/YooKassa-Common-AbstractObject.md#method_fromArray) |  | Устанавливает значения свойств текущего объекта из массива. |
-| public | [getFirstName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_getFirstName) |  | Возвращает имя пользователя. |
-| public | [getLastName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_getLastName) |  | Возвращает фамилию пользователя. |
+| public | [getFirstName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_getFirstName) |  | Возвращает first_name. |
+| public | [getLastName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_getLastName) |  | Возвращает last_name. |
 | public | [getLastValidationError()](../classes/YooKassa-Common-AbstractRequest.md#method_getLastValidationError) |  | Возвращает последнюю ошибку валидации. |
-| public | [getMetadata()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_getMetadata) |  | Возвращает любые дополнительные данные. |
-| public | [getMiddleName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_getMiddleName) |  | Возвращает отчество пользователя. |
-| public | [getType()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_getType) |  | Возвращает тип персональных данных. |
+| public | [getMetadata()](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#method_getMetadata) |  | Возвращает metadata. |
+| public | [getMiddleName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_getMiddleName) |  | Возвращает middle_name. |
+| public | [getType()](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#method_getType) |  | Возвращает type. |
 | public | [getValidator()](../classes/YooKassa-Common-AbstractObject.md#method_getValidator) |  |  |
-| public | [hasFirstName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_hasFirstName) |  | Проверяет наличие имени пользователя в запросе. |
-| public | [hasLastName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_hasLastName) |  | Проверяет наличие фамилии пользователя в запросе. |
-| public | [hasMetadata()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_hasMetadata) |  | Проверяет, были ли установлены метаданные. |
-| public | [hasMiddleName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_hasMiddleName) |  | Проверяет наличие отчества пользователя в запросе. |
-| public | [hasType()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_hasType) |  | Проверяет наличие типа персональных данных в запросе. |
+| public | [hasFirstName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_hasFirstName) |  | Проверяет наличие имени пользователя в запросе. |
+| public | [hasLastName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_hasLastName) |  | Проверяет наличие фамилии пользователя в запросе. |
+| public | [hasMetadata()](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#method_hasMetadata) |  | Проверяет, были ли установлены метаданные. |
+| public | [hasMiddleName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_hasMiddleName) |  | Проверяет наличие отчества пользователя в запросе. |
+| public | [hasType()](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#method_hasType) |  | Проверяет наличие типа персональных данных в запросе. |
 | public | [jsonSerialize()](../classes/YooKassa-Common-AbstractObject.md#method_jsonSerialize) |  | Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации. |
 | public | [offsetExists()](../classes/YooKassa-Common-AbstractObject.md#method_offsetExists) |  | Проверяет наличие свойства. |
 | public | [offsetGet()](../classes/YooKassa-Common-AbstractObject.md#method_offsetGet) |  | Возвращает значение свойства. |
 | public | [offsetSet()](../classes/YooKassa-Common-AbstractObject.md#method_offsetSet) |  | Устанавливает значение свойства. |
 | public | [offsetUnset()](../classes/YooKassa-Common-AbstractObject.md#method_offsetUnset) |  | Удаляет свойство. |
-| public | [setFirstName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_setFirstName) |  | Устанавливает имя пользователя. |
-| public | [setLastName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_setLastName) |  | Устанавливает фамилию пользователя. |
-| public | [setMetadata()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_setMetadata) |  | Устанавливает любые дополнительные данные. |
-| public | [setMiddleName()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_setMiddleName) |  | Устанавливает отчество пользователя. |
-| public | [setType()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_setType) |  | Устанавливает тип персональных данных. |
+| public | [setFirstName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_setFirstName) |  | Устанавливает first_name. |
+| public | [setLastName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_setLastName) |  | Устанавливает last_name. |
+| public | [setMetadata()](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#method_setMetadata) |  | Устанавливает metadata. |
+| public | [setMiddleName()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_setMiddleName) |  | Устанавливает middle_name. |
+| public | [setType()](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md#method_setType) |  | Устанавливает type. |
 | public | [toArray()](../classes/YooKassa-Common-AbstractObject.md#method_toArray) |  | Возвращает ассоциативный массив со свойствами текущего объекта для его дальнейшей JSON сериализации Является алиасом метода AbstractObject::jsonSerialize(). |
-| public | [validate()](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md#method_validate) |  | Проверяет на валидность текущий объект |
+| public | [validate()](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md#method_validate) |  | Проверяет на валидность текущий объект |
 | protected | [getUnknownProperties()](../classes/YooKassa-Common-AbstractObject.md#method_getUnknownProperties) |  | Возвращает массив свойств которые не существуют, но были заданы у объекта. |
 | protected | [setValidationError()](../classes/YooKassa-Common-AbstractRequest.md#method_setValidationError) |  | Устанавливает ошибку валидации. |
 | protected | [validatePropertyValue()](../classes/YooKassa-Common-AbstractObject.md#method_validatePropertyValue) |  |  |
 
 ---
 ### Details
-* File: [lib/Request/PersonalData/CreatePersonalDataRequest.php](../../lib/Request/PersonalData/CreatePersonalDataRequest.php)
+* File: [lib/Request/PersonalData/PersonalDataType/SbpPayoutRecipientPersonalDataRequest.php](../../lib/Request/PersonalData/PersonalDataType/SbpPayoutRecipientPersonalDataRequest.php)
 * Package: YooKassa\Model
-* Class Hierarchy:  
+* Class Hierarchy:   
   * [\YooKassa\Common\AbstractObject](../classes/YooKassa-Common-AbstractObject.md)
   * [\YooKassa\Common\AbstractRequest](../classes/YooKassa-Common-AbstractRequest.md)
-  * \YooKassa\Request\PersonalData\CreatePersonalDataRequest
-* Implements:
-  * [\YooKassa\Request\PersonalData\CreatePersonalDataRequestInterface](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequestInterface.md)
+  * [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
+  * \YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest
 
 * See Also:
   * [](https://yookassa.ru/developers/api)
@@ -122,6 +96,8 @@ var_dump($response);
 ## Constants
 <a name="constant_MAX_LENGTH_LAST_NAME" class="anchor"></a>
 ###### MAX_LENGTH_LAST_NAME
+Inherited from [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
+
 Максимальная длина строки фамилии или отчества
 
 ```php
@@ -131,6 +107,8 @@ MAX_LENGTH_LAST_NAME = 200
 
 <a name="constant_MAX_LENGTH_FIRST_NAME" class="anchor"></a>
 ###### MAX_LENGTH_FIRST_NAME
+Inherited from [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
+
 Максимальная длина строки имени
 
 ```php
@@ -146,7 +124,7 @@ MAX_LENGTH_FIRST_NAME = 100
 ---
 ***Description***
 
-Имя пользователя
+Имя пользователя.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -158,7 +136,7 @@ MAX_LENGTH_FIRST_NAME = 100
 ---
 ***Description***
 
-Имя пользователя
+Имя пользователя.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -170,7 +148,7 @@ MAX_LENGTH_FIRST_NAME = 100
 ---
 ***Description***
 
-Фамилия пользователя
+Фамилия пользователя.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -182,9 +160,21 @@ MAX_LENGTH_FIRST_NAME = 100
 ---
 ***Description***
 
-Фамилия пользователя
+Фамилия пользователя.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
+
+**Details:**
+
+
+<a name="property_metadata"></a>
+#### public $metadata : \YooKassa\Model\Metadata|null
+---
+***Description***
+
+Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа).
+
+**Type:** <a href="../\YooKassa\Model\Metadata|null"><abbr title="\YooKassa\Model\Metadata|null">Metadata|null</abbr></a>
 
 **Details:**
 
@@ -194,31 +184,44 @@ MAX_LENGTH_FIRST_NAME = 100
 ---
 ***Description***
 
-Метаданные персональных данных указанные мерчантом
+Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа).
 
 **Type:** <a href="../classes/YooKassa-Model-Metadata.html"><abbr title="\YooKassa\Model\Metadata">Metadata</abbr></a>
 
 **Details:**
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 
 <a name="property_middle_name"></a>
-#### public $middle_name : string
+#### public $middle_name : string|null
 ---
 ***Description***
 
-Отчество пользователя
+Отчество пользователя. Обязательный параметр, если есть в паспорте.
 
-**Type:** <a href="../string"><abbr title="string">string</abbr></a>
+**Type:** <a href="../string|null"><abbr title="string|null">string|null</abbr></a>
 
 **Details:**
 
 
 <a name="property_middleName"></a>
-#### public $middleName : string
+#### public $middleName : string|null
 ---
 ***Description***
 
-Отчество пользователя
+Отчество пользователя. Обязательный параметр, если есть в паспорте.
+
+**Type:** <a href="../string|null"><abbr title="string|null">string|null</abbr></a>
+
+**Details:**
+
+
+<a name="property_type"></a>
+#### public $type : string
+---
+***Description***
+
+Значение — `sbp_payout_recipient`. Тип персональных данных.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
@@ -230,11 +233,12 @@ MAX_LENGTH_FIRST_NAME = 100
 ---
 ***Description***
 
-Тип персональных данных
+Тип персональных данных.
 
 **Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
 **Details:**
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 
 <a name="property__metadata"></a>
@@ -252,6 +256,20 @@ MAX_LENGTH_FIRST_NAME = 100
 **Type:** <a href="../?\YooKassa\Model\Metadata"><abbr title="?\YooKassa\Model\Metadata">Metadata</abbr></a>
 
 **Details:**
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
+
+
+<a name="property__type"></a>
+#### protected $_type : ?string
+---
+**Summary**
+
+Тип персональных данных — цель, для которой вы будете использовать данные
+
+**Type:** <a href="../?string"><abbr title="?string">?string</abbr></a>
+
+**Details:**
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 
 
@@ -261,20 +279,16 @@ MAX_LENGTH_FIRST_NAME = 100
 #### public __construct() : mixed
 
 ```php
-public __construct(array|null $data = []) : mixed
+public __construct(?array $data = []) : mixed
 ```
 
-**Summary**
-
-AbstractObject constructor.
-
 **Details:**
-* Inherited From: [\YooKassa\Common\AbstractObject](../classes/YooKassa-Common-AbstractObject.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR null</code> | data  |  |
+| <code lang="php">?array</code> | data  |  |
 
 **Returns:** mixed - 
 
@@ -369,10 +383,10 @@ public __unset(string $propertyName) : void
 
 
 <a name="method_builder" class="anchor"></a>
-#### public builder() : \YooKassa\Request\PersonalData\CreatePersonalDataRequestBuilder
+#### public builder() : \YooKassa\Request\PersonalData\CreateSbpPayoutRecipientPersonalDataRequestBuilder
 
 ```php
-Static public builder() : \YooKassa\Request\PersonalData\CreatePersonalDataRequestBuilder
+Static public builder() : \YooKassa\Request\PersonalData\CreateSbpPayoutRecipientPersonalDataRequestBuilder
 ```
 
 **Summary**
@@ -380,9 +394,9 @@ Static public builder() : \YooKassa\Request\PersonalData\CreatePersonalDataReque
 Возвращает билдер объектов запросов создания платежа.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
-**Returns:** \YooKassa\Request\PersonalData\CreatePersonalDataRequestBuilder - Инстанс билдера объектов запросов
+**Returns:** \YooKassa\Request\PersonalData\CreateSbpPayoutRecipientPersonalDataRequestBuilder - Инстанс билдера объектов запросов
 
 
 <a name="method_clearValidationError" class="anchor"></a>
@@ -433,12 +447,12 @@ public getFirstName() : string|null
 
 **Summary**
 
-Возвращает имя пользователя.
+Возвращает first_name.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
-**Returns:** string|null - Имя пользователя
+**Returns:** string|null - 
 
 
 <a name="method_getLastName" class="anchor"></a>
@@ -450,12 +464,12 @@ public getLastName() : string|null
 
 **Summary**
 
-Возвращает фамилию пользователя.
+Возвращает last_name.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
-**Returns:** string|null - Фамилия пользователя
+**Returns:** string|null - 
 
 
 <a name="method_getLastValidationError" class="anchor"></a>
@@ -484,29 +498,29 @@ public getMetadata() : \YooKassa\Model\Metadata|null
 
 **Summary**
 
-Возвращает любые дополнительные данные.
+Возвращает metadata.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
-**Returns:** \YooKassa\Model\Metadata|null - Любые дополнительные данные
+**Returns:** \YooKassa\Model\Metadata|null - 
 
 
 <a name="method_getMiddleName" class="anchor"></a>
-#### public getMiddleName() : null|string
+#### public getMiddleName() : string|null
 
 ```php
-public getMiddleName() : null|string
+public getMiddleName() : string|null
 ```
 
 **Summary**
 
-Возвращает отчество пользователя.
+Возвращает middle_name.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
-**Returns:** null|string - Отчество пользователя
+**Returns:** string|null - 
 
 
 <a name="method_getType" class="anchor"></a>
@@ -518,12 +532,12 @@ public getType() : string|null
 
 **Summary**
 
-Возвращает тип персональных данных.
+Возвращает type.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
-**Returns:** string|null - Тип персональных данных
+**Returns:** string|null - 
 
 
 <a name="method_getValidator" class="anchor"></a>
@@ -551,7 +565,7 @@ public hasFirstName() : bool
 Проверяет наличие имени пользователя в запросе.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 **Returns:** bool - True если имя пользователя задано, false если нет
 
@@ -568,7 +582,7 @@ public hasLastName() : bool
 Проверяет наличие фамилии пользователя в запросе.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 **Returns:** bool - True если фамилия пользователя задана, false если нет
 
@@ -585,7 +599,7 @@ public hasMetadata() : bool
 Проверяет, были ли установлены метаданные.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 **Returns:** bool - True если метаданные были установлены, false если нет
 
@@ -602,7 +616,7 @@ public hasMiddleName() : bool
 Проверяет наличие отчества пользователя в запросе.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 **Returns:** bool - True если отчество пользователя задано, false если нет
 
@@ -619,7 +633,7 @@ public hasType() : bool
 Проверяет наличие типа персональных данных в запросе.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 **Returns:** bool - True если тип персональных данных задан, false если нет
 
@@ -739,15 +753,15 @@ public setFirstName(string|null $first_name = null) : self
 
 **Summary**
 
-Устанавливает имя пользователя.
+Устанавливает first_name.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">string OR null</code> | first_name  | Имя пользователя |
+| <code lang="php">string OR null</code> | first_name  | Имя пользователя. |
 
 **Returns:** self - 
 
@@ -761,15 +775,15 @@ public setLastName(string|null $last_name = null) : self
 
 **Summary**
 
-Устанавливает фамилию пользователя.
+Устанавливает last_name.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">string OR null</code> | last_name  | Фамилия пользователя |
+| <code lang="php">string OR null</code> | last_name  | Фамилия пользователя. |
 
 **Returns:** self - 
 
@@ -778,20 +792,20 @@ public setLastName(string|null $last_name = null) : self
 #### public setMetadata() : self
 
 ```php
-public setMetadata(\YooKassa\Model\Metadata|array|null $metadata = null) : self
+public setMetadata(\YooKassa\Model\Metadata|array|null $value = null) : self
 ```
 
 **Summary**
 
-Устанавливает любые дополнительные данные.
+Устанавливает metadata.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">\YooKassa\Model\Metadata OR array OR null</code> | metadata  | Любые дополнительные данные |
+| <code lang="php">\YooKassa\Model\Metadata OR array OR null</code> | value  | Любые дополнительные данные, которые нужны вам для работы (например, ваш внутренний идентификатор заказа). Передаются в виде набора пар «ключ-значение» и возвращаются в ответе от ЮKassa. Ограничения: максимум 16 ключей, имя ключа не больше 32 символов, значение ключа не больше 512 символов, тип данных — строка в формате UTF-8. |
 
 **Returns:** self - 
 
@@ -800,20 +814,20 @@ public setMetadata(\YooKassa\Model\Metadata|array|null $metadata = null) : self
 #### public setMiddleName() : self
 
 ```php
-public setMiddleName(null|string $middle_name = null) : self
+public setMiddleName(string|null $middle_name = null) : self
 ```
 
 **Summary**
 
-Устанавливает отчество пользователя.
+Устанавливает middle_name.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">null OR string</code> | middle_name  | Отчество пользователя |
+| <code lang="php">string OR null</code> | middle_name  | Отчество пользователя. Обязательный параметр, если есть в паспорте. |
 
 **Returns:** self - 
 
@@ -822,20 +836,20 @@ public setMiddleName(null|string $middle_name = null) : self
 #### public setType() : self
 
 ```php
-public setType(\YooKassa\Model\PersonalData\PersonalDataType|string|null $type = null) : self
+public setType(string|null $type = null) : self
 ```
 
 **Summary**
 
-Устанавливает тип персональных данных.
+Устанавливает type.
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-AbstractPersonalDataRequest.md)
 
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">\YooKassa\Model\PersonalData\PersonalDataType OR string OR null</code> | type  | Тип персональных данных |
+| <code lang="php">string OR null</code> | type  |  |
 
 **Returns:** self - 
 
@@ -870,7 +884,7 @@ public validate() : bool
 Проверяет на валидность текущий объект
 
 **Details:**
-* Inherited From: [\YooKassa\Request\PersonalData\CreatePersonalDataRequest](../classes/YooKassa-Request-PersonalData-CreatePersonalDataRequest.md)
+* Inherited From: [\YooKassa\Request\PersonalData\PersonalDataType\SbpPayoutRecipientPersonalDataRequest](../classes/YooKassa-Request-PersonalData-PersonalDataType-SbpPayoutRecipientPersonalDataRequest.md)
 
 **Returns:** bool - True если объект запроса валиден, false если нет
 
@@ -945,10 +959,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

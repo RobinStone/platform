@@ -5,7 +5,9 @@ namespace Tests\YooKassa\Request\Receipts;
 use InvalidArgumentException;
 use TypeError;
 use YooKassa\Common\Exceptions\InvalidPropertyException;
+use YooKassa\Model\Receipt\Settlement;
 use YooKassa\Request\Receipts\AbstractReceiptResponse;
+use YooKassa\Request\Receipts\ReceiptResponseItem;
 use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
 use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
 use YooKassa\Helpers\Random;
@@ -67,16 +69,34 @@ class PaymentReceiptResponseTest extends AbstractTestReceiptResponse
         foreach ($instance->getItems() as $item) {
             self::assertInstanceOf(ReceiptResponseItemInterface::class, $item);
         }
+        $instance->getItems()->clear();
+        foreach ($options['items'] as $key => $option) {
+            $instance->addItem(new ReceiptResponseItem($option));
+            self::assertEquals($option, $instance->getItems()->get($key)->toArray());
+            self::assertInstanceOf(ReceiptResponseItemInterface::class, $instance->getItems()->get($key));
+        }
 
         self::assertNotNull($instance->getSettlements());
         foreach ($instance->getSettlements() as $settlements) {
             self::assertInstanceOf(SettlementInterface::class, $settlements);
         }
 
+        $instance->getSettlements()->clear();
+        foreach ($options['settlements'] as $key => $option) {
+            $instance->addSettlement(new Settlement($option));
+            self::assertEquals($option, $instance->getSettlements()->get($key)->toArray());
+            self::assertInstanceOf(SettlementInterface::class, $instance->getSettlements()->get($key));
+        }
+
         self::assertNotNull($instance->getOnBehalfOf());
         self::assertEquals($options['on_behalf_of'], $instance->getOnBehalfOf());
 
         self::assertTrue($instance->notEmpty());
+
+        $instance = $this->getTestInstance();
+        self::assertIsObject($instance->getItems());
+        self::assertIsObject($instance->getSettlements());
+        self::assertIsObject($instance->getReceiptIndustryDetails());
     }
 
     public function testSetFiscalDocumentNumber(): void
@@ -154,12 +174,12 @@ class PaymentReceiptResponseTest extends AbstractTestReceiptResponse
         $instance->setOnBehalfOf($options);
     }
 
-    protected function getTestInstance($options): PaymentReceiptResponse
+    protected function getTestInstance(mixed $options = null): PaymentReceiptResponse
     {
         return new PaymentReceiptResponse($options);
     }
 
-    protected function addSpecificProperties($options, $i): array
+    protected function addSpecificProperties(mixed $options, mixed $i): array
     {
         $array = [
             Random::str(30),

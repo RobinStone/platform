@@ -1,695 +1,1240 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Receipt;
 
 use Exception;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use stdClass;
-use TypeError;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
-use YooKassa\Helpers\ProductCode;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
 use YooKassa\Helpers\Random;
 use YooKassa\Helpers\StringObject;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\Receipt\AgentType;
-use YooKassa\Model\Receipt\IndustryDetails;
-use YooKassa\Model\Receipt\MarkCodeInfo;
-use YooKassa\Model\Receipt\MarkQuantity;
-use YooKassa\Model\Receipt\PaymentMode;
-use YooKassa\Model\Receipt\PaymentSubject;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Receipt\ReceiptItem;
 use YooKassa\Model\Receipt\ReceiptItemAmount;
-use YooKassa\Model\Receipt\ReceiptItemMeasure;
-use YooKassa\Model\Receipt\Supplier;
 
 /**
- * @internal
+ * ReceiptItemTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class ReceiptItemTest extends TestCase
+class ReceiptItemTest extends AbstractTestCase
 {
+    protected ReceiptItem $object;
+
     /**
-     * @dataProvider validDescriptionDataProvider
-     *
-     * @param mixed $value
+     * @param mixed|null $value
+     * @return ReceiptItem
      */
-    public function testGetSetDescription($value): void
+    protected function getTestInstance(mixed $value = null): ReceiptItem
+    {
+        return new ReceiptItem($value);
+    }
+
+    /**
+     * @return void
+     */
+    public function testReceiptItemClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(ReceiptItem::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(ReceiptItem::class));
+        $this->assertInstanceOf(ReceiptItem::class, $this->object);
+    }
+
+    /**
+     * Test property "description"
+     * @dataProvider validDescriptionDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testDescription(mixed $value): void
     {
         $instance = $this->getTestInstance();
-
         $instance->setDescription($value);
-        self::assertEquals((string) $value, $instance->getDescription());
-        self::assertEquals((string) $value, $instance->description);
+        self::assertNotNull($instance->getDescription());
+        self::assertNotNull($instance->description);
+        self::assertEquals($value, is_array($value) ? $instance->getDescription()->toArray() : $instance->getDescription());
+        self::assertEquals($value, is_array($value) ? $instance->description->toArray() : $instance->description);
+        self::assertLessThanOrEqual(128, is_string($instance->getDescription()) ? mb_strlen($instance->getDescription()) : $instance->getDescription());
+        self::assertLessThanOrEqual(128, is_string($instance->description) ? mb_strlen($instance->description) : $instance->description);
     }
 
     /**
-     * @dataProvider validDescriptionDataProvider
-     *
+     * Test invalid property "description"
+     * @dataProvider invalidDescriptionDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterDescription($value): void
+    public function testInvalidDescription(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
-        $instance->description = $value;
-        self::assertEquals((string) $value, $instance->getDescription());
-        self::assertEquals((string) $value, $instance->description);
-    }
 
-    public static function validDescriptionDataProvider()
-    {
-        return [
-            [Random::str(1)],
-            [Random::str(2, 31)],
-            [Random::str(32)],
-            [new StringObject(Random::str(64))],
-            [123],
-            [45.3],
-        ];
+        $this->expectException($exceptionClass);
+        $instance->setDescription($value);
     }
 
     /**
-     * @dataProvider invalidDescriptionDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetInvalidDescription($value): void
+    public function validDescriptionDataProvider(): array
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setDescription($value);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_description'));
     }
 
     /**
-     * @dataProvider invalidDescriptionDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidDescription($value): void
+    public function invalidDescriptionDataProvider(): array
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->description = $value;
-    }
-
-    public static function invalidDescriptionDataProvider()
-    {
-        return [
-            [null],
-            [''],
-            [new StringObject('')],
-            [false],
-            [Random::str(129, 180)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_description'));
     }
 
     /**
+     * Test property "quantity"
      * @dataProvider validQuantityDataProvider
-     *
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testGetSetQuantity($value): void
+    public function testQuantity(mixed $value): void
     {
         $instance = $this->getTestInstance();
-
         $instance->setQuantity($value);
-        self::assertEquals((float) $value, $instance->getQuantity());
-        self::assertEquals((float) $value, $instance->quantity);
+        self::assertNotNull($instance->getQuantity());
+        self::assertNotNull($instance->quantity);
+        self::assertEquals($value, is_array($value) ? $instance->getQuantity()->toArray() : $instance->getQuantity());
+        self::assertEquals($value, is_array($value) ? $instance->quantity->toArray() : $instance->quantity);
+        self::assertIsNumeric($instance->getQuantity());
+        self::assertIsNumeric($instance->quantity);
     }
 
     /**
-     * @dataProvider validQuantityDataProvider
-     *
+     * Test invalid property "quantity"
+     * @dataProvider invalidQuantityDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterQuantity($value): void
+    public function testInvalidQuantity(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
-        $instance->quantity = $value;
-        self::assertEquals((float) $value, $instance->getQuantity());
-        self::assertEquals((float) $value, $instance->quantity);
-    }
-
-    public static function validQuantityDataProvider()
-    {
-        return [
-            [1],
-            [1.3],
-            [0.001],
-            [10000.001],
-            ['3.1415'],
-            [Random::float(0.001, 9999.999)],
-            [Random::int(1, 9999)],
-        ];
+        $this->expectException($exceptionClass);
+        $instance->setQuantity($value);
     }
 
     /**
-     * @dataProvider invalidQuantityDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetInvalidQuantity($value): void
+    public function validQuantityDataProvider(): array
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setQuantity($value);
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_quantity'));
     }
 
     /**
-     * @dataProvider invalidQuantityDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidQuantity($value): void
+    public function invalidQuantityDataProvider(): array
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->quantity = $value;
-    }
-
-    public static function invalidQuantityDataProvider()
-    {
-        return [
-            [null],
-            [0.0],
-            [Random::float(-100, -0.001)],
-        ];
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_quantity'));
     }
 
     /**
+     * Test property "amount"
+     * @dataProvider validAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setPrice($value);
+        self::assertNotNull($instance->getPrice());
+        self::assertNotNull($instance->amount);
+        self::assertEquals($value, is_array($value) ? $instance->getPrice()->toArray() : $instance->getPrice());
+        self::assertEquals($value['value'], $instance->getPrice()->getValue());
+        self::assertEquals($value['currency'], $instance->getPrice()->getCurrency());
+    }
+
+    /**
+     * Test invalid property "amount"
+     * @dataProvider invalidAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAmount(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPrice($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
+
+    /**
+     * Test property "vat_code"
      * @dataProvider validVatCodeDataProvider
-     *
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testGetSetVatCode($value): void
+    public function testVatCode(mixed $value): void
     {
         $instance = $this->getTestInstance();
-
         $instance->setVatCode($value);
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getVatCode());
-            self::assertNull($instance->vatCode);
-            self::assertNull($instance->vat_code);
-        } else {
-            self::assertEquals((int) $value, $instance->getVatCode());
-            self::assertEquals((int) $value, $instance->vatCode);
-            self::assertEquals((int) $value, $instance->vat_code);
+        self::assertNotNull($instance->getVatCode());
+        self::assertNotNull($instance->vat_code);
+        self::assertEquals($value, is_array($value) ? $instance->getVatCode()->toArray() : $instance->getVatCode());
+        self::assertEquals($value, is_array($value) ? $instance->vat_code->toArray() : $instance->vat_code);
+        self::assertLessThanOrEqual(6, is_string($instance->getVatCode()) ? mb_strlen($instance->getVatCode()) : $instance->getVatCode());
+        self::assertLessThanOrEqual(6, is_string($instance->vat_code) ? mb_strlen($instance->vat_code) : $instance->vat_code);
+        self::assertGreaterThanOrEqual(1, is_string($instance->getVatCode()) ? mb_strlen($instance->getVatCode()) : $instance->getVatCode());
+        self::assertGreaterThanOrEqual(1, is_string($instance->vat_code) ? mb_strlen($instance->vat_code) : $instance->vat_code);
+        self::assertIsNumeric($instance->getVatCode());
+        self::assertIsNumeric($instance->vat_code);
+    }
+
+    /**
+     * Test invalid property "vat_code"
+     * @dataProvider invalidVatCodeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidVatCode(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setVatCode($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validVatCodeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_vat_code'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidVatCodeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_vat_code'));
+    }
+
+    /**
+     * Test property "payment_subject"
+     * @dataProvider validPaymentSubjectDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPaymentSubject(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPaymentSubject());
+        self::assertEmpty($instance->payment_subject);
+        $instance->setPaymentSubject($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPaymentSubject()->toArray() : $instance->getPaymentSubject());
+        self::assertEquals($value, is_array($value) ? $instance->payment_subject->toArray() : $instance->payment_subject);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getPaymentSubject());
+            self::assertNotNull($instance->payment_subject);
         }
     }
 
     /**
-     * @dataProvider validVatCodeDataProvider
-     *
+     * Test invalid property "payment_subject"
+     * @dataProvider invalidPaymentSubjectDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterVatCode($value): void
+    public function testInvalidPaymentSubject(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
-        $instance->vatCode = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getVatCode());
-            self::assertNull($instance->vatCode);
-            self::assertNull($instance->vat_code);
-        } else {
-            self::assertEquals((int) $value, $instance->getVatCode());
-            self::assertEquals((int) $value, $instance->vatCode);
-            self::assertEquals((int) $value, $instance->vat_code);
+        $this->expectException($exceptionClass);
+        $instance->setPaymentSubject($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPaymentSubjectDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_subject'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPaymentSubjectDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_subject'));
+    }
+
+    /**
+     * Test property "payment_mode"
+     * @dataProvider validPaymentModeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPaymentMode(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPaymentMode());
+        self::assertEmpty($instance->payment_mode);
+        $instance->setPaymentMode($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPaymentMode()->toArray() : $instance->getPaymentMode());
+        self::assertEquals($value, is_array($value) ? $instance->payment_mode->toArray() : $instance->payment_mode);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getPaymentMode());
+            self::assertNotNull($instance->payment_mode);
         }
     }
 
     /**
-     * @dataProvider validDataAgentType
-     *
+     * Test invalid property "payment_mode"
+     * @dataProvider invalidPaymentModeDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetAgentType($value): void
+    public function testInvalidPaymentMode(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
-        $instance->setAgentType($value);
-        self::assertSame($value, $instance->getAgentType());
+        $this->expectException($exceptionClass);
+        $instance->setPaymentMode($value);
     }
 
-    public static function validDataAgentType()
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPaymentModeDataProvider(): array
     {
-        $values = [
-            [null],
-        ];
-        for ($i = 0; $i < 5; $i++) {
-            $values[] = [Random::value(AgentType::getValidValues())];
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_mode'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPaymentModeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_mode'));
+    }
+
+    /**
+     * Test property "country_of_origin_code"
+     * @dataProvider validCountryOfOriginCodeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCountryOfOriginCode(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCountryOfOriginCode());
+        self::assertEmpty($instance->country_of_origin_code);
+        $instance->setCountryOfOriginCode($value);
+        self::assertEquals($value, is_array($value) ? $instance->getCountryOfOriginCode()->toArray() : $instance->getCountryOfOriginCode());
+        self::assertEquals($value, is_array($value) ? $instance->country_of_origin_code->toArray() : $instance->country_of_origin_code);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCountryOfOriginCode());
+            self::assertNotNull($instance->country_of_origin_code);
+            self::assertMatchesRegularExpression("/^[A-Z]{2}$/", $instance->getCountryOfOriginCode());
+            self::assertMatchesRegularExpression("/^[A-Z]{2}$/", $instance->country_of_origin_code);
         }
-
-        return $values;
     }
 
     /**
-     * @dataProvider invalidAgentTypeDataProvider
-     *
+     * Test invalid property "country_of_origin_code"
+     * @dataProvider invalidCountryOfOriginCodeDataProvider
      * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetInvalidAgentType($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->setAgentType($value);
-    }
-
-    /**
-     * @dataProvider invalidAgentTypeDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
-     * @param mixed $exception
+     * @return void
      */
-    public function testSetterInvalidAgentType($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->agent_type = $value;
-    }
-
-    public static function invalidAgentTypeDataProvider()
-    {
-        return [
-            [Random::str(10), InvalidPropertyValueException::class],
-        ];
-    }
-
-    /**
-     * @dataProvider validDataSupplier
-     *
-     * @param mixed $value
-     */
-    public function testSetSupplier($value): void
+    public function testInvalidCountryOfOriginCode(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
+        $this->expectException($exceptionClass);
+        $instance->setCountryOfOriginCode($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCountryOfOriginCodeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_country_of_origin_code'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCountryOfOriginCodeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_country_of_origin_code'));
+    }
+
+    /**
+     * Test property "customs_declaration_number"
+     * @dataProvider validCustomsDeclarationNumberDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testCustomsDeclarationNumber(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getCustomsDeclarationNumber());
+        self::assertEmpty($instance->customs_declaration_number);
+        $instance->setCustomsDeclarationNumber($value);
+        self::assertEquals($value, is_array($value) ? $instance->getCustomsDeclarationNumber()->toArray() : $instance->getCustomsDeclarationNumber());
+        self::assertEquals($value, is_array($value) ? $instance->customs_declaration_number->toArray() : $instance->customs_declaration_number);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getCustomsDeclarationNumber());
+            self::assertNotNull($instance->customs_declaration_number);
+            self::assertLessThanOrEqual(32, is_string($instance->getCustomsDeclarationNumber()) ? mb_strlen($instance->getCustomsDeclarationNumber()) : $instance->getCustomsDeclarationNumber());
+            self::assertLessThanOrEqual(32, is_string($instance->customs_declaration_number) ? mb_strlen($instance->customs_declaration_number) : $instance->customs_declaration_number);
+            self::assertGreaterThanOrEqual(1, is_string($instance->getCustomsDeclarationNumber()) ? mb_strlen($instance->getCustomsDeclarationNumber()) : $instance->getCustomsDeclarationNumber());
+            self::assertGreaterThanOrEqual(1, is_string($instance->customs_declaration_number) ? mb_strlen($instance->customs_declaration_number) : $instance->customs_declaration_number);
+        }
+    }
+
+    /**
+     * Test invalid property "customs_declaration_number"
+     * @dataProvider invalidCustomsDeclarationNumberDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidCustomsDeclarationNumber(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCustomsDeclarationNumber($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCustomsDeclarationNumberDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_customs_declaration_number'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCustomsDeclarationNumberDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_customs_declaration_number'));
+    }
+
+    /**
+     * Test property "excise"
+     * @dataProvider validExciseDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testExcise(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getExcise());
+        self::assertEmpty($instance->excise);
+        $instance->setExcise($value);
+        self::assertEquals($value, is_array($value) ? $instance->getExcise()->toArray() : $instance->getExcise());
+        self::assertEquals($value, is_array($value) ? $instance->excise->toArray() : $instance->excise);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getExcise());
+            self::assertNotNull($instance->excise);
+        }
+    }
+
+    /**
+     * Test invalid property "excise"
+     * @dataProvider invalidExciseDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidExcise(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setExcise($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validExciseDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_excise'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidExciseDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_excise'));
+    }
+
+    /**
+     * Test property "supplier"
+     * @dataProvider validSupplierDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testSupplier(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getSupplier());
+        self::assertEmpty($instance->supplier);
         $instance->setSupplier($value);
-        if (is_array($value)) {
-            self::assertEquals($value, $instance->getSupplier()->toArray());
-        } else {
-            self::assertEquals($value, $instance->getSupplier());
+        self::assertEquals($value, is_array($value) ? $instance->getSupplier()->toArray() : $instance->getSupplier());
+        self::assertEquals($value, is_array($value) ? $instance->supplier->toArray() : $instance->supplier);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getSupplier());
+            self::assertNotNull($instance->supplier);
         }
     }
 
     /**
+     * Test invalid property "supplier"
      * @dataProvider invalidSupplierDataProvider
-     *
      * @param mixed $value
-     * @param mixed $exception
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetInvalidSupplier($value, $exception): void
+    public function testInvalidSupplier(mixed $value, string $exceptionClass): void
     {
-        $this->expectException($exception);
-        $this->getTestInstance()->setSupplier($value);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setSupplier($value);
     }
 
     /**
-     * @dataProvider invalidSupplierDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterInvalidSupplier($value, $exception): void
+    public function validSupplierDataProvider(): array
     {
-        $this->expectException($exception);
-        $this->getTestInstance()->supplier = $value;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_supplier'));
     }
 
-    public static function invalidSupplierDataProvider()
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidSupplierDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_supplier'));
+    }
+
+    /**
+     * Test property "agent_type"
+     * @dataProvider validAgentTypeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAgentType(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAgentType());
+        self::assertEmpty($instance->agent_type);
+        $instance->setAgentType($value);
+        self::assertEquals($value, is_array($value) ? $instance->getAgentType()->toArray() : $instance->getAgentType());
+        self::assertEquals($value, is_array($value) ? $instance->agent_type->toArray() : $instance->agent_type);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getAgentType());
+            self::assertNotNull($instance->agent_type);
+        }
+    }
+
+    /**
+     * Test invalid property "agent_type"
+     * @dataProvider invalidAgentTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAgentType(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAgentType($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAgentTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_agent_type'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAgentTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_agent_type'));
+    }
+
+    /**
+     * Test property "mark_code_info"
+     * @dataProvider validMarkCodeInfoDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testMarkCodeInfo(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMarkCodeInfo());
+        self::assertEmpty($instance->mark_code_info);
+        $instance->setMarkCodeInfo($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMarkCodeInfo()->toArray() : $instance->getMarkCodeInfo());
+        self::assertEquals($value, is_array($value) ? $instance->mark_code_info->toArray() : $instance->mark_code_info);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMarkCodeInfo());
+            self::assertNotNull($instance->mark_code_info);
+        }
+    }
+
+    /**
+     * Test invalid property "mark_code_info"
+     * @dataProvider invalidMarkCodeInfoDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidMarkCodeInfo(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setMarkCodeInfo($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validMarkCodeInfoDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_code_info'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidMarkCodeInfoDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_code_info'));
+    }
+
+    /**
+     * Test property "measure"
+     * @dataProvider validMeasureDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testMeasure(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMeasure());
+        self::assertEmpty($instance->measure);
+        $instance->setMeasure($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMeasure()->toArray() : $instance->getMeasure());
+        self::assertEquals($value, is_array($value) ? $instance->measure->toArray() : $instance->measure);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMeasure());
+            self::assertNotNull($instance->measure);
+        }
+    }
+
+    /**
+     * Test invalid property "measure"
+     * @dataProvider invalidMeasureDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidMeasure(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setMeasure($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validMeasureDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_measure'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidMeasureDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_measure'));
+    }
+
+    /**
+     * Test property "payment_subject_industry_details"
+     * @dataProvider validPaymentSubjectIndustryDetailsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPaymentSubjectIndustryDetails(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPaymentSubjectIndustryDetails());
+        self::assertEmpty($instance->payment_subject_industry_details);
+        self::assertIsObject($instance->getPaymentSubjectIndustryDetails());
+        self::assertIsObject($instance->payment_subject_industry_details);
+        self::assertCount(0, $instance->getPaymentSubjectIndustryDetails());
+        self::assertCount(0, $instance->payment_subject_industry_details);
+        $instance->setPaymentSubjectIndustryDetails($value);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getPaymentSubjectIndustryDetails());
+            self::assertNotNull($instance->payment_subject_industry_details);
+            foreach ($value as $key => $element) {
+                if (is_array($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getPaymentSubjectIndustryDetails()[$key]->toArray());
+                    self::assertEquals($element, $instance->payment_subject_industry_details[$key]->toArray());
+                    self::assertIsArray($instance->getPaymentSubjectIndustryDetails()[$key]->toArray());
+                    self::assertIsArray($instance->payment_subject_industry_details[$key]->toArray());
+                }
+                if (is_object($element) && !empty($element)) {
+                    self::assertEquals($element, $instance->getPaymentSubjectIndustryDetails()->get($key));
+                    self::assertIsObject($instance->getPaymentSubjectIndustryDetails()->get($key));
+                    self::assertIsObject($instance->payment_subject_industry_details->get($key));
+                    self::assertIsObject($instance->getPaymentSubjectIndustryDetails());
+                    self::assertIsObject($instance->payment_subject_industry_details);
+                }
+            }
+            self::assertCount(count($value), $instance->getPaymentSubjectIndustryDetails());
+            self::assertCount(count($value), $instance->payment_subject_industry_details);
+        }
+    }
+
+    /**
+     * Test invalid property "payment_subject_industry_details"
+     * @dataProvider invalidPaymentSubjectIndustryDetailsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidPaymentSubjectIndustryDetails(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPaymentSubjectIndustryDetails($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPaymentSubjectIndustryDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_subject_industry_details'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPaymentSubjectIndustryDetailsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_payment_subject_industry_details'));
+    }
+
+    /**
+     * Test property "additional_payment_subject_props"
+     * @dataProvider validAdditionalPaymentSubjectPropsDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAdditionalPaymentSubjectProps(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getAdditionalPaymentSubjectProps());
+        self::assertEmpty($instance->additional_payment_subject_props);
+        $instance->setAdditionalPaymentSubjectProps($value);
+        self::assertEquals($value, $instance->getAdditionalPaymentSubjectProps());
+        self::assertEquals($value, $instance->additional_payment_subject_props);
+        if (!empty($value)) {
+            self::assertLessThanOrEqual(64, mb_strlen($instance->getAdditionalPaymentSubjectProps()));
+            self::assertLessThanOrEqual(64, mb_strlen($instance->additional_payment_subject_props));
+        }
+    }
+
+    /**
+     * Test invalid property "additional_payment_subject_props"
+     * @dataProvider invalidAdditionalPaymentSubjectPropsDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAdditionalPaymentSubjectProps(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setAdditionalPaymentSubjectProps($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAdditionalPaymentSubjectPropsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_additional_payment_subject_props'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAdditionalPaymentSubjectPropsDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_additional_payment_subject_props'));
+    }
+
+    /**
+     * Test property "product_code"
+     * @dataProvider validProductCodeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testProductCode(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getProductCode());
+        self::assertEmpty($instance->product_code);
+        $instance->setProductCode($value);
+        self::assertEquals($value, is_array($value) ? $instance->getProductCode()->toArray() : $instance->getProductCode());
+        self::assertEquals($value, is_array($value) ? $instance->product_code->toArray() : $instance->product_code);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getProductCode());
+            self::assertNotNull($instance->product_code);
+            self::assertMatchesRegularExpression("/^[0-9A-F ]{2,96}$/", $instance->getProductCode());
+            self::assertMatchesRegularExpression("/^[0-9A-F ]{2,96}$/", $instance->product_code);
+            self::assertLessThanOrEqual(96, is_string($instance->getProductCode()) ? mb_strlen($instance->getProductCode()) : $instance->getProductCode());
+            self::assertLessThanOrEqual(96, is_string($instance->product_code) ? mb_strlen($instance->product_code) : $instance->product_code);
+        }
+    }
+
+    /**
+     * Test invalid property "product_code"
+     * @dataProvider invalidProductCodeDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function testInvalidProductCode(mixed $value): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->getTestInstance()->productCode = $value;
+    }
+
+    /**
+     * @return array[]
+     */
+    public static function invalidProductCodeDataProvider(): array
     {
         return [
-            [1, InvalidPropertyValueTypeException::class],
-            [Random::str(10), InvalidPropertyValueTypeException::class],
-            [true, InvalidPropertyValueTypeException::class],
-            [new stdClass(), InvalidPropertyValueTypeException::class],
+            [new StringObject('')],
+            [true],
+            [false],
+            [new stdClass()],
+            [Random::str(2, 96, 'GHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=`~?><:"\'')],
+            [Random::str(97, 100, '0123456789ABCDEF ')],
         ];
     }
 
     /**
      * @return array[]
-     *
      * @throws Exception
      */
-    public static function validDataSupplier(): array
+    public function validProductCodeDataProvider(): array
     {
-        $validData = [
-            [null],
-            [
-                [
-                    'name' => Random::str(1, 100),
-                    'phone' => '79000000000',
-                    'inn' => '1000000000',
-                ],
-            ],
-        ];
-        for ($i = 0; $i < 3; $i++) {
-            $supplier = [
-                new Supplier(
-                    [
-                        'name' => Random::str(1, 100),
-                        'phone' => '79000000000',
-                        'inn' => '1000000000',
-                    ]
-                ),
-            ];
-            $validData[] = $supplier;
-        }
-
-        return $validData;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_product_code'));
     }
 
     /**
-     * @dataProvider validVatCodeDataProvider
-     *
+     * Test property "mark_mode"
+     * @dataProvider validMarkModeDataProvider
      * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
      */
-    public function testSetterSnakeVatCode($value): void
+    public function testMarkMode(mixed $value): void
     {
         $instance = $this->getTestInstance();
-
-        $instance->vat_code = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getVatCode());
-            self::assertNull($instance->vatCode);
-            self::assertNull($instance->vat_code);
-        } else {
-            self::assertEquals((int) $value, $instance->getVatCode());
-            self::assertEquals((int) $value, $instance->vatCode);
-            self::assertEquals((int) $value, $instance->vat_code);
+        self::assertEmpty($instance->getMarkMode());
+        self::assertEmpty($instance->mark_mode);
+        $instance->setMarkMode($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMarkMode()->toArray() : $instance->getMarkMode());
+        self::assertEquals($value, is_array($value) ? $instance->mark_mode->toArray() : $instance->mark_mode);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMarkMode());
+            self::assertNotNull($instance->mark_mode);
+            self::assertMatchesRegularExpression("/^[0]{1}$/", $instance->getMarkMode());
+            self::assertMatchesRegularExpression("/^[0]{1}$/", $instance->mark_mode);
         }
     }
 
     /**
-     * @dataProvider validPaymentSubjectDataProvider
-     *
+     * Test invalid property "mark_mode"
+     * @dataProvider invalidMarkModeDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterPaymentSubject($value): void
+    public function testInvalidMarkMode(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
-        $instance->payment_subject = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getPaymentSubject());
-            self::assertNull($instance->payment_subject);
-            self::assertNull($instance->paymentSubject);
-        } else {
-            self::assertContains($instance->getPaymentSubject(), PaymentSubject::getValidValues());
-            self::assertContains($instance->payment_subject, PaymentSubject::getValidValues());
-            self::assertContains($instance->paymentSubject, PaymentSubject::getValidValues());
+        $this->expectException($exceptionClass);
+        $instance->setMarkMode($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validMarkModeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_mode'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidMarkModeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_mode'));
+    }
+
+    /**
+     * Test property "mark_quantity"
+     * @dataProvider validMarkQuantityDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testMarkQuantity(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getMarkQuantity());
+        self::assertEmpty($instance->mark_quantity);
+        $instance->setMarkQuantity($value);
+        self::assertEquals($value, is_array($value) ? $instance->getMarkQuantity()->toArray() : $instance->getMarkQuantity());
+        self::assertEquals($value, is_array($value) ? $instance->mark_quantity->toArray() : $instance->mark_quantity);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getMarkQuantity());
+            self::assertNotNull($instance->mark_quantity);
         }
     }
 
     /**
-     * @dataProvider validPaymentSubjectDataProvider
-     *
+     * Test invalid property "mark_quantity"
+     * @dataProvider invalidMarkQuantityDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterSnakePaymentSubject($value): void
+    public function testInvalidMarkQuantity(mixed $value, string $exceptionClass): void
     {
         $instance = $this->getTestInstance();
 
-        $instance->paymentSubject = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getPaymentSubject());
-            self::assertNull($instance->payment_subject);
-            self::assertNull($instance->paymentSubject);
-        } else {
-            self::assertContains($instance->getPaymentSubject(), PaymentSubject::getValidValues());
-            self::assertContains($instance->payment_subject, PaymentSubject::getValidValues());
-            self::assertContains($instance->paymentSubject, PaymentSubject::getValidValues());
-        }
+        $this->expectException($exceptionClass);
+        $instance->setMarkQuantity($value);
     }
 
     /**
-     * @dataProvider validPaymentModeDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterPaymentMode($value): void
+    public function validMarkQuantityDataProvider(): array
     {
         $instance = $this->getTestInstance();
-
-        $instance->payment_mode = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getPaymentMode());
-            self::assertNull($instance->payment_mode);
-            self::assertNull($instance->paymentMode);
-        } else {
-            self::assertContains($instance->getPaymentMode(), PaymentMode::getValidValues());
-            self::assertContains($instance->payment_mode, PaymentMode::getValidValues());
-            self::assertContains($instance->paymentMode, PaymentMode::getValidValues());
-        }
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_quantity'));
     }
 
     /**
-     * @dataProvider validPaymentModeDataProvider
-     *
-     * @param mixed $value
+     * @return array[]
+     * @throws Exception
      */
-    public function testSetterSnakePaymentMode($value): void
+    public function invalidMarkQuantityDataProvider(): array
     {
         $instance = $this->getTestInstance();
-
-        $instance->paymentMode = $value;
-        if (null === $value || '' === $value) {
-            self::assertNull($instance->getPaymentMode());
-            self::assertNull($instance->payment_mode);
-            self::assertNull($instance->paymentMode);
-        } else {
-            self::assertContains($instance->getPaymentMode(), PaymentMode::getValidValues());
-            self::assertContains($instance->payment_mode, PaymentMode::getValidValues());
-            self::assertContains($instance->paymentMode, PaymentMode::getValidValues());
-        }
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_mark_quantity'));
     }
 
-    public static function validVatCodeDataProvider()
+    /**
+     * @dataProvider validFetchItemDataProvider
+     *
+     * @param mixed $price
+     * @param mixed $quantity
+     * @param mixed $fetch
+     */
+    public function testFetchItem($price, $quantity, $fetch): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setPrice(new ReceiptItemAmount($price));
+        $instance->setQuantity($quantity);
+
+        $fetched = $instance->fetchItem($fetch);
+        self::assertInstanceOf(ReceiptItem::class, $fetched);
+        self::assertNotSame($fetched->getPrice(), $instance->getPrice());
+        self::assertEquals($fetch, $fetched->getQuantity());
+        self::assertEquals($quantity - $fetch, $instance->getQuantity());
+        self::assertEquals($price, $instance->getPrice()->getValue());
+        self::assertEquals($price, $fetched->getPrice()->getValue());
+    }
+
+    public static function validFetchItemDataProvider()
     {
         return [
-            [1],
-            [2],
-            [3],
-            [4],
-            [5],
-            [6],
-        ];
-    }
-
-    public static function validPaymentSubjectDataProvider()
-    {
-        return [
-            [null],
-            [''],
-            [PaymentSubject::ANOTHER],
-            [PaymentSubject::AGENT_COMMISSION],
-            [PaymentSubject::PAYMENT],
-            [PaymentSubject::GAMBLING_PRIZE],
-            [PaymentSubject::GAMBLING_BET],
-            [PaymentSubject::COMPOSITE],
-            [PaymentSubject::INTELLECTUAL_ACTIVITY],
-            [PaymentSubject::LOTTERY_PRIZE],
-            [PaymentSubject::LOTTERY],
-            [PaymentSubject::SERVICE],
-            [PaymentSubject::JOB],
-            [PaymentSubject::EXCISE],
-            [PaymentSubject::COMMODITY],
-        ];
-    }
-
-    public static function validPaymentModeDataProvider()
-    {
-        return [
-            [null],
-            [''],
-            [PaymentMode::ADVANCE],
-            [PaymentMode::CREDIT],
-            [PaymentMode::CREDIT_PAYMENT],
-            [PaymentMode::FULL_PAYMENT],
-            [PaymentMode::FULL_PREPAYMENT],
-            [PaymentMode::PARTIAL_PAYMENT],
-            [PaymentMode::PARTIAL_PREPAYMENT],
+            [1, 2, 1],
+            [1.01, 2, 1.5],
+            [1.01, 2, 1.99],
+            [1.01, 2, 1.9999],
         ];
     }
 
     /**
-     * @dataProvider invalidVatCodeDataProvider
+     * @dataProvider invalidFetchItemDataProvider
      *
-     * @param mixed $value
+     * @param mixed $quantity
+     * @param mixed $fetch
      */
-    public function testSetInvalidVatCode($value): void
+    public function testInvalidFetchItem(mixed $quantity, mixed $fetch): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setVatCode($value);
+        $instance = $this->getTestInstance();
+        $instance->setPrice(new ReceiptItemAmount(Random::int(1, 100)));
+        $instance->setQuantity($quantity);
+        $instance->fetchItem($fetch);
+    }
+
+    public static function invalidFetchItemDataProvider()
+    {
+        return [
+            [1, 1],
+            [1.01, 1.01],
+            [1.01, 1.02],
+            [1, null],
+            [1, 0.0],
+            [1, -12.3],
+        ];
     }
 
     /**
-     * @dataProvider invalidVatCodeDataProvider
-     *
-     * @param mixed $value
+     * @dataProvider validIncreasePriceDataProvider
      */
-    public function testSetterInvalidVatCode($value): void
+    public function testIncreasePrice(float $price, float $value, int $expected): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setPrice(new ReceiptItemAmount($price));
+        $instance->increasePrice($value);
+        self::assertEquals($expected, $instance->getPrice()->getIntegerValue());
+    }
+
+    public static function validIncreasePriceDataProvider()
+    {
+        return [
+            [1, 1, 200],
+            [1.01, 3.03, 404],
+            [1.01, -0.01, 100],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidIncreasePriceDataProvider
+     */
+    public function testInvalidIncreasePrice(mixed $price, mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->vatCode = $value;
+        $instance = $this->getTestInstance();
+        $instance->setPrice(new ReceiptItemAmount($price));
+        $instance->increasePrice($value);
     }
 
-    /**
-     * @dataProvider invalidVatCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeVatCode($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->vat_code = $value;
-    }
-
-    public static function invalidVatCodeDataProvider()
+    public static function invalidIncreasePriceDataProvider()
     {
         return [
-            [0],
-            [7],
-            [Random::int(-100, -1)],
-            [Random::int(8, 100)],
-        ];
-    }
-
-    /**
-     * @dataProvider validPriceDataProvider
-     */
-    public function testGetSetPrice(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setPrice($value);
-        if (is_array($value)) {
-            self::assertSame($value, $instance->getPrice()->toArray());
-            self::assertSame($value, $instance->price->toArray());
-        } else {
-            self::assertSame($value, $instance->getPrice());
-            self::assertSame($value, $instance->price);
-        }
-    }
-
-    /**
-     * @dataProvider validPriceDataProvider
-     */
-    public function testSetterPrice(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->price = $value;
-        if (is_array($value)) {
-            self::assertSame($value, $instance->getPrice()->toArray());
-            self::assertSame($value, $instance->price->toArray());
-        } else {
-            self::assertSame($value, $instance->getPrice());
-            self::assertSame($value, $instance->price);
-        }
-    }
-
-    public static function validPriceDataProvider()
-    {
-        return [
-            [
-                [
-                    'value' => number_format(Random::float(1, 100), 2, '.', ''),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ],
-            ],
-            [
-                new ReceiptItemAmount([
-                    'value' => number_format(Random::float(1, 100), 2, '.', ''),
-                    'currency' => Random::value(CurrencyCode::getValidValues()),
-                ]),
-            ],
-            [
-                new ReceiptItemAmount(
-                    number_format(Random::float(1, 100), 2, '.', ''),
-                    Random::value(CurrencyCode::getValidValues())
-                ),
-            ],
-            [
-                new ReceiptItemAmount(),
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidPriceDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidPrice($value, string $exceptionType): void
-    {
-        $this->expectException($exceptionType);
-        $this->getTestInstance()->setPrice($value);
-    }
-
-    /**
-     * @dataProvider invalidPriceDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidPrice($value, string $exceptionType): void
-    {
-        $this->expectException($exceptionType);
-        $this->getTestInstance()->price = $value;
-    }
-
-    public static function invalidPriceDataProvider()
-    {
-        return [
-            [null, TypeError::class],
-            ['', TypeError::class],
-            [1.0, TypeError::class],
-            [1, TypeError::class],
-            [true, TypeError::class],
-            [false, TypeError::class],
-            [new stdClass(), TypeError::class],
-        ];
-    }
-
-    /**
-     * @dataProvider validIsShippingDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetIsShipping($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        self::assertFalse($instance->isShipping());
-        $instance->setIsShipping($value);
-        if ($value) {
-            self::assertTrue($instance->isShipping());
-        } else {
-            self::assertFalse($instance->isShipping());
-        }
-    }
-
-    /**
-     * @dataProvider validIsShippingDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterIsShipping($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->isShipping = $value;
-        if ($value) {
-            self::assertTrue($instance->isShipping());
-        } else {
-            self::assertFalse($instance->isShipping());
-        }
-    }
-
-    public static function validIsShippingDataProvider(): array
-    {
-        return [
-            [true],
-            [false],
-            [0],
-            [1],
-            [2],
-            [''],
+            [1, -1],
+            [1.01, -1.01],
+            [1.01, -1.02],
         ];
     }
 
@@ -749,876 +1294,81 @@ class ReceiptItemTest extends TestCase
     }
 
     /**
-     * @dataProvider validAmountDataProvider
-     *
-     * @param mixed $price
-     * @param mixed $quantity
-     */
-    public function testGetAmount($price, $quantity): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->setPrice(new ReceiptItemAmount($price));
-        $instance->setQuantity($quantity);
-        $expected = (int) round($price * 100.0 * $quantity);
-        self::assertEquals($expected, $instance->getAmount());
-    }
-
-    public static function validAmountDataProvider()
-    {
-        return [
-            [1, 1],
-            [1.01, 1.01],
-        ];
-    }
-
-    /**
-     * @dataProvider validIncreasePriceDataProvider
-     */
-    public function testIncreasePrice(float $price, float $value, int $expected): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->setPrice(new ReceiptItemAmount($price));
-        $instance->increasePrice($value);
-        self::assertEquals($expected, $instance->getPrice()->getIntegerValue());
-    }
-
-    public static function validIncreasePriceDataProvider()
-    {
-        return [
-            [1, 1, 200],
-            [1.01, 3.03, 404],
-            [1.01, -0.01, 100],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidIncreasePriceDataProvider
-     */
-    public function testInvalidIncreasePrice(mixed $price, mixed $value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = $this->getTestInstance();
-        $instance->setPrice(new ReceiptItemAmount($price));
-        $instance->increasePrice($value);
-    }
-
-    public static function invalidIncreasePriceDataProvider()
-    {
-        return [
-            [1, -1],
-            [1.01, -1.01],
-            [1.01, -1.02],
-        ];
-    }
-
-    /**
-     * @dataProvider validFetchItemDataProvider
-     *
-     * @param mixed $price
-     * @param mixed $quantity
-     * @param mixed $fetch
-     */
-    public function testFetchItem($price, $quantity, $fetch): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->setPrice(new ReceiptItemAmount($price));
-        $instance->setQuantity($quantity);
-
-        $fetched = $instance->fetchItem($fetch);
-        self::assertInstanceOf(ReceiptItem::class, $fetched);
-        self::assertNotSame($fetched->getPrice(), $instance->getPrice());
-        self::assertEquals($fetch, $fetched->getQuantity());
-        self::assertEquals($quantity - $fetch, $instance->getQuantity());
-        self::assertEquals($price, $instance->getPrice()->getValue());
-        self::assertEquals($price, $fetched->getPrice()->getValue());
-    }
-
-    public static function validFetchItemDataProvider()
-    {
-        return [
-            [1, 2, 1],
-            [1.01, 2, 1.5],
-            [1.01, 2, 1.99],
-            [1.01, 2, 1.9999],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidFetchItemDataProvider
-     *
-     * @param mixed $quantity
-     * @param mixed $fetch
-     */
-    public function testInvalidFetchItem($quantity, $fetch): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = $this->getTestInstance();
-        $instance->setPrice(new ReceiptItemAmount(Random::int(1, 100)));
-        $instance->setQuantity($quantity);
-        $instance->fetchItem($fetch);
-    }
-
-    public static function invalidFetchItemDataProvider()
-    {
-        return [
-            [1, 1],
-            [1.01, 1.01],
-            [1.01, 1.02],
-            [1, null],
-            [1, 0.0],
-            [1, -12.3],
-        ];
-    }
-
-    /**
-     * @dataProvider validProductCodeDataProvider
+     * @dataProvider validIsShippingDataProvider
      *
      * @param mixed $value
      */
-    public function testGetSetProductCode($value): void
+    public function testGetSetIsShipping($value): void
     {
         $instance = $this->getTestInstance();
 
-        $instance->setProductCode($value);
-        self::assertEquals((string) $value, $instance->getProductCode());
-        self::assertEquals((string) $value, $instance->productCode);
-        self::assertEquals((string) $value, $instance->product_code);
+        self::assertFalse($instance->isShipping());
+        $instance->setIsShipping($value);
+        if ($value) {
+            self::assertTrue($instance->isShipping());
+        } else {
+            self::assertFalse($instance->isShipping());
+        }
     }
 
     /**
-     * @dataProvider validProductCodeDataProvider
+     * @dataProvider validIsShippingDataProvider
      *
      * @param mixed $value
      */
-    public function testGetSetSnakeProductCode($value): void
+    public function testSetterIsShipping($value): void
     {
         $instance = $this->getTestInstance();
-        $instance->product_code = $value;
-        self::assertEquals((string) $value, $instance->getProductCode());
-        self::assertEquals((string) $value, $instance->productCode);
-        self::assertEquals((string) $value, $instance->product_code);
+
+        $instance->isShipping = $value;
+        if ($value) {
+            self::assertTrue($instance->isShipping());
+        } else {
+            self::assertFalse($instance->isShipping());
+        }
     }
 
-    /**
-     * @dataProvider validProductCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterProductCode($value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->productCode = $value;
-        self::assertEquals((string) $value, $instance->getProductCode());
-        self::assertEquals((string) $value, $instance->productCode);
-        self::assertEquals((string) $value, $instance->product_code);
-    }
-
-    public static function validProductCodeDataProvider()
+    public static function validIsShippingDataProvider(): array
     {
         return [
-            [null],
-            [''],
-            [Random::str(2, 96, '0123456789ABCDEF ')],
-            [new ProductCode('010463003407001221SxMGorvNuq6Wk91fgr92sdfsdfghfgjh')],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidProductCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidProductCode($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setProductCode($value);
-    }
-
-    /**
-     * @dataProvider invalidProductCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidProductCode($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->productCode = $value;
-    }
-
-    public static function invalidProductCodeDataProvider()
-    {
-        return [
-            [new StringObject('')],
             [true],
             [false],
-            [new stdClass()],
-            [Random::str(2, 96, 'GHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=`~?><:"\'')],
-            [Random::str(97, 100, '0123456789ABCDEF ')],
-        ];
-    }
-
-    /**
-     * @dataProvider validCountryOfOriginCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetCountryOfOriginCode($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setCountryOfOriginCode($value);
-        self::assertEquals((string) $value, $instance->getCountryOfOriginCode());
-        self::assertEquals((string) $value, $instance->countryOfOriginCode);
-        self::assertEquals((string) $value, $instance->country_of_origin_code);
-    }
-
-    /**
-     * @dataProvider validCountryOfOriginCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterSnakeCountryOfOriginCode($value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->country_of_origin_code = $value;
-        self::assertEquals((string) $value, $instance->getCountryOfOriginCode());
-        self::assertEquals((string) $value, $instance->countryOfOriginCode);
-        self::assertEquals((string) $value, $instance->country_of_origin_code);
-    }
-
-    /**
-     * @dataProvider validCountryOfOriginCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterCountryOfOriginCode($value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->countryOfOriginCode = $value;
-        self::assertEquals((string) $value, $instance->getCountryOfOriginCode());
-        self::assertEquals((string) $value, $instance->countryOfOriginCode);
-        self::assertEquals((string) $value, $instance->country_of_origin_code);
-    }
-
-    public static function validCountryOfOriginCodeDataProvider()
-    {
-        return [
-            [null],
-            [''],
-            [Random::str(2, 2, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidCountryOfOriginCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidCountryOfOriginCode($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setCountryOfOriginCode($value);
-    }
-
-    /**
-     * @dataProvider invalidCountryOfOriginCodeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidCountryOfOriginCode($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->countryOfOriginCode = $value;
-    }
-
-    public static function invalidCountryOfOriginCodeDataProvider()
-    {
-        return [
-            [true],
-            [Random::int()],
-            [Random::str(1, 1)],
-            [Random::str(3, null, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')],
-            [Random::str(2, 2, '0123456789!@#$%^&*()_+-=`~?><:"\' ')],
-        ];
-    }
-
-    /**
-     * @dataProvider validCustomsDeclarationNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetCustomsDeclarationNumber($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setCustomsDeclarationNumber($value);
-        self::assertEquals((string) $value, $instance->getCustomsDeclarationNumber());
-        self::assertEquals((string) $value, $instance->customsDeclarationNumber);
-        self::assertEquals((string) $value, $instance->customs_declaration_number);
-    }
-
-    /**
-     * @dataProvider validCustomsDeclarationNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterCustomsDeclarationNumber($value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->customsDeclarationNumber = $value;
-        self::assertEquals((string) $value, $instance->getCustomsDeclarationNumber());
-        self::assertEquals((string) $value, $instance->customsDeclarationNumber);
-        self::assertEquals((string) $value, $instance->customs_declaration_number);
-    }
-
-    /**
-     * @dataProvider validCustomsDeclarationNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterSnakeCustomsDeclarationNumber($value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->customs_declaration_number = $value;
-        self::assertEquals((string) $value, $instance->getCustomsDeclarationNumber());
-        self::assertEquals((string) $value, $instance->customsDeclarationNumber);
-        self::assertEquals((string) $value, $instance->customs_declaration_number);
-    }
-
-    public static function validCustomsDeclarationNumberDataProvider()
-    {
-        return [
-            [null],
-            [''],
-            [Random::str(1)],
-            [Random::str(2, 31)],
-            [Random::str(32)],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidCustomsDeclarationNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidCustomsDeclarationNumber($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setCustomsDeclarationNumber($value);
-    }
-
-    /**
-     * @dataProvider invalidCustomsDeclarationNumberDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidCustomsDeclarationNumber($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->customsDeclarationNumber = $value;
-    }
-
-    public static function invalidCustomsDeclarationNumberDataProvider()
-    {
-        return [
-            [Random::str(33, 64)],
-        ];
-    }
-
-    /**
-     * @dataProvider validExciseDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetExcise($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setExcise($value);
-        self::assertEquals((float) $value, $instance->getExcise());
-        self::assertEquals((float) $value, $instance->excise);
-    }
-
-    /**
-     * @dataProvider validExciseDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterExcise($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->excise = $value;
-        self::assertEquals((float) $value, $instance->getExcise());
-        self::assertEquals((float) $value, $instance->excise);
-    }
-
-    public static function validExciseDataProvider()
-    {
-        return [
-            [null],
+            [0],
             [1],
-            [1.3],
-            [0.001],
-            [10000.001],
-            ['3.1415'],
-            [Random::float(0.001, 9999.999)],
-            [Random::int(1, 9999)],
+            [2],
+            [''],
         ];
     }
 
     /**
-     * @dataProvider invalidExciseDataProvider
-     *
+     * Test valid method "fromArray"
+     * @dataProvider validClassDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidExcise($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setExcise($value);
-    }
-
-    /**
-     * @dataProvider invalidExciseDataProvider
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetterInvalidExcise($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->excise = $value;
-    }
-
-    public static function invalidExciseDataProvider()
-    {
-        return [
-            [0.0],
-            [Random::float(-100, -0.001)],
-        ];
-    }
-
-    /**
-     * @dataProvider validMarkCodeInfoDataProvider
-     *
-     * @param array|MarkCodeInfo $value
-     */
-    public function testGetSetMarkCodeInfo($value): void
+    public function testFromArray(mixed $value): void
     {
         $instance = $this->getTestInstance();
+        $instance->fromArray($value);
+        $value = new ReceiptItem($value);
+        self::assertEquals($value->toArray(), $instance->jsonSerialize());
+    }
 
-        $instance->setMarkCodeInfo($value);
-        if (is_array($value)) {
-            self::assertSame($value, $instance->getMarkCodeInfo()->toArray());
-            self::assertSame($value, $instance->mark_code_info->toArray());
-        } else {
-            self::assertSame($value, $instance->getMarkCodeInfo());
-            self::assertSame($value, $instance->mark_code_info);
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function validClassDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        $result = [];
+        for ($i = 0; $i < 4; $i++) {
+            $prices = $this->validAmountDataProvider();
+            $array = $this->getValidDataProviderByClass($instance);
+            $array[0]['amount'] = $i % 2 ? array_shift($prices[0]) : new ReceiptItemAmount(array_shift($prices[0]));
+            $result[] = $array;
         }
-    }
-
-    /**
-     * @dataProvider validMarkCodeInfoDataProvider
-     *
-     * @param array|MarkCodeInfo $value
-     */
-    public function testSetterMarkCodeInfo($value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->mark_code_info = $value;
-        if (is_array($value)) {
-            self::assertSame($value, $instance->getMarkCodeInfo()->toArray());
-            self::assertSame($value, $instance->mark_code_info->toArray());
-        } else {
-            self::assertSame($value, $instance->getMarkCodeInfo());
-            self::assertSame($value, $instance->mark_code_info);
-        }
-    }
-
-    public static function validMarkCodeInfoDataProvider()
-    {
-        return [
-            [
-                new MarkCodeInfo([
-                    'mark_code_raw' => '010460406000590021N4N57RTCBUZTQ\u001d2403054002410161218\u001d1424010191ffd0\u001g92tIAF/YVpU4roQS3M/m4z78yFq0nc/WsSmLeX6QkF/YVWwy5IMYAeiQ91Xa2m/fFSJcOkb2N+uUUtfr4n0mOX0Q==',
-                ]),
-            ],
-            [
-                [
-                    'mark_code_raw' => '010460406000590021N4N57RTCBUZTQ\u001d2403054002410161218\u001d1424010191ffd0\u001g92tIAF/YVpU4roQS3M/m4z78yFq0nc/WsSmLeX6QkF/YVWwy5IMYAeiQ91Xa2m/fFSJcOkb2N+uUUtfr4n0mOX0Q==',
-                ],
-            ],
-            [
-                new MarkCodeInfo(),
-            ],
-            [null],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidMarkCodeInfoDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetInvalidMarkCodeInfo($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->setMarkCodeInfo($value);
-    }
-
-    /**
-     * @dataProvider invalidMarkCodeInfoDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetterInvalidMarkCodeInfo($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->mark_code_info = $value;
-    }
-
-    public static function invalidMarkCodeInfoDataProvider()
-    {
-        return [
-            [new stdClass(), InvalidPropertyValueTypeException::class],
-        ];
-    }
-
-    /**
-     * @dataProvider validMarkQuantityDataProvider
-     *
-     * @param array|MarkQuantity $value
-     */
-    public function testGetSetMarkQuantity($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setMarkQuantity($value);
-        if (is_array($value)) {
-            self::assertSame($value, $instance->getMarkQuantity()->toArray());
-            self::assertSame($value, $instance->mark_quantity->toArray());
-            self::assertSame($value, $instance->markQuantity->toArray());
-        } else {
-            self::assertSame($value, $instance->getMarkQuantity());
-            self::assertSame($value, $instance->mark_quantity);
-            self::assertSame($value, $instance->markQuantity);
-        }
-    }
-
-    /**
-     * @dataProvider validMarkQuantityDataProvider
-     */
-    public function testSetterMarkQuantity(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->mark_quantity = $value;
-        if (is_array($value)) {
-            self::assertSame($value, $instance->getMarkQuantity()->toArray());
-            self::assertSame($value, $instance->mark_quantity->toArray());
-            self::assertSame($value, $instance->markQuantity->toArray());
-        } else {
-            self::assertSame($value, $instance->getMarkQuantity());
-            self::assertSame($value, $instance->mark_quantity);
-            self::assertSame($value, $instance->markQuantity);
-        }
-    }
-
-    public static function validMarkQuantityDataProvider()
-    {
-        return [
-            [
-                new MarkQuantity([
-                    'numerator' => 1,
-                    'denominator' => 1,
-                ]),
-            ],
-            [
-                [
-                    'numerator' => 1,
-                    'denominator' => 10,
-                ],
-            ],
-            [null],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidMarkQuantityDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetInvalidMarkQuantity($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->setMarkQuantity($value);
-    }
-
-    /**
-     * @dataProvider invalidMarkQuantityDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetterInvalidMarkQuantity($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->mark_quantity = $value;
-    }
-
-    public static function invalidMarkQuantityDataProvider()
-    {
-        return [
-            [1.0, InvalidPropertyValueTypeException::class],
-            [1, InvalidPropertyValueTypeException::class],
-            [true, InvalidPropertyValueTypeException::class],
-            [new stdClass(), InvalidPropertyValueTypeException::class],
-        ];
-    }
-
-    /**
-     * @dataProvider validIndustryDetailsDataProvider
-     *
-     * @param array|IndustryDetails $value
-     */
-    public function testGetSetPaymentSubjectIndustryDetails($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setPaymentSubjectIndustryDetails($value);
-
-        if (is_array($value)) {
-            self::assertCount(count($value), $instance->getPaymentSubjectIndustryDetails());
-            self::assertCount(count($value), $instance->payment_subject_industry_details);
-            self::assertCount(count($value), $instance->paymentSubjectIndustryDetails);
-        } else {
-            self::assertSame($value, $instance->getPaymentSubjectIndustryDetails());
-            self::assertSame($value, $instance->payment_subject_industry_details);
-            self::assertSame($value, $instance->paymentSubjectIndustryDetails);
-        }
-    }
-
-    /**
-     * @dataProvider validIndustryDetailsDataProvider
-     */
-    public function testSetterPaymentSubjectIndustryDetails(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->payment_subject_industry_details = $value;
-
-        if (is_array($value)) {
-            self::assertCount(count($value), $instance->getPaymentSubjectIndustryDetails());
-            self::assertCount(count($value), $instance->payment_subject_industry_details);
-            self::assertCount(count($value), $instance->paymentSubjectIndustryDetails);
-        } else {
-            self::assertSame($value, $instance->getPaymentSubjectIndustryDetails());
-            self::assertSame($value, $instance->payment_subject_industry_details);
-            self::assertSame($value, $instance->paymentSubjectIndustryDetails);
-        }
-    }
-
-    public static function validIndustryDetailsDataProvider()
-    {
-        return [
-            [
-                [
-                    [
-                        'federal_id' => '001',
-                        'document_date' => date('Y-m-d', Random::int(100000000, 200000000)),
-                        'document_number' => Random::str(1, IndustryDetails::DOCUMENT_NUMBER_MAX_LENGTH),
-                        'value' => Random::str(1, IndustryDetails::VALUE_MAX_LENGTH),
-                    ],
-                ],
-            ],
-            [
-                [
-                    new IndustryDetails([
-                        'federal_id' => '001',
-                        'document_date' => date('Y-m-d', Random::int(100000000, 200000000)),
-                        'document_number' => Random::str(1, IndustryDetails::DOCUMENT_NUMBER_MAX_LENGTH),
-                        'value' => Random::str(1, IndustryDetails::VALUE_MAX_LENGTH),
-                    ])
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidPaymentSubjectIndustryDetailsDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetInvalidPaymentSubjectIndustryDetails($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->setPaymentSubjectIndustryDetails($value);
-    }
-
-    /**
-     * @dataProvider invalidPaymentSubjectIndustryDetailsDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetterInvalidPaymentSubjectIndustryDetails($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->payment_subject_industry_details = $value;
-    }
-
-    public static function invalidPaymentSubjectIndustryDetailsDataProvider()
-    {
-        return [
-            [1.0, InvalidPropertyValueTypeException::class],
-            [1, InvalidPropertyValueTypeException::class],
-            [true, InvalidPropertyValueTypeException::class],
-            [new stdClass(), InvalidPropertyValueTypeException::class],
-            [Random::str(10), InvalidPropertyValueTypeException::class],
-        ];
-    }
-
-    /**
-     * @dataProvider validMeasureDataProvider
-     */
-    public function testGetSetMeasure(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setMeasure($value);
-
-        self::assertSame($value, $instance->getMeasure());
-        self::assertSame($value, $instance->measure);
-    }
-
-    /**
-     * @dataProvider validMeasureDataProvider
-     */
-    public function testSetterMeasure(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->measure = $value;
-
-        self::assertSame($value, $instance->getMeasure());
-        self::assertSame($value, $instance->measure);
-    }
-
-    public static function validMeasureDataProvider()
-    {
-        $test = [
-            [null],
-        ];
-
-        for ($i = 0; $i < 5; $i++) {
-            $test[] = [Random::value(ReceiptItemMeasure::getValidValues())];
-        }
-
-        return $test;
-    }
-
-    /**
-     * @dataProvider invalidMeasureDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetInvalidMeasure($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->setMeasure($value);
-    }
-
-    /**
-     * @dataProvider invalidMeasureDataProvider
-     *
-     * @param mixed $value
-     * @param mixed $exception
-     */
-    public function testSetterInvalidMeasure($value, $exception): void
-    {
-        $this->expectException($exception);
-        $this->getTestInstance()->measure = $value;
-    }
-
-    public static function invalidMeasureDataProvider()
-    {
-        return [
-            [Random::str(10), InvalidPropertyValueException::class],
-        ];
-    }
-
-    /**
-     * @dataProvider validMarkModeDataProvider
-     */
-    public function testGetSetMarkMode(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setMarkMode($value);
-
-        self::assertSame($value, $instance->getMarkMode());
-        self::assertSame($value, $instance->mark_mode);
-    }
-
-    /**
-     * @dataProvider validMarkModeDataProvider
-     */
-    public function testSetterMarkMode(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->mark_mode = $value;
-
-        self::assertSame($value, $instance->getMarkMode());
-        self::assertSame($value, $instance->mark_mode);
-    }
-
-    public static function validMarkModeDataProvider()
-    {
-        return [
-            [null],
-            ['0']
-        ];
-    }
-
-    /**
-     * @dataProvider validAdditionalPaymentSubjectPropsDataProvider
-     */
-    public function testGetSetAdditionalPaymentSubjectProps(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setAdditionalPaymentSubjectProps($value);
-
-        self::assertSame($value, $instance->getAdditionalPaymentSubjectProps());
-        self::assertSame($value, $instance->additional_payment_subject_props);
-        self::assertSame($value, $instance->additionalPaymentSubjectProps);
-    }
-
-    /**
-     * @dataProvider validAdditionalPaymentSubjectPropsDataProvider
-     */
-    public function testSetterAdditionalPaymentSubjectProps(mixed $value): void
-    {
-        $instance = $this->getTestInstance();
-        $instance->additionalPaymentSubjectProps = $value;
-
-        self::assertSame($value, $instance->getAdditionalPaymentSubjectProps());
-        self::assertSame($value, $instance->additional_payment_subject_props);
-        self::assertSame($value, $instance->additionalPaymentSubjectProps);
-    }
-
-    public static function validAdditionalPaymentSubjectPropsDataProvider()
-    {
-        return [
-            [null],
-            ['0'],
-            [Random::str(1, ReceiptItem::ADD_PROPS_MAX_LENGTH)],
-        ];
-    }
-
-    protected function getTestInstance()
-    {
-        return new ReceiptItem();
+        return $result;
     }
 }

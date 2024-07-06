@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments;
 
 use Exception;
@@ -28,7 +52,11 @@ use YooKassa\Request\Payments\PaymentData\PaymentDataQiwi;
 use YooKassa\Validator\Exceptions\ValidatorParameterException;
 
 /**
- * @internal
+ * CreatePaymentRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class CreatePaymentRequestBuilderTest extends TestCase
 {
@@ -39,7 +67,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetAccountId($options): void
+    public function testSetAccountId(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -64,7 +92,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetDeal($options): void
+    public function testSetDeal(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
         $builder->setAmount($options['amount']);
@@ -86,7 +114,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetFraudData($options): void
+    public function testSetFraudData(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
         $builder->setAmount($options['amount']);
@@ -112,7 +140,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetMerchantCustomerId($options): void
+    public function testSetMerchantCustomerId(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
         $builder->setAmount($options['amount']);
@@ -134,7 +162,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetProductGroupId($options): void
+    public function testSetProductGroupId(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -159,7 +187,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetAmount($options): void
+    public function testSetAmount(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -211,7 +239,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidAmount($value): void
+    public function testSetInvalidAmount(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
@@ -225,7 +253,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetCurrency($options): void
+    public function testSetCurrency(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -258,7 +286,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptItems($options): void
+    public function testSetReceiptItems(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -281,7 +309,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testAddReceiptItems($options): void
+    public function testAddReceiptItems(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -327,7 +355,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testAddReceiptShipping($options): void
+    public function testAddReceiptShipping(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -361,14 +389,14 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $items
      */
-    public function testSetInvalidReceiptItems($items): void
+    public function testSetInvalidReceiptItems(mixed $items): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
         $builder->setReceiptItems($items);
     }
 
-    public static function invalidItemsDataProvider()
+    public static function invalidItemsDataProvider(): array
     {
         return [
             [
@@ -436,7 +464,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptEmail($options): void
+    public function testSetReceiptEmail(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -459,7 +487,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptPhone($options): void
+    public function testSetReceiptPhone(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -483,7 +511,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptTaxSystemCode($options): void
+    public function testSetReceiptTaxSystemCode(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -505,7 +533,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidTaxSystemId($value): void
+    public function testSetInvalidTaxSystemId(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
@@ -519,7 +547,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptIndustryDetails($options): void
+    public function testSetReceiptIndustryDetails(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -541,7 +569,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceiptIndustryDetails($value): void
+    public function testSetInvalidReceiptIndustryDetails(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
@@ -555,7 +583,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptOperationalDetails($options): void
+    public function testSetReceiptOperationalDetails(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -577,7 +605,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceiptOperationalDetails($value): void
+    public function testSetInvalidReceiptOperationalDetails(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
@@ -591,7 +619,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetPaymentToken($options): void
+    public function testSetPaymentToken(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -627,7 +655,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetPaymentMethodId($options): void
+    public function testSetPaymentMethodId(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -651,7 +679,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetPaymentData($options): void
+    public function testSetPaymentData(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -689,7 +717,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetConfirmationAttributes($options): void
+    public function testSetConfirmationAttributes(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -728,7 +756,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetCreateRecurring($options): void
+    public function testSetCreateRecurring(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -752,7 +780,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetCapture($options): void
+    public function testSetCapture(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -776,7 +804,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetClientIp($options): void
+    public function testSetClientIp(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -800,7 +828,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetMetadata($options): void
+    public function testSetMetadata(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -824,7 +852,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetRecipient($options): void
+    public function testSetRecipient(mixed $options): void
     {
         $recipient = new Recipient();
         $recipient->setAccountId($options['accountId']);
@@ -851,14 +879,14 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidRecipient($value): void
+    public function testSetInvalidRecipient(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
         $builder->setRecipient($value);
     }
 
-    public static function invalidRecipientDataProvider()
+    public static function invalidRecipientDataProvider(): array
     {
         return [
             [null],
@@ -923,14 +951,14 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceipt($value): void
+    public function testSetInvalidReceipt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
         $builder->setReceipt($value);
     }
 
-    public static function invalidReceiptDataProvider()
+    public static function invalidReceiptDataProvider(): array
     {
         return [
             [null],
@@ -1164,7 +1192,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
         ];
     }
 
-    public static function invalidReceiptOperationalDetailsDataProvider()
+    public static function invalidReceiptOperationalDetailsDataProvider(): array
     {
         return [
             [new stdClass()],
@@ -1180,7 +1208,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetDescription($options): void
+    public function testSetDescription(mixed $options): void
     {
         $builder = new CreatePaymentRequestBuilder();
 
@@ -1207,7 +1235,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidAirline($value): void
+    public function testSetInvalidAirline(mixed $value): void
     {
         $this->expectException(ValidatorParameterException::class);
         $builder = new CreatePaymentRequestBuilder();
@@ -1235,7 +1263,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidDeal($value): void
+    public function testSetInvalidDeal(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();
@@ -1263,7 +1291,7 @@ class CreatePaymentRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidFraudData($value): void
+    public function testSetInvalidFraudData(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();

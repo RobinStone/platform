@@ -30,6 +30,7 @@
 | public | [$customsDeclarationNumber](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_customsDeclarationNumber) |  | Номер таможенной декларации (от 1 до 32 символов). Тег в 54 ФЗ — 1231 |
 | public | [$description](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_description) |  | Наименование товара (тег в 54 ФЗ — 1030) |
 | public | [$excise](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_excise) |  | Сумма акциза товара с учетом копеек (тег в 54 ФЗ — 1229) |
+| public | [$is_shipping](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_is_shipping) |  | Флаг доставки |
 | public | [$isShipping](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_isShipping) |  | Флаг доставки |
 | public | [$mark_code_info](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_mark_code_info) |  | Код товара (тег в 54 ФЗ — 1163) |
 | public | [$mark_mode](../classes/YooKassa-Model-Receipt-ReceiptItem.md#property_mark_mode) |  | Режим обработки кода маркировки (тег в 54 ФЗ — 2102) |
@@ -281,6 +282,18 @@ ADD_PROPS_MAX_LENGTH = 64 : int
 Сумма акциза товара с учетом копеек (тег в 54 ФЗ — 1229)
 
 **Type:** <a href="../float"><abbr title="float">float</abbr></a>
+
+**Details:**
+
+
+<a name="property_is_shipping"></a>
+#### public $is_shipping : bool
+---
+***Description***
+
+Флаг доставки
+
+**Type:** <a href="../bool"><abbr title="bool">bool</abbr></a>
 
 **Details:**
 
@@ -1689,10 +1702,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

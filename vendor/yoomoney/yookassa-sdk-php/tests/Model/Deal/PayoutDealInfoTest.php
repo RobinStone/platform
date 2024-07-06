@@ -1,98 +1,121 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\Deal;
 
-use PHPUnit\Framework\TestCase;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
 use YooKassa\Model\Deal\PayoutDealInfo;
+use YooKassa\Model\Metadata;
 
 /**
- * @internal
+ * PayoutDealInfoTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class PayoutDealInfoTest extends TestCase
+class PayoutDealInfoTest extends AbstractTestCase
 {
+    protected PayoutDealInfo $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return PayoutDealInfo
      */
-    public function testGetSetId(array $options): void
+    protected function getTestInstance(): PayoutDealInfo
     {
-        $instance = new PayoutDealInfo();
-
-        $instance->setId($options['id']);
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
-
-        $instance = new PayoutDealInfo();
-        $instance->id = $options['id'];
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
+        return new PayoutDealInfo();
     }
 
     /**
-     * @dataProvider fromArrayDataProvider
+     * @return void
      */
-    public function testFromArray(array $source, PayoutDealInfo $expected): void
+    public function testPayoutDealInfoClassExists(): void
     {
-        $deal = new PayoutDealInfo($source);
-        $dealArray = $expected->toArray();
-
-        if (!empty($source)) {
-            foreach ($source as $property => $value) {
-                self::assertEquals($value, $dealArray[$property]);
-            }
-        }
+        $this->object = $this->getMockBuilder(PayoutDealInfo::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(PayoutDealInfo::class));
+        $this->assertInstanceOf(PayoutDealInfo::class, $this->object);
     }
 
-    public static function validDataProvider(): array
+    /**
+     * Test property "id"
+     * @dataProvider validIdDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testId(mixed $value): void
     {
-        $result = [];
-        for ($i = 0; $i < 10; $i++) {
-            $payment = [
-                'id' => Random::str(36, 50),
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
+        $instance = $this->getTestInstance();
+        $instance->setId($value);
+        self::assertNotNull($instance->getId());
+        self::assertNotNull($instance->id);
+        self::assertEquals($value, is_array($value) ? $instance->getId()->toArray() : $instance->getId());
+        self::assertEquals($value, is_array($value) ? $instance->id->toArray() : $instance->id);
+        self::assertLessThanOrEqual(50, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertLessThanOrEqual(50, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+        self::assertGreaterThanOrEqual(36, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertGreaterThanOrEqual(36, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
     }
 
-    public function invalidDataProvider(): array
+    /**
+     * Test invalid property "id"
+     * @dataProvider invalidIdDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidId(mixed $value, string $exceptionClass): void
     {
-        $result = [
-            [
-                [
-                    'id' => null,
-                ],
-            ],
-            [
-                [
-                    'id' => '',
-                ],
-            ],
-        ];
+        $instance = $this->getTestInstance();
 
-        for ($i = 0; $i < 9; $i++) {
-            $payment = [
-                'id' => Random::str($i < 5 ? Random::int(1, 35) : Random::int(51, 64)),
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
+        $this->expectException($exceptionClass);
+        $instance->setId($value);
     }
 
-    public static function fromArrayDataProvider(): array
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIdDataProvider(): array
     {
-        $customer = new PayoutDealInfo();
-        $customer->setId('dl-285e5ee7-0022-5000-8000-01516a44b147');
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
 
-        return [
-            [
-                [
-                    'id' => 'dl-285e5ee7-0022-5000-8000-01516a44b147',
-                ],
-                $customer,
-            ],
-        ];
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
     }
 }

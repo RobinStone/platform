@@ -37,7 +37,7 @@ $client->setAuthToken('token_XXXXXXX');
 | public | [PERSONAL_DATA_PATH](../classes/YooKassa-Client-BaseClient.md#constant_PERSONAL_DATA_PATH) |  | Точка входа для запросов к API по персональным данным |
 | public | [SBP_BANKS_PATH](../classes/YooKassa-Client-BaseClient.md#constant_SBP_BANKS_PATH) |  | Точка входа для запросов к API по участникам СБП |
 | public | [SELF_EMPLOYED_PATH](../classes/YooKassa-Client-BaseClient.md#constant_SELF_EMPLOYED_PATH) |  | Точка входа для запросов к API по самозанятым |
-| public | [IDEMPOTENCY_KEY_HEADER](../classes/YooKassa-Client-BaseClient.md#constant_IDEMPOTENCY_KEY_HEADER) |  | Имя HTTP заголовка, используемого для передачи idempotence key |
+| public | [IDEMPOTENCE_KEY_HEADER](../classes/YooKassa-Client-BaseClient.md#constant_IDEMPOTENCE_KEY_HEADER) |  | Имя HTTP заголовка, используемого для передачи idempotence key |
 | public | [DEFAULT_DELAY](../classes/YooKassa-Client-BaseClient.md#constant_DEFAULT_DELAY) |  | Значение по умолчанию времени ожидания между запросами при отправке повторного запроса в случае получения ответа с HTTP статусом 202. |
 | public | [DEFAULT_TRIES_COUNT](../classes/YooKassa-Client-BaseClient.md#constant_DEFAULT_TRIES_COUNT) |  | Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202 |
 | public | [DEFAULT_ATTEMPTS_COUNT](../classes/YooKassa-Client-BaseClient.md#constant_DEFAULT_ATTEMPTS_COUNT) |  | Значение по умолчанию количества попыток получения информации от API если пришёл ответ с HTTP статусом 202 |
@@ -221,14 +221,14 @@ SELF_EMPLOYED_PATH = '/self_employed'
 ```
 
 
-<a name="constant_IDEMPOTENCY_KEY_HEADER" class="anchor"></a>
-###### IDEMPOTENCY_KEY_HEADER
+<a name="constant_IDEMPOTENCE_KEY_HEADER" class="anchor"></a>
+###### IDEMPOTENCE_KEY_HEADER
 Inherited from [\YooKassa\Client\BaseClient](../classes/YooKassa-Client-BaseClient.md)
 
 Имя HTTP заголовка, используемого для передачи idempotence key
 
 ```php
-IDEMPOTENCY_KEY_HEADER = 'Idempotence-Key'
+IDEMPOTENCE_KEY_HEADER = 'Idempotence-Key'
 ```
 
 
@@ -270,7 +270,7 @@ DEFAULT_ATTEMPTS_COUNT = 3
 Текущая версия библиотеки.
 
 ```php
-SDK_VERSION = '3.2.0'
+SDK_VERSION = '3.5.0'
 ```
 
 
@@ -406,7 +406,7 @@ Constructor.
 #### public addWebhook() : ?\YooKassa\Model\Webhook\Webhook
 
 ```php
-public addWebhook(array|\YooKassa\Model\Webhook\Webhook $request, null|string $idempotencyKey = null) : ?\YooKassa\Model\Webhook\Webhook
+public addWebhook(array|\YooKassa\Model\Webhook\Webhook $webhookData, null|string $idempotenceKey = null) : ?\YooKassa\Model\Webhook\Webhook
 ```
 
 **Summary**
@@ -423,8 +423,8 @@ public addWebhook(array|\YooKassa\Model\Webhook\Webhook $request, null|string $i
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Model\Webhook\Webhook</code> | request  | Запрос на создание вебхука |
-| <code lang="php">null OR string</code> | idempotencyKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
+| <code lang="php">array OR \YooKassa\Model\Webhook\Webhook</code> | webhookData  | Запрос на создание вебхука |
+| <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
 | Type | Description |
@@ -489,7 +489,7 @@ var_dump($response);
 #### public cancelPayment() : ?\YooKassa\Request\Payments\CancelResponse
 
 ```php
-public cancelPayment(string $paymentId, null|string $idempotencyKey = null) : ?\YooKassa\Request\Payments\CancelResponse
+public cancelPayment(string $paymentId, null|string $idempotenceKey = null) : ?\YooKassa\Request\Payments\CancelResponse
 ```
 
 **Summary**
@@ -510,7 +510,7 @@ public cancelPayment(string $paymentId, null|string $idempotencyKey = null) : ?\
 | Type | Name | Description |
 | ---- | ---- | ----------- |
 | <code lang="php">string</code> | paymentId  | Идентификатор платежа |
-| <code lang="php">null OR string</code> | idempotencyKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
+| <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
 | Type | Description |
@@ -549,7 +549,7 @@ var_dump($response);
 #### public capturePayment() : ?\YooKassa\Request\Payments\CreateCaptureResponse
 
 ```php
-public capturePayment(array|\YooKassa\Request\Payments\CreateCaptureRequestInterface $captureRequest, string $paymentId, null|string $idempotencyKey = null) : ?\YooKassa\Request\Payments\CreateCaptureResponse
+public capturePayment(array|\YooKassa\Request\Payments\CreateCaptureRequestInterface $captureData, string $paymentId, null|string $idempotenceKey = null) : ?\YooKassa\Request\Payments\CreateCaptureResponse
 ```
 
 **Summary**
@@ -572,9 +572,9 @@ public capturePayment(array|\YooKassa\Request\Payments\CreateCaptureRequestInter
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\Payments\CreateCaptureRequestInterface</code> | captureRequest  | Запрос на создание подтверждения платежа |
+| <code lang="php">array OR \YooKassa\Request\Payments\CreateCaptureRequestInterface</code> | captureData  | Запрос на создание подтверждения платежа |
 | <code lang="php">string</code> | paymentId  | Идентификатор платежа |
-| <code lang="php">null OR string</code> | idempotencyKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
+| <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
 | Type | Description |
@@ -638,7 +638,7 @@ var_dump($response);
 #### public createDeal() : ?\YooKassa\Request\Deals\CreateDealResponse
 
 ```php
-public createDeal(array|\YooKassa\Request\Deals\CreateDealRequestInterface $deal, null|string $idempotenceKey = null) : ?\YooKassa\Request\Deals\CreateDealResponse
+public createDeal(array|\YooKassa\Request\Deals\CreateDealRequestInterface $dealData, null|string $idempotenceKey = null) : ?\YooKassa\Request\Deals\CreateDealResponse
 ```
 
 **Summary**
@@ -668,7 +668,7 @@ public createDeal(array|\YooKassa\Request\Deals\CreateDealRequestInterface $deal
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\Deals\CreateDealRequestInterface</code> | deal  | Запрос на создание сделки |
+| <code lang="php">array OR \YooKassa\Request\Deals\CreateDealRequestInterface</code> | dealData  | Запрос на создание сделки |
 | <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
@@ -715,7 +715,7 @@ var_dump($response);
 #### public createPayment() : \YooKassa\Request\Payments\CreatePaymentResponse|null
 
 ```php
-public createPayment(array|\YooKassa\Request\Payments\CreatePaymentRequestInterface $payment, null|string $idempotenceKey = null) : \YooKassa\Request\Payments\CreatePaymentResponse|null
+public createPayment(array|\YooKassa\Request\Payments\CreatePaymentRequestInterface $paymentData, null|string $idempotenceKey = null) : \YooKassa\Request\Payments\CreatePaymentResponse|null
 ```
 
 **Summary**
@@ -750,7 +750,7 @@ public createPayment(array|\YooKassa\Request\Payments\CreatePaymentRequestInterf
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\Payments\CreatePaymentRequestInterface</code> | payment  | Запрос на создание платежа |
+| <code lang="php">array OR \YooKassa\Request\Payments\CreatePaymentRequestInterface</code> | paymentData  | Запрос на создание платежа |
 | <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
@@ -809,7 +809,7 @@ var_dump($response);
 #### public createPayout() : ?\YooKassa\Request\Payouts\CreatePayoutResponse
 
 ```php
-public createPayout(array|\YooKassa\Request\Payouts\CreatePayoutRequestInterface $payout, null|string $idempotenceKey = null) : ?\YooKassa\Request\Payouts\CreatePayoutResponse
+public createPayout(array|\YooKassa\Request\Payouts\CreatePayoutRequestInterface $payoutData, null|string $idempotenceKey = null) : ?\YooKassa\Request\Payouts\CreatePayoutResponse
 ```
 
 **Summary**
@@ -845,7 +845,7 @@ public createPayout(array|\YooKassa\Request\Payouts\CreatePayoutRequestInterface
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\Payouts\CreatePayoutRequestInterface</code> | payout  | Запрос на создание выплаты |
+| <code lang="php">array OR \YooKassa\Request\Payouts\CreatePayoutRequestInterface</code> | payoutData  | Запрос на создание выплаты |
 | <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
@@ -900,7 +900,7 @@ var_dump($result);
 #### public createPersonalData() : null|\YooKassa\Request\PersonalData\PersonalDataResponse
 
 ```php
-public createPersonalData(array|\YooKassa\Request\PersonalData\CreatePersonalDataRequestInterface $request, null|string $idempotencyKey = null) : null|\YooKassa\Request\PersonalData\PersonalDataResponse
+public createPersonalData(array|\YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest $personalData, null|string $idempotenceKey = null) : null|\YooKassa\Request\PersonalData\PersonalDataResponse
 ```
 
 **Summary**
@@ -920,8 +920,8 @@ public createPersonalData(array|\YooKassa\Request\PersonalData\CreatePersonalDat
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\PersonalData\CreatePersonalDataRequestInterface</code> | request  | Запрос на создание персональных данных |
-| <code lang="php">null OR string</code> | idempotencyKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
+| <code lang="php">array OR \YooKassa\Request\PersonalData\PersonalDataType\AbstractPersonalDataRequest</code> | personalData  | Запрос на создание персональных данных |
+| <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
 | Type | Description |
@@ -967,7 +967,7 @@ var_dump($result);
 #### public createReceipt() : ?\YooKassa\Request\Receipts\AbstractReceiptResponse
 
 ```php
-public createReceipt(array|\YooKassa\Request\Receipts\CreatePostReceiptRequestInterface $receipt, null|string $idempotenceKey = null) : ?\YooKassa\Request\Receipts\AbstractReceiptResponse
+public createReceipt(array|\YooKassa\Request\Receipts\CreatePostReceiptRequestInterface $receiptData, null|string $idempotenceKey = null) : ?\YooKassa\Request\Receipts\AbstractReceiptResponse
 ```
 
 **Summary**
@@ -985,7 +985,7 @@ public createReceipt(array|\YooKassa\Request\Receipts\CreatePostReceiptRequestIn
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\Receipts\CreatePostReceiptRequestInterface</code> | receipt  | Запрос на создание чека |
+| <code lang="php">array OR \YooKassa\Request\Receipts\CreatePostReceiptRequestInterface</code> | receiptData  | Запрос на создание чека |
 | <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
@@ -1059,7 +1059,7 @@ var_dump($response);
 #### public createRefund() : \YooKassa\Request\Refunds\CreateRefundResponse|null
 
 ```php
-public createRefund(array|\YooKassa\Request\Refunds\CreateRefundRequestInterface $request, null|string $idempotencyKey = null) : \YooKassa\Request\Refunds\CreateRefundResponse|null
+public createRefund(array|\YooKassa\Request\Refunds\CreateRefundRequestInterface $refundData, null|string $idempotenceKey = null) : \YooKassa\Request\Refunds\CreateRefundResponse|null
 ```
 
 **Summary**
@@ -1078,8 +1078,8 @@ public createRefund(array|\YooKassa\Request\Refunds\CreateRefundRequestInterface
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">array OR \YooKassa\Request\Refunds\CreateRefundRequestInterface</code> | request  | Запрос на создание возврата |
-| <code lang="php">null OR string</code> | idempotencyKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
+| <code lang="php">array OR \YooKassa\Request\Refunds\CreateRefundRequestInterface</code> | refundData  | Запрос на создание возврата |
+| <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
 | Type | Description |
@@ -2125,7 +2125,7 @@ var_dump($response);
 #### public removeWebhook() : ?\YooKassa\Model\Webhook\Webhook
 
 ```php
-public removeWebhook(string $webhookId, null|string $idempotencyKey = null) : ?\YooKassa\Model\Webhook\Webhook
+public removeWebhook(string $webhookId, null|string $idempotenceKey = null) : ?\YooKassa\Model\Webhook\Webhook
 ```
 
 **Summary**
@@ -2144,7 +2144,7 @@ public removeWebhook(string $webhookId, null|string $idempotencyKey = null) : ?\
 | Type | Name | Description |
 | ---- | ---- | ----------- |
 | <code lang="php">string</code> | webhookId  | Идентификатор Webhook |
-| <code lang="php">null OR string</code> | idempotencyKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
+| <code lang="php">null OR string</code> | idempotenceKey  | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/basics?lang=php#idempotence) |
 
 ##### Throws:
 | Type | Description |
@@ -2536,10 +2536,10 @@ protected handleError(\YooKassa\Common\ResponseObject $response) : void
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

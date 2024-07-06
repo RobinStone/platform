@@ -1,209 +1,158 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Payments\PaymentData\B2b\Sberbank;
 
 use Exception;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
-use YooKassa\Model\CurrencyCode;
-use YooKassa\Model\MonetaryAmount;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\MixedVatData;
-use YooKassa\Model\Payment\PaymentMethod\B2b\Sberbank\VatDataType;
 
 /**
- * @internal
+ * MixedVatDataTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class MixedVatDataTest extends TestCase
+class MixedVatDataTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider validConstructDataProvider
-     */
-    public function testConstruct(array $value): void
-    {
-        $instance = new MixedVatData($value);
-
-        self::assertEquals($value['type'], $instance->getType());
-        self::assertEquals($value['amount']->getValue(), $instance->getAmount()->getValue());
-    }
+    protected MixedVatData $object;
 
     /**
-     * @dataProvider validTypeDataProvider
+     * @return MixedVatData
      */
-    public function testGetSetType(string $value): void
-    {
-        $this->getAndSetTest($value, 'type');
-    }
-
-    /**
-     * @dataProvider invalidTypeDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidType($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->getTestInstance()->setType($value);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function validConstructDataProvider(): array
-    {
-        return [
-            [
-                [
-                    'type' => VatDataType::MIXED,
-                    'amount' => new MonetaryAmount(Random::int(1, 1000)),
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function validTypeDataProvider(): array
-    {
-        return [
-            [VatDataType::CALCULATED],
-            [VatDataType::UNTAXED],
-            [VatDataType::MIXED],
-        ];
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function invalidTypeDataProvider(): array
-    {
-        return [
-            [''],
-            [null],
-            [0],
-            [1],
-            [-1],
-            [Random::str(20)],
-        ];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testGetSetAmount($value): void
-    {
-        $instance = $this->getTestInstance();
-
-        $instance->setAmount($value);
-        if (is_array($value)) {
-            self::assertSame($value['value'], (int) $instance->getAmount()->getValue());
-            self::assertSame($value['currency'], $instance->amount->getCurrency());
-        } else {
-            self::assertSame($value, $instance->getAmount());
-            self::assertSame($value, $instance->amount);
-        }
-
-        $instance = $this->getTestInstance();
-
-        $instance->amount = $value;
-        if (is_array($value)) {
-            self::assertSame($value['value'], (int) $instance->getAmount()->getValue());
-            self::assertSame($value['currency'], $instance->amount->getCurrency());
-        } else {
-            self::assertSame($value, $instance->getAmount());
-            self::assertSame($value, $instance->amount);
-        }
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetInvalidAmount($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = $this->getTestInstance();
-        $instance->setAmount($value);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function validDataProvider(): array
-    {
-        return [
-            [
-                [
-                    'value' => Random::int(1, 1000),
-                    'currency' => CurrencyCode::EUR,
-                ],
-            ],
-            [new MonetaryAmount(Random::int(1, 10000), CurrencyCode::RUB)],
-        ];
-    }
-
-    /**
-     * @throws Exception
-     */
-    public static function invalidDataProvider(): array
-    {
-        return [
-            [''],
-            [0],
-            [1],
-            [-1],
-            [new stdClass()],
-            [Random::str(20)],
-        ];
-    }
-
     protected function getTestInstance(): MixedVatData
     {
         return new MixedVatData();
     }
 
     /**
-     * @param null $snakeCase
-     * @param mixed $value
+     * @return void
      */
-    protected function getAndSetTest($value, string $property, $snakeCase = null): void
+    public function testMixedVatDataClassExists(): void
     {
-        $getter = 'get' . ucfirst($property);
-        $setter = 'set' . ucfirst($property);
+        $this->object = $this->getMockBuilder(MixedVatData::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(MixedVatData::class));
+        $this->assertInstanceOf(MixedVatData::class, $this->object);
+    }
 
+    /**
+     * Test property "type"
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testType(): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertNotNull($instance->getType());
+        self::assertNotNull($instance->type);
+        self::assertContains($instance->getType(), ['mixed']);
+        self::assertContains($instance->type, ['mixed']);
+    }
+
+    /**
+     * Test invalid property "type"
+     * @dataProvider invalidTypeDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidType(mixed $value, string $exceptionClass): void
+    {
         $instance = $this->getTestInstance();
 
-        $instance->{$setter}($value);
+        $this->expectException($exceptionClass);
+        $instance->setType($value);
+    }
 
-        self::assertEquals($value, $instance->{$getter}());
-        self::assertEquals($value, $instance->{$property});
-        if (null !== $snakeCase) {
-            self::assertEquals($value, $instance->{$snakeCase});
-        }
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTypeDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_type'));
+    }
 
+    /**
+     * Test property "amount"
+     * @dataProvider validAmountDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testAmount(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setAmount($value);
+        self::assertNotNull($instance->getAmount());
+        self::assertNotNull($instance->amount);
+        self::assertEquals($value, is_array($value) ? $instance->getAmount()->toArray() : $instance->getAmount());
+        self::assertEquals($value, is_array($value) ? $instance->amount->toArray() : $instance->amount);
+    }
+
+    /**
+     * Test invalid property "amount"
+     * @dataProvider invalidAmountDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidAmount(mixed $value, string $exceptionClass): void
+    {
         $instance = $this->getTestInstance();
 
-        $instance->{$property} = $value;
+        $this->expectException($exceptionClass);
+        $instance->setAmount($value);
+    }
 
-        self::assertEquals($value, $instance->{$getter}());
-        self::assertEquals($value, $instance->{$property});
-        if (null !== $snakeCase) {
-            self::assertEquals($value, $instance->{$snakeCase});
-        }
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
+    }
 
-        if (null !== $snakeCase) {
-            $instance = $this->getTestInstance();
-
-            $instance->{$snakeCase} = $value;
-
-            self::assertEquals($value, $instance->{$getter}());
-            self::assertEquals($value, $instance->{$property});
-            self::assertEquals($value, $instance->{$snakeCase});
-        }
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidAmountDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_amount'));
     }
 }

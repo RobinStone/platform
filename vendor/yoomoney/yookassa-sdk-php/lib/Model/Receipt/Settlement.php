@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,6 @@ namespace YooKassa\Model\Receipt;
 
 use YooKassa\Common\AbstractObject;
 use YooKassa\Validator\Constraints as Assert;
-use YooKassa\Validator\Exceptions\EmptyPropertyValueException;
-use YooKassa\Validator\Exceptions\InvalidPropertyValueTypeException;
 use YooKassa\Model\AmountInterface;
 use YooKassa\Model\MonetaryAmount;
 
@@ -57,6 +55,9 @@ class Settlement extends AbstractObject implements SettlementInterface
     /**
      * @var AmountInterface|null Размер оплаты
      */
+    #[Assert\NotBlank]
+    #[Assert\Valid]
+    #[Assert\Type(MonetaryAmount::class)]
     private ?AmountInterface $_amount = null;
 
     /**
@@ -85,7 +86,7 @@ class Settlement extends AbstractObject implements SettlementInterface
     /**
      * Возвращает размер оплаты.
      *
-     * @return AmountInterface Размер оплаты
+     * @return AmountInterface|null Размер оплаты
      */
     public function getAmount(): ?AmountInterface
     {
@@ -95,29 +96,14 @@ class Settlement extends AbstractObject implements SettlementInterface
     /**
      * Устанавливает сумму платежа.
      *
-     * @param AmountInterface|array|null $value Сумма платежа
+     * @param AmountInterface|array|null $amount Сумма платежа
+     *
+     * @return self
      */
-    public function setAmount(mixed $value): void
+    public function setAmount(mixed $amount = null): self
     {
-        if (null === $value || '' === $value) {
-            throw new EmptyPropertyValueException(
-                'Empty value for "amount" parameter in Settlement',
-                0,
-                'settlement.amount'
-            );
-        }
-        if (is_array($value)) {
-            $this->_amount = $this->factoryAmount($value);
-        } elseif ($value instanceof AmountInterface) {
-            $this->_amount = $value;
-        } else {
-            throw new InvalidPropertyValueTypeException(
-                'Invalid value type for "amount" parameter in Settlement',
-                0,
-                'settlement.amount',
-                $value
-            );
-        }
+        $this->_amount = $this->validatePropertyValue('_amount', $amount);
+        return $this;
     }
 
     /**

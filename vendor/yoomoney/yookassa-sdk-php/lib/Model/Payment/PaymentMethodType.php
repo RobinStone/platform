@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -73,13 +73,17 @@ class PaymentMethodType extends AbstractEnum
     /** Платеж с баланса мобильного телефона */
     public const MOBILE_BALANCE = 'mobile_balance';
 
-    /** латеж ApplePay */
+    /** Платеж ApplePay */
     public const APPLE_PAY = 'apple_pay';
 
     /** Платеж Google Pay */
     public const GOOGLE_PAY = 'google_pay';
 
-    /** Платеж из кошелька Qiwi */
+    /**
+     * Платеж из кошелька Qiwi
+     *
+     * @deprecated Больше недоступен
+     */
     public const QIWI = 'qiwi';
 
     /**
@@ -109,7 +113,11 @@ class PaymentMethodType extends AbstractEnum
      */
     public const PSB = 'psb';
 
-    /** Заплатить по частям */
+    /**
+     * Заплатить по частям
+     *
+     * @deprecated Больше недоступен
+     */
     public const INSTALLMENTS = 'installments';
 
     /**
@@ -140,11 +148,11 @@ class PaymentMethodType extends AbstractEnum
         self::MOBILE_BALANCE => true,
         self::APPLE_PAY => false,
         self::GOOGLE_PAY => false,
-        self::QIWI => true,
+        self::QIWI => false,
         self::WEBMONEY => false,
         self::ALFABANK => false,
         self::TINKOFF_BANK => true,
-        self::INSTALLMENTS => true,
+        self::INSTALLMENTS => false,
         self::B2B_SBERBANK => true,
         self::PSB => false,
         self::WECHAT => false,

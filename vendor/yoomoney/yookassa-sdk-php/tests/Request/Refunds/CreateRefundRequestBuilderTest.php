@@ -1,5 +1,29 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Request\Refunds;
 
 use Exception;
@@ -21,7 +45,11 @@ use YooKassa\Request\Payments\CreatePaymentRequestBuilder;
 use YooKassa\Request\Refunds\CreateRefundRequestBuilder;
 
 /**
- * @internal
+ * CreateRefundRequestBuilderTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
 class CreateRefundRequestBuilderTest extends TestCase
 {
@@ -31,7 +59,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      * @param mixed $options
      * @throws Exception
      */
-    public function testSetPaymentId($options): void
+    public function testSetPaymentId(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -54,7 +82,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetAmountValue($options): void
+    public function testSetAmountValue(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -94,7 +122,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetAmountCurrency($options): void
+    public function testSetAmountCurrency(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -110,7 +138,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetComment($options): void
+    public function testSetComment(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
         $instance = $builder->build([
@@ -136,7 +164,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @param mixed $options
      */
-    public function testBuild($options): void
+    public function testBuild(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
         $instance = $builder->build($options);
@@ -162,7 +190,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptItems($options): void
+    public function testSetReceiptItems(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -185,7 +213,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testAddReceiptItems($options): void
+    public function testAddReceiptItems(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -222,7 +250,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testAddReceiptShipping($options): void
+    public function testAddReceiptShipping(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -256,7 +284,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @param mixed $items
      */
-    public function testSetInvalidReceiptItems($items): void
+    public function testSetInvalidReceiptItems(mixed $items): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateRefundRequestBuilder();
@@ -315,7 +343,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidReceipt($value): void
+    public function testSetInvalidReceipt(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateRefundRequestBuilder();
@@ -403,7 +431,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptEmail($options): void
+    public function testSetReceiptEmail(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -426,7 +454,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptPhone($options): void
+    public function testSetReceiptPhone(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -450,7 +478,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetReceiptTaxSystemCode($options): void
+    public function testSetReceiptTaxSystemCode(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
 
@@ -472,7 +500,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidTaxSystemId($value): void
+    public function testSetInvalidTaxSystemId(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreateRefundRequestBuilder();
@@ -627,7 +655,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @throws Exception
      */
-    public function testSetDeal($options): void
+    public function testSetDeal(mixed $options): void
     {
         $builder = new CreateRefundRequestBuilder();
         $builder->setPaymentId($options['paymentId']);
@@ -664,7 +692,7 @@ class CreateRefundRequestBuilderTest extends TestCase
      *
      * @param mixed $value
      */
-    public function testSetInvalidDeal($value): void
+    public function testSetInvalidDeal(mixed $value): void
     {
         $this->expectException(InvalidArgumentException::class);
         $builder = new CreatePaymentRequestBuilder();

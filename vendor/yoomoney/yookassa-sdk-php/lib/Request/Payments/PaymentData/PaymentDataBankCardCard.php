@@ -1,9 +1,9 @@
 <?php
 
-/**
- * The MIT License.
+/*
+ * The MIT License
  *
- * Copyright (c) 2023 "YooMoney", NBСO LLC
+ * Copyright (c) 2024 "YooMoney", NBСO LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -70,7 +70,7 @@ class PaymentDataBankCardCard extends AbstractObject
      */
     #[Assert\NotBlank]
     #[Assert\Type('string')]
-    #[Assert\Regex('/^[0-9]{2}$/')]
+    #[Assert\Regex("/^(0?[1-9]|1[0-2])$/")]
     #[Assert\GreaterThanOrEqual(value: 1)]
     #[Assert\LessThanOrEqual(value: 12)]
     private ?string $_expiry_month = null;

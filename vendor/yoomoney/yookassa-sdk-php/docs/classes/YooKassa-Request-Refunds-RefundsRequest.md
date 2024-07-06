@@ -21,12 +21,17 @@
 ### Properties
 | Visibility | Name | Flag | Summary |
 | ----------:| ---- | ---- | ------- |
+| public | [$created_at_gt](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_created_at_gt) |  | Время создания, от (не включая) |
+| public | [$created_at_gte](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_created_at_gte) |  | Время создания, от (включительно) |
+| public | [$created_at_lt](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_created_at_lt) |  | Время создания, до (не включая) |
+| public | [$created_at_lte](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_created_at_lte) |  | Время создания, до (включительно) |
 | public | [$createdAtGt](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_createdAtGt) |  | Время создания, от (не включая) |
 | public | [$createdAtGte](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_createdAtGte) |  | Время создания, от (включительно) |
 | public | [$createdAtLt](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_createdAtLt) |  | Время создания, до (не включая) |
 | public | [$createdAtLte](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_createdAtLte) |  | Время создания, до (включительно) |
 | public | [$cursor](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_cursor) |  | Токен для получения следующей страницы выборки |
 | public | [$limit](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_limit) |  | Ограничение количества объектов возврата, отображаемых на одной странице выдачи |
+| public | [$payment_id](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_payment_id) |  | Идентификатор платежа |
 | public | [$paymentId](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_paymentId) |  | Идентификатор платежа |
 | public | [$status](../classes/YooKassa-Request-Refunds-RefundsRequest.md#property_status) |  | Статус возврата |
 
@@ -114,6 +119,54 @@ MAX_LIMIT_VALUE = 100
 
 ---
 ## Properties
+<a name="property_created_at_gt"></a>
+#### public $created_at_gt : \DateTime
+---
+***Description***
+
+Время создания, от (не включая)
+
+**Type:** \DateTime
+
+**Details:**
+
+
+<a name="property_created_at_gte"></a>
+#### public $created_at_gte : \DateTime
+---
+***Description***
+
+Время создания, от (включительно)
+
+**Type:** \DateTime
+
+**Details:**
+
+
+<a name="property_created_at_lt"></a>
+#### public $created_at_lt : \DateTime
+---
+***Description***
+
+Время создания, до (не включая)
+
+**Type:** \DateTime
+
+**Details:**
+
+
+<a name="property_created_at_lte"></a>
+#### public $created_at_lte : \DateTime
+---
+***Description***
+
+Время создания, до (включительно)
+
+**Type:** \DateTime
+
+**Details:**
+
+
 <a name="property_createdAtGt"></a>
 #### public $createdAtGt : \DateTime
 ---
@@ -182,6 +235,18 @@ MAX_LIMIT_VALUE = 100
 Ограничение количества объектов возврата, отображаемых на одной странице выдачи
 
 **Type:** <a href="../null|int"><abbr title="null|int">null|int</abbr></a>
+
+**Details:**
+
+
+<a name="property_payment_id"></a>
+#### public $payment_id : string
+---
+***Description***
+
+Идентификатор платежа
+
+**Type:** <a href="../string"><abbr title="string">string</abbr></a>
 
 **Details:**
 
@@ -789,10 +854,10 @@ public offsetUnset(string $offset) : void
 
 
 <a name="method_setCreatedAtGt" class="anchor"></a>
-#### public setCreatedAtGt() : void
+#### public setCreatedAtGt() : self
 
 ```php
-public setCreatedAtGt(null|\DateTime|int|string $value) : void
+public setCreatedAtGt(\DateTime|string|null $value) : self
 ```
 
 **Summary**
@@ -805,22 +870,16 @@ public setCreatedAtGt(null|\DateTime|int|string $value) : void
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">null OR \DateTime OR int OR string</code> | value  | Время создания, от (не включая) или null, чтобы удалить значение |
+| <code lang="php">\DateTime OR string OR null</code> | value  | Время создания, от (не включая) или null, чтобы удалить значение |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueException | Генерируется если была передана дата в невалидном формате (была передана строка или число, которые не удалось преобразовать в валидную дату) |
-| \Exception|\YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Генерируется если была передана дата с не тем типом (передана не строка, не число и не значение типа DateTime) |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setCreatedAtGte" class="anchor"></a>
-#### public setCreatedAtGte() : void
+#### public setCreatedAtGte() : self
 
 ```php
-public setCreatedAtGte(null|\DateTime|int|string $value) : void
+public setCreatedAtGte(\DateTime|string|null $value) : self
 ```
 
 **Summary**
@@ -833,22 +892,16 @@ public setCreatedAtGte(null|\DateTime|int|string $value) : void
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">null OR \DateTime OR int OR string</code> | value  | Время создания, от (включительно) или null, чтобы удалить значение |
+| <code lang="php">\DateTime OR string OR null</code> | value  | Время создания, от (включительно) или null, чтобы удалить значение |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueException | Генерируется если была передана дата в невалидном формате (была передана строка или число, которые не удалось преобразовать в валидную дату) |
-| \Exception|\YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Генерируется если была передана дата с не тем типом (передана не строка, не число и не значение типа DateTime) |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setCreatedAtLt" class="anchor"></a>
-#### public setCreatedAtLt() : void
+#### public setCreatedAtLt() : self
 
 ```php
-public setCreatedAtLt(null|\DateTime|int|string $value) : void
+public setCreatedAtLt(\DateTime|string|null $value) : self
 ```
 
 **Summary**
@@ -861,22 +914,16 @@ public setCreatedAtLt(null|\DateTime|int|string $value) : void
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">null OR \DateTime OR int OR string</code> | value  | Время создания, до (не включая) или null, чтобы удалить значение |
+| <code lang="php">\DateTime OR string OR null</code> | value  | Время создания, до (не включая) или null, чтобы удалить значение |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueException | Генерируется если была передана дата в невалидном формате (была передана строка или число, которые не удалось преобразовать в валидную дату) |
-| \Exception|\YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Генерируется если была передана дата с не тем типом (передана не строка, не число и не значение типа DateTime) |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setCreatedAtLte" class="anchor"></a>
-#### public setCreatedAtLte() : void
+#### public setCreatedAtLte() : self
 
 ```php
-public setCreatedAtLte(null|\DateTime|int|string $value) : void
+public setCreatedAtLte(\DateTime|string|null $value) : self
 ```
 
 **Summary**
@@ -889,22 +936,16 @@ public setCreatedAtLte(null|\DateTime|int|string $value) : void
 ##### Parameters:
 | Type | Name | Description |
 | ---- | ---- | ----------- |
-| <code lang="php">null OR \DateTime OR int OR string</code> | value  | Время создания, до (включительно) или null, чтобы удалить значение |
+| <code lang="php">\DateTime OR string OR null</code> | value  | Время создания, до (включительно) или null, чтобы удалить значение |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueException | Генерируется если была передана дата в невалидном формате (была передана строка или число, которые не удалось преобразовать в валидную дату) |
-| \Exception|\YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Генерируется если была передана дата с не тем типом (передана не строка, не число и не значение типа DateTime) |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setCursor" class="anchor"></a>
-#### public setCursor() : void
+#### public setCursor() : self
 
 ```php
-public setCursor(string|null $value) : void
+public setCursor(string|null $value) : self
 ```
 
 **Summary**
@@ -919,19 +960,14 @@ public setCursor(string|null $value) : void
 | ---- | ---- | ----------- |
 | <code lang="php">string OR null</code> | value  | Токен следующей страницы выборки или null, чтобы удалить значение |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Выбрасывается если в метод была передана не строка |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setLimit" class="anchor"></a>
-#### public setLimit() : void
+#### public setLimit() : self
 
 ```php
-public setLimit(null|int|string $value) : void
+public setLimit(null|int|string $value) : self
 ```
 
 **Summary**
@@ -951,14 +987,14 @@ public setLimit(null|int|string $value) : void
 | ---- | ----------- |
 | \YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Выбрасывается, если в метод было передано не целое число |
 
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setPaymentId" class="anchor"></a>
-#### public setPaymentId() : void
+#### public setPaymentId() : self
 
 ```php
-public setPaymentId(null|string $value) : void
+public setPaymentId(null|string $value) : self
 ```
 
 **Summary**
@@ -973,20 +1009,14 @@ public setPaymentId(null|string $value) : void
 | ---- | ---- | ----------- |
 | <code lang="php">null OR string</code> | value  | Идентификатор платежа |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueException | Выбрасывается если длина переданной строки не равна 36 символам |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Выбрасывается если в метод была передана не строка |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_setStatus" class="anchor"></a>
-#### public setStatus() : void
+#### public setStatus() : self
 
 ```php
-public setStatus(string|null $value) : void
+public setStatus(string|null $value) : self
 ```
 
 **Summary**
@@ -1001,13 +1031,7 @@ public setStatus(string|null $value) : void
 | ---- | ---- | ----------- |
 | <code lang="php">string OR null</code> | value  | Статус выбираемых платежей или null, чтобы удалить значение |
 
-##### Throws:
-| Type | Description |
-| ---- | ----------- |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueException | Выбрасывается если переданное значение не является валидным статусом |
-| \YooKassa\Common\Exceptions\InvalidPropertyValueTypeException | Выбрасывается если в метод была передана не строка |
-
-**Returns:** void - 
+**Returns:** self - 
 
 
 <a name="method_toArray" class="anchor"></a>
@@ -1115,10 +1139,10 @@ protected validatePropertyValue(string $propertyName, mixed $propertyValue) : mi
 ### Reports
 * [Errors - 0](../reports/errors.md)
 * [Markers - 0](../reports/markers.md)
-* [Deprecated - 19](../reports/deprecated.md)
+* [Deprecated - 25](../reports/deprecated.md)
 
 ---
 
-This document was automatically generated from source code comments on 2023-12-11 using [phpDocumentor](http://www.phpdoc.org/)
+This document was automatically generated from source code comments on 2024-07-02 using [phpDocumentor](http://www.phpdoc.org/)
 
-&copy; 2023 YooMoney
+&copy; 2024 YooMoney

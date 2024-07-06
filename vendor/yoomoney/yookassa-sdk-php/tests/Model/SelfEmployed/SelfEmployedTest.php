@@ -1,342 +1,470 @@
 <?php
 
+/*
+* The MIT License
+*
+* Copyright (c) 2024 "YooMoney", NBСO LLC
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
+
 namespace Tests\YooKassa\Model\SelfEmployed;
 
-use DateTime;
-use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use stdClass;
-use YooKassa\Helpers\Random;
+use Exception;
+use Tests\YooKassa\AbstractTestCase;
+use Datetime;
+use YooKassa\Model\Metadata;
 use YooKassa\Model\SelfEmployed\SelfEmployed;
-use YooKassa\Model\SelfEmployed\SelfEmployedConfirmationFactory;
-use YooKassa\Model\SelfEmployed\SelfEmployedConfirmationType;
-use YooKassa\Model\SelfEmployed\SelfEmployedStatus;
 
 /**
- * @internal
+ * SelfEmployedTest
+ *
+ * @category    ClassTest
+ * @author      cms@yoomoney.ru
+ * @link        https://yookassa.ru/developers/api
  */
-class SelfEmployedTest extends TestCase
+class SelfEmployedTest extends AbstractTestCase
 {
+    protected SelfEmployed $object;
+
     /**
-     * @dataProvider validDataProvider
+     * @return SelfEmployed
      */
-    public function testGetSetId(array $options): void
+    protected function getTestInstance(): SelfEmployed
     {
-        $instance = new SelfEmployed();
-
-        $instance->setId($options['id']);
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
-
-        $instance = new SelfEmployed();
-        $instance->id = $options['id'];
-        self::assertEquals($options['id'], $instance->getId());
-        self::assertEquals($options['id'], $instance->id);
+        return new SelfEmployed();
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * @return void
+     */
+    public function testSelfEmployedClassExists(): void
+    {
+        $this->object = $this->getMockBuilder(SelfEmployed::class)->getMockForAbstractClass();
+        $this->assertTrue(class_exists(SelfEmployed::class));
+        $this->assertInstanceOf(SelfEmployed::class, $this->object);
+    }
+
+    /**
+     * Test property "id"
+     * @dataProvider validIdDataProvider
      * @param mixed $value
-     */
-    public function testSetInvalidId($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->setId($value['id']);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
      *
+     * @return void
+     * @throws Exception
+     */
+    public function testId(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setId($value);
+        self::assertNotNull($instance->getId());
+        self::assertNotNull($instance->id);
+        self::assertEquals($value, is_array($value) ? $instance->getId()->toArray() : $instance->getId());
+        self::assertEquals($value, is_array($value) ? $instance->id->toArray() : $instance->id);
+        self::assertLessThanOrEqual(50, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertLessThanOrEqual(50, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+        self::assertGreaterThanOrEqual(36, is_string($instance->getId()) ? mb_strlen($instance->getId()) : $instance->getId());
+        self::assertGreaterThanOrEqual(36, is_string($instance->id) ? mb_strlen($instance->id) : $instance->id);
+    }
+
+    /**
+     * Test invalid property "id"
+     * @dataProvider invalidIdDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidId($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->id = $value['id'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetStatus(array $options): void
-    {
-        $instance = new SelfEmployed();
-
-        $instance->setStatus($options['status']);
-        self::assertEquals($options['status'], $instance->getStatus());
-        self::assertEquals($options['status'], $instance->status);
-
-        $instance = new SelfEmployed();
-        $instance->status = $options['status'];
-        self::assertEquals($options['status'], $instance->getStatus());
-        self::assertEquals($options['status'], $instance->status);
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidStatus($value): void
+    public function testInvalidId(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->setStatus($value['status']);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setId($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidIdDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_id'));
+    }
+
+    /**
+     * Test property "status"
+     * @dataProvider validStatusDataProvider
+     * @param mixed $value
      *
+     * @return void
+     * @throws Exception
+     */
+    public function testStatus(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setStatus($value);
+        self::assertNotNull($instance->getStatus());
+        self::assertNotNull($instance->status);
+        self::assertEquals($value, is_array($value) ? $instance->getStatus()->toArray() : $instance->getStatus());
+        self::assertEquals($value, is_array($value) ? $instance->status->toArray() : $instance->status);
+        self::assertContains($instance->getStatus(), ['pending', 'confirmed', 'canceled', 'unregistered']);
+        self::assertContains($instance->status, ['pending', 'confirmed', 'canceled', 'unregistered']);
+    }
+
+    /**
+     * Test invalid property "status"
+     * @dataProvider invalidStatusDataProvider
      * @param mixed $value
-     */
-    public function testSetterInvalidStatus($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->status = $value['status'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetTest(array $options): void
-    {
-        $instance = new SelfEmployed();
-
-        $instance->setTest($options['test']);
-        self::assertSame($options['test'], $instance->getTest());
-        self::assertSame($options['test'], $instance->test);
-
-        $instance = new SelfEmployed();
-        $instance->test = $options['test'];
-        self::assertSame($options['test'], $instance->getTest());
-        self::assertSame($options['test'], $instance->test);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetPhone(array $options): void
-    {
-        $instance = new SelfEmployed();
-
-        $instance->setPhone($options['phone']);
-        self::assertSame($options['phone'], $instance->getPhone());
-        self::assertSame($options['phone'], $instance->phone);
-
-        $instance = new SelfEmployed();
-        $instance->phone = $options['phone'];
-        self::assertSame($options['phone'], $instance->getPhone());
-        self::assertSame($options['phone'], $instance->phone);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetItn(array $options): void
-    {
-        $instance = new SelfEmployed();
-
-        $instance->setItn($options['itn']);
-        self::assertSame($options['itn'], $instance->getItn());
-        self::assertSame($options['itn'], $instance->itn);
-
-        $instance = new SelfEmployed();
-        $instance->itn = $options['itn'];
-        self::assertSame($options['itn'], $instance->getItn());
-        self::assertSame($options['itn'], $instance->itn);
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetCreatedAt(array $options): void
-    {
-        $instance = new SelfEmployed();
-
-        $instance->setCreatedAt($options['created_at']);
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-
-        $instance = new SelfEmployed();
-        $instance->createdAt = $options['created_at'];
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-
-        $instance = new SelfEmployed();
-        $instance->created_at = $options['created_at'];
-        self::assertSame($options['created_at'], $instance->getCreatedAt()->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->createdAt->format(YOOKASSA_DATE));
-        self::assertSame($options['created_at'], $instance->created_at->format(YOOKASSA_DATE));
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
+     * @param string $exceptionClass
      *
-     * @param mixed $value
+     * @return void
      */
-    public function testSetInvalidCreatedAt($value): void
+    public function testInvalidStatus(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->setCreatedAt($value['created_at']);
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setStatus($value);
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @return array[]
+     * @throws Exception
+     */
+    public function validStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidStatusDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_status'));
+    }
+
+    /**
+     * Test property "created_at"
+     * @dataProvider validCreatedAtDataProvider
+     * @param mixed $value
      *
-     * @param mixed $value
+     * @return void
+     * @throws Exception
      */
-    public function testSetterInvalidCreatedAt($value): void
+    public function testCreatedAt(mixed $value): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->createdAt = $value['created_at'];
-    }
-
-    /**
-     * @dataProvider invalidDataProvider
-     *
-     * @param mixed $value
-     */
-    public function testSetterInvalidSnakeCreatedAt($value): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->created_at = $value['created_at'];
-    }
-
-    /**
-     * @dataProvider validDataProvider
-     */
-    public function testGetSetConfirmation(array $options): void
-    {
-        $instance = new SelfEmployed();
-
-        $instance->setConfirmation($options['confirmation']);
-        if (is_array($options['confirmation'])) {
-            self::assertSame($options['confirmation'], $instance->getConfirmation()->toArray());
-            self::assertSame($options['confirmation'], $instance->confirmation->toArray());
+        $instance = $this->getTestInstance();
+        $instance->setCreatedAt($value);
+        self::assertNotNull($instance->getCreatedAt());
+        self::assertNotNull($instance->created_at);
+        if ($value instanceof Datetime) {
+            self::assertEquals($value, $instance->getCreatedAt());
+            self::assertEquals($value, $instance->created_at);
         } else {
-            self::assertSame($options['confirmation'], $instance->getConfirmation());
-            self::assertSame($options['confirmation'], $instance->confirmation);
-        }
-
-        $instance = new SelfEmployed();
-        $instance->confirmation = $options['confirmation'];
-        if (is_array($options['confirmation'])) {
-            self::assertSame($options['confirmation'], $instance->getConfirmation()->toArray());
-            self::assertSame($options['confirmation'], $instance->confirmation->toArray());
-        } else {
-            self::assertSame($options['confirmation'], $instance->getConfirmation());
-            self::assertSame($options['confirmation'], $instance->confirmation);
+            self::assertEquals(!empty($value) ? new Datetime($value) : $value, $instance->getCreatedAt());
+            self::assertEquals(!empty($value) ? new Datetime($value) : $value, $instance->created_at);
         }
     }
 
     /**
-     * @dataProvider invalidDataProvider
-     *
+     * Test invalid property "created_at"
+     * @dataProvider invalidCreatedAtDataProvider
      * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
      */
-    public function testSetterInvalidConfirmation($value): void
+    public function testInvalidCreatedAt(mixed $value, string $exceptionClass): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = new SelfEmployed();
-        $instance->confirmation = $value['confirmation'];
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setCreatedAt($value);
     }
 
-    public static function validDataProvider(): array
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validCreatedAtDataProvider(): array
     {
-        $result = [];
-        $confirmTypes = SelfEmployedConfirmationType::getValidValues();
-        $confirmFactory = new SelfEmployedConfirmationFactory();
-
-        $result[] = [
-            [
-                'id' => Random::str(36, 50),
-                'status' => Random::value(SelfEmployedStatus::getValidValues()),
-                'test' => Random::bool(),
-                'itn' => null,
-                'phone' => Random::str(11, 11, '0123456789'),
-                'created_at' => date(YOOKASSA_DATE, Random::int(111111111, time())),
-                'confirmation' => ['type' => Random::value($confirmTypes)],
-            ],
-        ];
-        $result[] = [
-            [
-                'id' => Random::str(36, 50),
-                'status' => Random::value(SelfEmployedStatus::getValidValues()),
-                'test' => Random::bool(),
-                'itn' => Random::str(12, '0123456789'),
-                'phone' => null,
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'confirmation' => null,
-            ],
-        ];
-
-        for ($i = 0; $i < 20; $i++) {
-            $payment = [
-                'id' => Random::str(36, 50),
-                'status' => Random::value(SelfEmployedStatus::getValidValues()),
-                'test' => Random::bool(),
-                'itn' => Random::str(12, '0123456789'),
-                'phone' => Random::str(11, 11, '0123456789'),
-                'created_at' => date(YOOKASSA_DATE, Random::int(1, time())),
-                'confirmation' => $confirmFactory->factory(Random::value($confirmTypes)),
-            ];
-            $result[] = [$payment];
-        }
-
-        return $result;
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
     }
 
-    public static function invalidDataProvider(): array
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidCreatedAtDataProvider(): array
     {
-        $result = [
-            [
-                [
-                    'id' => Random::str(60),
-                    'test' => null,
-                    'status' => Random::str(10),
-                    'itn' => new stdClass(),
-                    'phone' => [],
-                    'created_at' => null,
-                    'confirmation' => new stdClass(),
-                ],
-            ],
-            [
-                [
-                    'id' => '',
-                    'test' => 'null',
-                    'status' => '',
-                    'itn' => [],
-                    'phone' => new stdClass(),
-                    'created_at' => Random::str(10),
-                    'confirmation' => new stdClass(),
-                ],
-            ],
-        ];
-        for ($i = 0; $i < 10; $i++) {
-            $selfEmployed = [
-                'id' => Random::str($i < 5 ? Random::int(1, 35) : Random::int(51, 64)),
-                'test' => $i % 2 ? Random::str(10) : new stdClass(),
-                'status' => Random::str(1, 35),
-                'phone' => $i % 2 ? new stdClass() : [],
-                'itn' => $i % 2 ? new stdClass() : [],
-                'created_at' => 0 === $i ? '23423-234-32' : -Random::int(),
-                'confirmation' => Random::value([
-                    new DateTime(),
-                    new stdClass(),
-                ]),
-            ];
-            $result[] = [$selfEmployed];
-        }
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_created_at'));
+    }
 
-        return $result;
+    /**
+     * Test property "itn"
+     * @dataProvider validItnDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testItn(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getItn());
+        self::assertEmpty($instance->itn);
+        $instance->setItn($value);
+        self::assertEquals($value, is_array($value) ? $instance->getItn()->toArray() : $instance->getItn());
+        self::assertEquals($value, is_array($value) ? $instance->itn->toArray() : $instance->itn);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getItn());
+            self::assertNotNull($instance->itn);
+            self::assertMatchesRegularExpression("/^\d{12}$/", $instance->getItn());
+            self::assertMatchesRegularExpression("/^\d{12}$/", $instance->itn);
+        }
+    }
+
+    /**
+     * Test invalid property "itn"
+     * @dataProvider invalidItnDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidItn(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setItn($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validItnDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_itn'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidItnDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_itn'));
+    }
+
+    /**
+     * Test property "phone"
+     * @dataProvider validPhoneDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testPhone(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getPhone());
+        self::assertEmpty($instance->phone);
+        $instance->setPhone($value);
+        self::assertEquals($value, is_array($value) ? $instance->getPhone()->toArray() : $instance->getPhone());
+        self::assertEquals($value, is_array($value) ? $instance->phone->toArray() : $instance->phone);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getPhone());
+            self::assertNotNull($instance->phone);
+            self::assertMatchesRegularExpression("/^[0-9]{4,15}$/", $instance->getPhone());
+            self::assertMatchesRegularExpression("/^[0-9]{4,15}$/", $instance->phone);
+        }
+    }
+
+    /**
+     * Test invalid property "phone"
+     * @dataProvider invalidPhoneDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidPhone(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setPhone($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validPhoneDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_phone'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidPhoneDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_phone'));
+    }
+
+    /**
+     * Test property "confirmation"
+     * @dataProvider validConfirmationDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testConfirmation(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        self::assertEmpty($instance->getConfirmation());
+        self::assertEmpty($instance->confirmation);
+        $instance->setConfirmation($value);
+        self::assertEquals($value, is_array($value) ? $instance->getConfirmation()->toArray() : $instance->getConfirmation());
+        self::assertEquals($value, is_array($value) ? $instance->confirmation->toArray() : $instance->confirmation);
+        if (!empty($value)) {
+            self::assertNotNull($instance->getConfirmation());
+            self::assertNotNull($instance->confirmation);
+        }
+    }
+
+    /**
+     * Test invalid property "confirmation"
+     * @dataProvider invalidConfirmationDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidConfirmation(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setConfirmation($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validConfirmationDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_confirmation'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidConfirmationDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_confirmation'));
+    }
+
+    /**
+     * Test property "test"
+     * @dataProvider validTestDataProvider
+     * @param mixed $value
+     *
+     * @return void
+     * @throws Exception
+     */
+    public function testTest(mixed $value): void
+    {
+        $instance = $this->getTestInstance();
+        $instance->setTest($value);
+        self::assertNotNull($instance->getTest());
+        self::assertNotNull($instance->test);
+        self::assertEquals($value, is_array($value) ? $instance->getTest()->toArray() : $instance->getTest());
+        self::assertEquals($value, is_array($value) ? $instance->test->toArray() : $instance->test);
+        self::assertIsBool($instance->getTest());
+        self::assertIsBool($instance->test);
+    }
+
+    /**
+     * Test invalid property "test"
+     * @dataProvider invalidTestDataProvider
+     * @param mixed $value
+     * @param string $exceptionClass
+     *
+     * @return void
+     */
+    public function testInvalidTest(mixed $value, string $exceptionClass): void
+    {
+        $instance = $this->getTestInstance();
+
+        $this->expectException($exceptionClass);
+        $instance->setTest($value);
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function validTestDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getValidDataProviderByType($instance->getValidator()->getRulesByPropName('_test'));
+    }
+
+    /**
+     * @return array[]
+     * @throws Exception
+     */
+    public function invalidTestDataProvider(): array
+    {
+        $instance = $this->getTestInstance();
+        return $this->getInvalidDataProviderByType($instance->getValidator()->getRulesByPropName('_test'));
     }
 }
