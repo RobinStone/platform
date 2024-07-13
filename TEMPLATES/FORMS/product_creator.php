@@ -170,7 +170,7 @@ foreach($props as $k=>$v) {
 ?>
 
 <script>
-    <? // тут происходит загрузка в JS всех свойств (если редактирование происходит)
+    <?php // тут происходит загрузка в JS всех свойств (если редактирование происходит)
     if(isset($order, $order['VALS'])) {
         $arrs =  $order['VALS'];
         foreach($arrs as $k=>$v) {
@@ -183,58 +183,7 @@ foreach($props as $k=>$v) {
 
         echo 'order_vals='. json_encode($arrs, JSON_UNESCAPED_UNICODE);
     } else {  // ЕСЛИ ЭТО НОВЫЙ ORDER, ТО ТУТ есть возможность дополнить поля
-        $ADDED_FIELDS = [
-            0 => [
-                'VALUE'=>'',
-                'field_type'=>'number',
-                'name'=>'Широта',
-                'types'=>'val_float',
-                'visible'=>0,
-                'block'=>1,
-            ],
-            1 => [
-                'VALUE'=>'',
-                'field_type'=>'number',
-                'name'=>'Долгота',
-                'types'=>'val_float',
-                'visible'=>0,
-                'block'=>1,
-            ],
-            2 => [
-                'VALUE'=>'',
-                'field_type'=>'number',
-                'name'=>'IDcity',
-                'types'=>'val_int',
-                'visible'=>0,
-                'block'=>1,
-            ],
-            3 => [
-                'VALUE'=>'',
-                'field_type'=>'number',
-                'name'=>'IDcountry',
-                'types'=>'val_int',
-                'visible'=>0,
-                'block'=>1,
-            ],
-            4 => [
-                'VALUE'=>'',
-                'field_type'=>'list',
-                'name'=>'Телефон заказа',
-                'types'=>'val_text',
-                'visible'=>1,
-                'block'=>0,
-                'fixed'=>1,
-            ],
-            5 => [
-                'VALUE'=>'0',
-                'field_type'=>'number',
-                'name'=>'Скидка %',
-                'types'=>'val_int',
-                'visible'=>1,
-                'block'=>0,
-                'fixed'=>1,
-            ],
-        ];
+        include_once './APPLICATIONS/SHOPS/add_fields.php';  // тут лежат поля
         echo 'order_vals='. json_encode($ADDED_FIELDS, JSON_UNESCAPED_UNICODE);
     }
     ?>

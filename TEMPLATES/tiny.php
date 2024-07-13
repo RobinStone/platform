@@ -36,25 +36,27 @@ if(isset($width)) { ?>
 </div>
 
 <script>
-    tinymce.init({
-    selector: '#field',
-    menubar: false,
-    plugins: 'emoticons image link lists searchreplace table',
-    toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | tinycomments | checklist numlist bullist indent outdent | removeformat | table | forecolor backcolor',
-    statusbar: false,
-    tinycomments_mode: 'embedded',
-    tinycomments_author: 'Author name',
-    mergetags_list: [
-    { value: 'First.Name', title: 'First Name' },
-    { value: 'Email', title: 'Email' },
-    ],
-    ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
-        setup: function (editor) {
-            editor.on('keyup input', function () {
-                changer();
-                console.log('Текстовое поле изменено');
-            });
-        }
+    window.addEventListener('load', function() {
+        tinymce.init({
+            selector: '#field',
+            menubar: false,
+            plugins: 'emoticons image link lists searchreplace table',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | align lineheight | tinycomments | checklist numlist bullist indent outdent | removeformat | table | forecolor backcolor',
+            statusbar: false,
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                {value: 'First.Name', title: 'First Name'},
+                {value: 'Email', title: 'Email'},
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+            setup: function (editor) {
+                editor.on('keyup input', function () {
+                    changer();
+                    console.log('Текстовое поле изменено');
+                });
+            }
+        });
     });
 </script>
 
