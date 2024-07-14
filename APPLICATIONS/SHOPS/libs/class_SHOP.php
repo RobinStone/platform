@@ -1319,4 +1319,117 @@ class SHOP {
         }
         return false;
     }
+
+    /**
+     * Позволяет получать список кодов товаров исходя из параметров поиска,
+     * например позволяет найти все товры со скидкой выше 10% и одновременно не дороже 1000 Р
+     *
+     * Поиск производится по названию полей в карточке создания товара т.е.
+     * Так же можно и нужно ограничить выборку при поможи таблицы SHOPS
+     * вначале отбираются магазины подошедшие под условие и только потом в этих магазинах происходит поиск
+     * товаров подходящих под условие
+     *
+     *
+     * @param array $arr (УСЛОВИЯ ОТБОРА ТОВАРОВ) прим. - ['(Название товара) in (роз)', '(Скидка %) >= 10, (Количество) < 5']
+     * @param string $query_shops (УСЛОВИЯ ОТБОРА МАГАЗИНОВ) прим. - "owner = 2 AND active = 1"
+     * @param string $shops_limit (ПАГИНАЦИЯ ДЛЯ МАГАЗИНОВ) прим. - "0, 50"
+     * @param string $products_limit (ПАГИНАЦИЯ ДЛЯ ТОВАРОВ) прим. - "0, 50"
+     * @return array (возвращает массив кодов товаров вида) - ["205_34", "123_44", "12_54"] (где первая цифра id-магазина, 2-ая id-товара)
+     */
+    public static function filter(array $arr, string $query_shops="", string $shops_limit="0, 50", string $products_limit="0, 50"): array
+    {
+        if($query_shops !== "") {
+            $query_shops = " WHERE ".db_secur($query_shops);
+        }
+        $shops_limit = " LIMIT ".$shops_limit;
+        $products_limit = " LIMIT ".$products_limit;
+
+        $shops = SQL_ROWS(q("SELECT id FROM `shops` ".$query_shops." ".$shops_limit));
+        $rows = [];
+        if(!empty($shops)) {
+            $shops = array_column($shops, 'id');
+            $querys = [];
+            foreach($shops as $shop_id) {
+                $product_conditions = [];
+                $prod_queries = "";
+                $join = "";
+                $query_part = self::re_parse($shop_id, $arr, $product_conditions);
+                if(!empty($product_conditions)) {
+                    $join = " LEFT JOIN products_".$shop_id." ON products_".$shop_id.".id = val_".$shop_id.".product_id ";
+                    $prod_queries = implode(' AND ', $product_conditions)." AND ";
+                }
+                $querys[] = "
+                SELECT 
+                CONCAT(".$shop_id.", '_', val_".$shop_id.".product_id) AS CODE,
+                CASE props_".$shop_id.".types
+                    WHEN 'val_float' THEN val_".$shop_id.".val_float
+                    WHEN 'val_string' THEN val_".$shop_id.".val_string
+                    WHEN 'val_text' THEN val_".$shop_id.".val_text
+                    WHEN 'val_file' THEN val_".$shop_id.".val_file
+                END AS value
+                FROM val_".$shop_id." 
+                LEFT JOIN props_".$shop_id." ON
+                props_".$shop_id.".id = val_".$shop_id.".props_id 
+                ".$join."
+                WHERE ".$prod_queries."
+                ".implode(' AND ', $query_part)."
+                ";
+            }
+            $ask = q(implode(" UNION ALL ", $querys)." ".$products_limit);
+            $rows = SQL_ROWS($ask);
+            if(!empty($rows)) {
+                $rows = array_column($rows, 'CODE');
+            }
+        }
+        return $rows;
+    }
+
+    private static function re_parse(int $shop_id, array $conditions, &$product_conditions): array {
+        $ans = [];
+        $product_fields = ['Название товара', 'Количество', 'Тип (категория)', 'Подкатегория', 'Множество'];
+        $pattern = '/\((.*?)\)\s*(>=|<=|=|>|<|in)\s*(\(?[^)]*\)?)/';
+        foreach ($conditions as $condition) {
+            if (preg_match($pattern, $condition, $matches)) {
+                $field = trim($matches[1]);
+                $operator = trim($matches[2]);
+                $value = trim($matches[3]);
+
+                if ($operator === 'in') {
+                    $operator = " LIKE '%" . db_secur(self::remove_surrounding_brackets($value)) . "%' ";
+                } else {
+                    $operator = $operator . "'" . db_secur(self::remove_surrounding_brackets($value)) . "' ";
+                }
+
+                if(in_array($field, $product_fields)) {
+                    switch($field) {
+                        case 'Название товара': $product_conditions[] = " products_".$shop_id.".name ".$operator ; break;
+                        case 'Количество': $product_conditions[] = " products_".$shop_id.".count ".$operator ; break;
+                        case 'Тип (категория)': $product_conditions[] = " products_".$shop_id.".main_cat ".$operator ; break;
+                        case 'Подкатегория': $product_conditions[] = " products_".$shop_id.".under_cat ".$operator ; break;
+                        case 'Множество': $product_conditions[] = " products_".$shop_id.".action_list ".$operator ; break;
+                    }
+                } else {
+                    $ans[] = "
+                    props_" . $shop_id . ".props_name = '" . db_secur($field) . "' AND (
+                    (props_" . $shop_id . ".types = 'val_float' AND val_" . $shop_id . ".val_float " . $operator . ") OR
+                    (props_" . $shop_id . ".types = 'val_string' AND val_" . $shop_id . ".val_string " . $operator . ") OR
+                    (props_" . $shop_id . ".types = 'val_text' AND val_" . $shop_id . ".val_text " . $operator . ") OR
+                    (props_" . $shop_id . ".types = 'val_file' AND val_" . $shop_id . ".val_file " . $operator . ")
+                    )";
+                }
+            }
+        }
+        if(empty($ans)) {
+            $ans[] = "props_" . $shop_id . ".props_name = 'Стоимость' AND props_" . $shop_id . ".types = 'val_float' AND val_" . $shop_id . ".val_float >= 0 ";
+        }
+        return $ans;
+    }
+
+    private static function remove_surrounding_brackets($str) {
+        if (preg_match('/^\((.+)\)$/', $str, $matches)) {
+            return $matches[1];
+        } else {
+            return $str;
+        }
+    }
 }
