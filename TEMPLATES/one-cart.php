@@ -32,6 +32,7 @@ if($discount === 0) {
     $discount_price = $price - ($discount/100*$price);
     echo '<div class="price">'.VALUES::price_format($discount_price).' Р</div>';
     echo '<div class="price">'.VALUES::price_format($v['PRICE']).' Р</div>';
+    echo '<div class="discount">- '.$discount.' %</div>';
 }
 echo '<div class="location">'.$v['PLACE'].'</div>';
 echo '</div></li>';
