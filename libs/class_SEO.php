@@ -194,8 +194,7 @@ class SEO {
                     break;
                 case 'название продукта':
                     if(isset($_GET['s'], $_GET['prod'])) {
-                        $row = SQL_ONE_ROW(q("SELECT * FROM `products_".(int)$_GET['s']."` WHERE `id`=".(int)$_GET['prod']));
-                        if(is_array($row)) {
+                        if($row = SHOP::get_only_main_parameters_at_product_code((int)$_GET['s']."_".(int)$_GET['prod'])) {
                             $res = strip_tags($row['name']);
                         }
                     }
@@ -205,13 +204,11 @@ class SEO {
                     if(isset($_GET['s'], $_GET['prod'])) {
                         INCLUDE_CLASS('shops', 'shop');
                         INCLUDE_CLASS('shops', 'props_commander');
-                        $pr = SHOP::get_products_list_at_id((int)$_GET['s'], [(int)$_GET['prod']])[(int)$_GET['prod']];
-                        $PROPS = new PROPS_COMMANDER($pr['VALS']);
                         if($res === 'описание продукта') {
-                            $res = strip_tags($PROPS->get_all_props_at_field_name('Описание', true)['VALUE']);
+                            $res = strip_tags(PROPS_COMMANDER::get_prop($_GET['s'], $_GET['prod'], 'Описание'));
                         }
                         if($res === 'расположение') {
-                            $res = strip_tags($PROPS->get_all_props_at_field_name('Расположение', true)['VALUE']);
+                            $res = strip_tags(PROPS_COMMANDER::get_prop($_GET['s'], $_GET['prod'], 'Расположение'));
                         }
                     }
                     break;

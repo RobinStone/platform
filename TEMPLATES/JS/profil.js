@@ -19,7 +19,7 @@ $(document).on('dblclick', '.one-order', function(e) {
     let obj = this;
     info_qest(undefined, function(e) {
         SENDER_APP('del_item', {shop: $(obj).attr('data-id-shop'), item: $(obj).attr('data-id')}, function(mess) {
-            mess_executer(function() {
+            mess_executer(mess,function(mess) {
                 location.reload();
             });
         })
@@ -92,6 +92,7 @@ function open_tab(name, params={}, call_back=function() {}) {
         case 'subscribes':
         case 'subscribes_mans':
         case 'messenger':
+        case 'storage':
         case 'banners':
         case 'purchases': // покупки
         case 'shop_orders': // мои продажи (контроль)
@@ -168,6 +169,7 @@ function update_products_list(paginator_num=1) {
         items.push(products[filter][i]);
     }
     buffer_app = 'SHOPS';
+    console.dir(items);
     SENDER_APP('get_filter_list_id', {arr: items}, function(mess) {
         mess = JSON.parse(mess);
         if(mess.status !== 'ok') {

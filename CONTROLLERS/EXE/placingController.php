@@ -18,11 +18,13 @@ $items = [];
 $shop_id = $_GET['shop'] ?? -1;
 $shop_id = (int)$shop_id;
 
+//wtf($arr);
+
 if($shop_id !== -1) {
     foreach($arr as $k => $v) {
-        if((int)$v['SHOP']['DISCOUNT'] > 0) {
-            $price = round($v['SHOP']['PRICE'], 2);
-            $v['SHOP']['PRICE'] = $price - ($price*((int)$v['SHOP']['DISCOUNT'])/100);
+        if((int)$v['ITEM']['PROPS']['discount'][0]['value'] > 0) {
+            $price = round($v['ITEM']['price'], 2);
+            $v['ITEM']['price'] = $price - ($price*((int)$v['ITEM']['PROPS']['discount'][0]['value'])/100);
         }
         if ((int)$v['shop_id'] === $shop_id) {
             $items[$v['product_id']] = $v;

@@ -806,43 +806,6 @@ function dataURItoBlob(dataURI) {
 
     return new Blob([ab], {type: mimeString});
 }
-
-
-function upload_shop_img(obj_with_src_file_base64, user_file_name='user_file.png', call_back=function() {}, call_back_error = function() {}) {
-    let blob = dataURItoBlob($(obj_with_src_file_base64).attr('src'));
-    let ajax = new XMLHttpRequest();
-    ajax.upload.onprogress = function(event) {
-        let percent = 100 - Math.round(event.total - event.loaded) / event.total * 100;
-        percent = Math.round(percent);
-        console.log('Загрузка данных: '+percent+' %');
-    };
-    ajax.onload = ajax.onerror = function() {
-        if (this.status === 200) {
-            let mess = JSON.parse(ajax.response);
-            console.dir(mess);
-            if(mess.status === 'ok') {
-                setTimeout(function() {
-                    call_back(mess);
-                }, 5);
-            }
-            if(mess.status === 'error') {
-                setTimeout(function() {
-                    call_back_error(mess);
-                }, 5);
-            }
-        }
-    }
-    let formData = new FormData();
-    formData.append("userfile", blob, user_file_name);
-    formData.append("com", 'files');
-    formData.append("table", 'file');
-    formData.append("column", 'self');
-    formData.append("id", -1);
-
-    ajax.open("POST", domain, true);
-    ajax.responseType = 'text';
-    ajax.send(formData);
-}
 function add_loader(obj, width=60, height=60) {
     $(obj).html('<img width="'+width+'" height="'+height+'" src="/DOWNLOAD/20230609-201051_id-2-217564.gif">');
 }

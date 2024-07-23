@@ -12,7 +12,7 @@
 
     <h1><?php
         if($SEO['h1'] === '-') {
-            echo $row['NAME'];
+            echo $row['name'];
         } else {
             echo $SEO['h1'];
         }
@@ -105,27 +105,7 @@
                 <button class="btn btn-shop disabled" style="width: 215px">Купить</button>
             <?php } ?>
             <ul class="user-params b-2" style="margin-top: 20px">
-                <?php foreach($PRO->get_only_non_static_params() as $k=>$v) {
-                    echo '<li class="flex column param-item">';
-                    switch($v['field_type']) {
-                        case 'link':
-                            echo '<a class="action-btn" style="display: inline-block; max-width: fit-content; font-size: 20px; color: blue;" target="_blank" href="'.$v['VALUE'].'">'.$k.'</a>';
-                            break;
-                        case 'number':
-                            echo '<div style="font-size: 20px; font-weight: 800; color: green">'.$k.'</div>';
-                            $summ = $v['VALUE'];
-                            if((float)$summ == (int)$summ) {
-                                $summ = (int)$summ;
-                            }
-                            echo '<div style="padding-left: 10px; margin-top: 5px">'.$summ.'</div>';
-                            break;
-                        default: ?>
-                            <div style="font-size: 20px; font-weight: 800; color: green"><?=$k?></div>
-                            <div style="padding-left: 10px; margin-top: 5px"><?=$v['VALUE']?></div>
-                            <?php break;
-                    }
-                    echo '</li>';
-                } ?>
+
             </ul>
         </div>
     </div>

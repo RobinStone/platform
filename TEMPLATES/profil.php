@@ -38,6 +38,10 @@
                 <span class="svg-wrapper"><?=RBS::SVG('money_box')?></span>
                 <span>Кошелёк</span>
             </button>
+            <button title="Ваши загруженные файлы (таблицы, изображения, документы)" onclick="open_tab('storage')" class="action-btn flex align-center gap-10 not-border">
+                <span style="width: 28px; height: 28px" class="svg-wrapper green-svg"><?=RBS::SVG('files')?></span>
+                <span>Мои файлы</span>
+            </button>
             <button title="Корзина. Сюда помещаются товары которые вы добавили в корзину. Из корзины удобно делать покупки." onclick="location.href='/basket'" class="action-btn flex align-center gap-10 not-border">
                 <span class="svg-wrapper"><?=RBS::SVG('bag_box')?></span>
                 <span>Корзина (<?=$_SESSION['count_in_basket'] ?? 0;?>)</span>

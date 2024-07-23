@@ -17,19 +17,20 @@ if(isset($basket) && $basket !== '') {
         $arr[$k] = $v;
     }
 }
+//wtf($arr, 1);
 ?>
 <ul class="flex column vertical-list-products">
     <?php foreach($arr as $k=>$v) {
-        $shop_id = (int)explode('_', $k)[0];
-        $product_id = (int)$v['id_product'];
+        $shop_id = (int)$v['shop_id'];
+        $product_id = (int)$v['prod_id'];
 
-        $chat_hash = md5($shop_id."__".$product_id."__".$v['CREATED']);
+        $chat_hash = md5($shop_id."__".$product_id."__".$v['created']);
 
-        $link = '/'.$v['main_cat_trans'].'/'.$v['under_cat_trans'].'/'.VALUES::translit($v['action_list_trans']).'/'.$v['trans'].'?s='.$shop_id.'&prod='.$product_id;
+        $link = '/'.$v['main_cat_trans'].'/'.$v['under_cat_trans'].'/'.VALUES::translit($v['action_list_trans']).'/'.VALUES::translit($v['name']).'?s='.$shop_id.'&prod='.$product_id;
         ?>
     <li class="vertical-list-item" data-hash="<?=$chat_hash?>" data-shop-id="<?=$shop_id?>" data-product-id="<?=$product_id?>">
         <div class="flex center img-wrapper">
-            <img loading="lazy" src="/IMG/img300x300/<?=$v['FILES'][0]?>" width="200" height="150">
+            <img loading="lazy" src="/IMG/img300x300/<?=$v['PROPS']['images'][0]['value']?>" width="200" height="150">
         </div>
         <div class="text-block">
             <div class="product-name">
@@ -37,11 +38,11 @@ if(isset($basket) && $basket !== '') {
                     <?=$v['name']?>
                 </a>
             </div>
-            <div class="location"><?=$v['PLACE']?></div>
-            <div class="descr"><?=$v['DESCR']?></div>
+            <div class="location"><?=$v['PROPS']['place'][0]['value']?></div>
+            <div class="descr"><?=$v['PROPS']['descr'][0]['value']?></div>
         </div>
         <div class="controls flex between column" style="gap: 3px">
-            <div class="price"><?=VALUES::price_format($v['PRICE'])?> P</div>
+            <div class="price"><?=VALUES::price_format($v['price'])?> P</div>
             <button style="margin-top: auto" class="btn round-btn">Показать телефон</button>
             <button onclick="show_main_chat(); begin_chat_product(this);" class="btn round-btn">Написать</button>
         </div>

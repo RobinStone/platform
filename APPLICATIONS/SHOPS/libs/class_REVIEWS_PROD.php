@@ -38,26 +38,33 @@ class REVIEWS_PROD {
         INCLUDE_CLASS('shops', 'cataloger');
         INCLUDE_CLASS('shops', 'shop');
         $CATS = new CATALOGER();
-        $shops = [];
+        $codes = [];
         $users = [];
-        $prods = [];
         $querys = [];
 //        $rows = SUBD::getAllLinesDB('reviews_prod', 'owner_product', $owner_product);
         $rows = SQL_ROWS(q("SELECT * FROM reviews_prod WHERE owner_product=".$owner_product." ORDER BY changed_review DESC LIMIT ".$from.",".$count_rows." "));
         foreach($rows as $v) {
             if(SHOP::get_shop($v['shop_id']) !== false) {
-                $shops[$v['shop_id']][] = (int) $v['product_id'];
+                $codes[] = $v['shop_id']."_".$v['product_id'];
                 $users[] = (int) $v['author_id'];
             }
         }
-        foreach($shops as $k=>$v) {
-            $querys[] = "SELECT ".$k." AS shop_id, id AS product_id, status, name, trans, main_cat, under_cat, action_list FROM products_".(int)$k." WHERE id IN (".implode(',', $v).")";
-        }
-        if(count($querys) === 0) {
+
+        $codes = VALUES::wrap_array_elements_around($codes);
+
+        if(count($codes) === 0) {
             return [];
         }
-        $ask = q(implode(" UNION ALL ", $querys));
-        $pr = SQL_ROWS($ask);
+
+        $ask = "SELECT shop_id, prod_id AS product_id, status, name, 
+        shops_categorys AS main_cat, shops_undercats AS under_cat, 
+        shops_lists AS action_list FROM indexer WHERE CONCAT(shop_id, '_', prod_id) IN (".implode(',',$codes).") ";
+
+        $pr = SQL_ROWS(q($ask));
+        if(count($pr) === 0) {
+            return [];
+        }
+
         foreach($pr as $v) {
             $v['main_cat'] = $CATS->id2main_cat($v['main_cat'], true);
             $v['under_cat'] = $CATS->id2under_cat($v['under_cat'], true);
@@ -76,8 +83,6 @@ class REVIEWS_PROD {
                 $rows[$k]['product'] = $prods[$v['shop_id']."_".$v['product_id']];
             }
         }
-
-
         return $rows;
     }
     public static function set_review($shop_id, $product_id, $author_id, $html, $stars=0, $type_review='продукт|корзина|продавец'): bool

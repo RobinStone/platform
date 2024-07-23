@@ -150,11 +150,11 @@ $filter = [];
 //];
 
 $preview_products = SHOP::get_mix_products_at_all_shops(true, [0,4], -1, -1, -1, -1, [], true, $filter);
-foreach($preview_products as $k=>$v) {
-    $preview_products[$k]['main_cat_trans'] = $CAT->id2main_cat($v['main_cat'], true);
-    $preview_products[$k]['under_cat_trans'] = $CAT->id2under_cat($v['under_cat'], true);
-    $preview_products[$k]['action_list_trans'] = $CAT->id2action_list($v['action_list'], true);
-}
+//foreach($preview_products as $k=>$v) {
+//    $preview_products[$k]['main_cat_trans'] = $CAT->id2main_cat($v['main_cat'], true);
+//    $preview_products[$k]['under_cat_trans'] = $CAT->id2under_cat($v['under_cat'], true);
+//    $preview_products[$k]['action_list_trans'] = $CAT->id2action_list($v['action_list'], true);
+//}
 
 $my_place = SITE::$my_place;
 

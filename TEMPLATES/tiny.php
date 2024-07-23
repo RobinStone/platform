@@ -37,6 +37,10 @@ if(isset($width)) { ?>
 
 <script>
     window.addEventListener('load', function() {
+        if(typeof tiny_active === 'undefined') {
+            tiny_active = new Event();
+        }
+
         tinymce.init({
             selector: '#field',
             menubar: false,
@@ -53,9 +57,13 @@ if(isset($width)) { ?>
             setup: function (editor) {
                 editor.on('keyup input', function () {
                     changer();
+                    tiny_changed.action(escape(editor.getContent()));
                     console.log('Текстовое поле изменено');
                 });
-            }
+            },
+            init_instance_callback: function (editor) {
+                tiny_active.action();
+            },
         });
     });
 </script>

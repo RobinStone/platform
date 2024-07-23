@@ -790,7 +790,7 @@ function upgrade_chat(llist) {
     });
 }
 function show_main_chat() {
-    $('.main-chat').css('left', '50vw').css('top', '50vh').addClass('in-center');
+    $('.main-chat').css('left', 'calc(100vw - 200px)').css('top', 'calc(100vh - 288px)').addClass('in-center');
     $('.main-chat').removeClass('invisible');
     visible_chat = true;
     setTimeout(function() {

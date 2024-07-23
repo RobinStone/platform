@@ -19,7 +19,8 @@ class INDEXER {
         }
     }
 
-    public static function get_next_cards(int $count, array $isset, array $params=[]) {
+    public static function get_next_cards(int $count, array $isset, array $params=[]): array
+    {
         $count = max(1, min($count, 20));
 
         $isset = VALUES::array_to_int($isset);
@@ -46,6 +47,8 @@ class INDEXER {
         if(!empty($queries)) {
             $query = " AND ".implode(" AND ", $queries);
         }
+
+        $isset = array_unique($isset);
 
         if(!empty($isset)) {
             $rows = SQL_ROWS_FIELD(q("

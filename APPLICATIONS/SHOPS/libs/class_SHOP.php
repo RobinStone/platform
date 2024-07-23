@@ -21,14 +21,26 @@ class SHOP {
         return false;
     }
 
-    public function create($name_shop, $logo, $city, $address, $title='', $descr=''): bool {
+    public static function isset(int $shop_id): bool|array
+    {
+        return SQL_ONE_ROW(q("SELECT * FROM shops WHERE id=".$shop_id));
+    }
+
+    public static function product_code_to_indexer_ids(array $product_codes): array
+    {
+        $arr = VALUES::wrap_array_elements_around($product_codes);
+        $arr = SQL_ROWS(q("SELECT id FROM indexer WHERE CONCAT(shop_id, '_', prod_id) IN (".implode(',',$arr).")"));
+        return array_column($arr, 'id');
+    }
+
+    public function create($name_shop, $logo, $city_id, $country_id, $address, $title='', $descr=''): bool {
         if($title === '') { $title = $name_shop; }
         if($name_shop === '') {
             $this->error('Название магазина не может быть пустым.');
             return false;
         }
         $translit = VALUES::translit($name_shop);
-        if($this->isset_shop($name_shop, $city, $address)) {
+        if($this->isset_shop($name_shop, $city_id, $address)) {
             $this->error('Такой магазин уже присутствует.');
             return false;
         }
@@ -38,7 +50,8 @@ class SHOP {
         `name`          = '".db_secur($name_shop)."',
         `domain`        = '".db_secur($translit)."',
         `logo`          = '".db_secur($logo)."',
-        `city`          = '".db_secur($city)."',
+        `country_id`    = '".db_secur($country_id)."',
+        `city`          = '".db_secur($city_id)."',
         `owner`         = ".Access::userID().",
         `address`       = '".db_secur($address)."',
         `title`         = '".db_secur($title)."',
@@ -49,83 +62,22 @@ class SHOP {
 
         $id = SUBD::get_last_id();
         $_SESSION['shop_id'] = $id;
-        if($this->create_props_tabs($id)) {
-            return true;
-        }
         return false;
-    }
-
-    private function create_props_tabs($id_table): bool {
-        start_transaction();
-        if (!SUBD::existsTable('products_'.$id_table)) {
-            q("
-            CREATE TABLE `products_".$id_table."` (
-                `id` INT(11) NOT NULL AUTO_INCREMENT,
-                `status` ENUM ('active', 'not_show', 'backdrop', 'archive') NOT NULL DEFAULT 'not_show' COMMENT 'Статус товара',
-                `name` VARCHAR(255) NOT NULL DEFAULT '-' COMMENT 'Название товара',
-                `trans` VARCHAR(255) NOT NULL DEFAULT '-' COMMENT 'Транслитерация названия товара',
-                `count` INT(11) NOT NULL DEFAULT -1 COMMENT 'Количество товара (-1)',
-                `main_cat` INT(11) NOT NULL DEFAULT -1 COMMENT 'Категория товара',
-                `under_cat` INT(11) NOT NULL DEFAULT -1 COMMENT 'Под-категория товара',
-                `action_list` INT(11) NOT NULL DEFAULT -1 COMMENT 'Множество',
-                `created` DATETIME NOT NULL DEFAULT NOW(),
-                `changed` DATETIME NOT NULL DEFAULT NOW(),
-                `to_active` DATETIME NOT NULL DEFAULT NOW() COMMENT 'Время после которого товар переходит в неактивное состояние',
-                PRIMARY KEY (`id`),
-                INDEX name (name),
-                INDEX trans (trans)
-            )
-            ");
-//            Message::addMessage('Создана таблица "products"');
-        }
-        if (!SUBD::existsTable('props_'.$id_table)) {
-            if(!q("
-            CREATE TABLE `props_".$id_table."` (
-                `id` INT(11) NOT NULL AUTO_INCREMENT,
-                `types` ENUM('val_int', 'val_float', 'val_bool', 'val_string', 'val_text', 'val_file') NOT NULL,
-                `field_type` ENUM('number', 'string', 'text', 'link', 'image', 'doc', 'file', 'list') NOT NULL,
-                `props_name` VARCHAR(255) NOT NULL,
-                `visible` TINYINT(1) DEFAULT 1,
-                `block` TINYINT(1) DEFAULT 0,
-                PRIMARY KEY (`id`)
-            )
-            ")) {
-                error_transaction();
-                Message::addError('Не уникальное свойство. Транзакция отменена.');
-                return false;
-            }
-//            Message::addMessage('Создана таблица "props"');
-        }
-        if (!SUBD::existsTable('val_'.$id_table)) {
-            q("
-            CREATE TABLE `val_".$id_table."` (
-                `id` INT(11) NOT NULL AUTO_INCREMENT,
-                `product_id` INT(11) NOT NULL DEFAULT -1,
-                `props_id` INT(11) NOT NULL DEFAULT -1,
-                `props_props_id` INT(11) NOT NULL DEFAULT -1,
-                `val_bool` TINYINT(1) NOT NULL DEFAULT 0,
-                `val_int` INT(11) NOT NULL DEFAULT 0,
-                `val_float` DECIMAL(20,8) NOT NULL DEFAULT '0.00',
-                `val_string` VARCHAR(255) NOT NULL DEFAULT '-',
-                `val_text` TEXT NULL,
-                `val_file` VARCHAR(255) NOT NULL DEFAULT '-',
-                PRIMARY KEY (`id`),
-                INDEX product_id (product_id),
-                INDEX props_id (props_id),
-                INDEX props_props_id (props_props_id)
-            )
-            ");
-//            Message::addMessage('Создана таблица "values"');
-        }
-        end_transaction();
-        return true;
     }
 
     public static function get_shop($id_shop) {
         $row = SUBD::getLineDB('shops', 'id', (int)$id_shop);
         if(is_array($row)) {
             $row['owner'] = (array)SUBD::getLineDB('users', 'id', (int)$row['owner']);
-            $row['city'] = (array)SUBD::getLineDB('cities', 'id', (int)$row['city']);
+            $row['city'] = (array)SUBD::getLineDB('city', 'id', (int)$row['city']);
+            // тут нужно вставить скан для определения широты и долготы магазина по умолчанию
+            if($row_c = SQL_ONE_ROW(q("SELECT shirota, dolgota FROM cities WHERE name = '".db_secur($row['city']['name'])."' LIMIT 1"))) {
+                $row['city']['shirota'] = $row_c['shirota'];
+                $row['city']['dolgota'] = $row_c['dolgota'];
+            } else {
+                $row['city']['shirota'] = -1;
+                $row['city']['dolgota'] = -1;
+            }
             return $row;
         }
         return false;
@@ -163,191 +115,329 @@ class SHOP {
         return -1;
     }
 
-    public static function create_product_in_shop($shop_id, $product_id, $product_name, $main_cat_id, $under_cat_id, $action_list_id, $files=[], $props_arr=[], int $count_products=-1): bool {
-        $shop_id = (int)$shop_id;
-        $product_id = (int)$product_id;
-        $count_prods = $count_products;
-        $main_cat_id = (int)$main_cat_id;
-        $under_cat_id = (int)$under_cat_id;
-        $action_list_id = (int)$action_list_id;
-        $product_name = db_secur($product_name);
-
-        $lat = (float)DISTANCE::get_field_value_from_array('Широта', $props_arr);
-        $lng = (float)DISTANCE::get_field_value_from_array('Долгота', $props_arr);
-
-//        t('lat='.$lat.' lng='.$lng);
-
-        $country_id = (int)DISTANCE::get_field_value_from_array('IDcountry', $props_arr);
-        $city_id = (int)DISTANCE::get_field_value_from_array('IDcity', $props_arr);
-
-        if($product_id !== -1 && is_array(SUBD::getLineDB('products_'.$shop_id, 'id', $product_id))) {
-            $querys = [];
-            if($main_cat_id !== -1) {
-                $querys[] = "`main_cat`=".$main_cat_id;
-            }
-            if($under_cat_id !== -1) {
-                $querys[] = "`under_cat`=".$under_cat_id;
-            }
-            if($action_list_id !== -1) {
-                $querys[] = "`action_list`=".$action_list_id;
-            }
-            $qr = "";
-            if(count($querys) > 0) {
-                $qr = implode(',',$querys).", ";
-            }
-
-            $old_item = SHOP::get_products_list_at_id($shop_id, [$product_id], true, 'name', 'ASC')[$product_id];
-            $all = [
-                'shop_id'=>$shop_id,
-                'product_id'=>$product_id,
-                'main_cat_id'=>$main_cat_id,
-                'under_cat_id'=>$under_cat_id,
-                'action_list_id'=>$action_list_id,
-                'product_name'=>$product_name,
-                'files'=>$files,
-                'props'=>$props_arr
-            ];
-
-            q("
-            UPDATE `products_".$shop_id."` SET
-            `name`='".$product_name."',
-            `trans`='".VALUES::translit($product_name)."',
-            `count`=".$count_prods.",
-            ".$qr."
-            `changed`='".date('Y-m-d H:i:s')."'
-            WHERE `id`=".$product_id."
-            ");
-
-            SEARCH::set_finder_index($shop_id, $product_id, $product_name, $city_id);
-            SEARCH::set_categories_parameters($shop_id, $product_id, $main_cat_id, $under_cat_id, $action_list_id);
-            DISTANCE::change_product_coords($lat, $lng, $country_id, $city_id, $shop_id, $product_id);
-
-            $create = false;
-        } else {
-            q("
-            INSERT INTO `products_".$shop_id."` SET
-            `name`='".$product_name."',
-            `trans`='".VALUES::translit($product_name)."',
-            `main_cat`=".$main_cat_id.",
-            `under_cat`=".$under_cat_id.",
-            `action_list`=".$action_list_id.",
-            `count`=".$count_prods.",
-            `created`='".date('Y-m-d H:i:s')."'
-            ");
-            $product_id = SUBD::get_last_id();
-
-//            say($props_arr);
-
-            $shop_id = (int)$shop_id;
-            $product_id = (int)$product_id;
-
-            SEARCH::set_finder_index($shop_id, $product_id, $product_name, $city_id);
-            SEARCH::set_categories_parameters($shop_id, $product_id, $main_cat_id, $under_cat_id, $action_list_id);
-            DISTANCE::create_new_product_coords($lat, $lng, $country_id, $city_id, $shop_id, $product_id);
-
-            $create = true;
+    public static function change_product_in_shop(int $shop_id, int $product_id, $props=[]): bool {
+        if($shop_id < 1) {
+            Message::addError('Не передан ID магазина');
+            return false;
         }
 
-        if(!$create) {
-            $props_arr = PROPS_COMMANDER::compare_old_and_new_props($all['shop_id'], $old_item['VALS'], $all['props']);
+
+
+        if(!SHOP::is_my_shop($shop_id, SITE::$user_id)) {
+            Message::addError('Нельзя работать с товарами не своего магазина!..');
+            return false;
         }
 
-        if(count($files) > 0) {
-            foreach($files as $v) {
-                $props_arr[] = [
-                    'id'=>-1,
-                    'type'=>'file',
-                    'field'=>'Изображение (фото)',
-                    'value'=>$v
-                ];
-            }
-        }
+        SORT::change_preview_key($props, 'alias', 'field_name');
 
-//        say($props_arr);
+        $code = $shop_id."_".$product_id;
+        $old = self::get_one_product_at_code_if_isset($code);
 
-        if(count($props_arr) > 0) {
-            foreach($props_arr as $v) {
-                switch($v['type']) {
-                    case 'number':
-                        $v['value'] = round((float)$v['value'], 8);
-                        $v['db_column'] = 'val_float';
-                        break;
-                    case 'string':
-                    case 'link':
-                        $v['value'] = db_secur($v['value']);
-                        $v['db_column'] = 'val_string';
-                        break;
-                    case 'text':
-                        $v['value'] = db_secur($v['value']);
-                        $v['db_column'] = 'val_text';
-                        break;
-                    case 'list':
-                        $v['value'] = serialize($v['value']);
-                        $v['db_column'] = 'val_text';
-                        break;
-                    case 'file':
-                        $v['value'] = db_secur($v['value']);
-                        $v['db_column'] = 'val_file';
-                        break;
-                    default:
-                        TELE::send_at_user_name('robin', 'Неизвестный тип...['.$v['type'].']');
-                        Message::addError('Передан неизвестный тип данных...');
-                        return false;
-                        break;
-                }
+        $querys = [];
 
-                $visible = 1;
-                $block = 0;
-                if(isset($v['visible']) && (int)$v['visible'] === 0) {
-                    $visible = 0;
-                }
-                if(isset($v['block']) && (int)$v['block'] === 1) {
-                    $block = 1;
-                }
+        $coords = [];
 
-                    // помимо получения PROPS ниже мы его и устанавливаем, если нету такого
-                    $props_id = self::get_props_id($shop_id, $v['db_column'], $v['type'], $v['field'], $visible, $block);
+//        say($props);
 
-                    switch($v['type']) {
-                        case 'number':
+        foreach($props as $alias=>$prop_item) {
+            switch($alias) {
+                case 'images':
+                    $buff = [];
+                    $del_arr = [];
+                    $add_arr = [];
+                    foreach($old['PROPS']['images'] as $img_item) {
+                        if(!in_array($img_item['value'], $prop_item['value'])) {
+                            $del_arr[] = $img_item['id'];
+                        }
+                        $buff[] = $img_item['value'];
+                    }
+                    foreach($prop_item['value'] as $v) {
+                        if(!in_array($v, $buff)) {
+                            $add_arr[] = $v;
+                        }
+                    }
+                    if(!empty($del_arr)) {
+                        q("DELETE FROM i_string WHERE id IN (".implode(',',$del_arr).") ");
+                    }
+                    if(!empty($add_arr)) {
+                        foreach($add_arr as $v) {
                             q("
-                            INSERT INTO `val_".$shop_id."` SET 
-                            `product_id`=".$product_id.",
-                            `props_id`=".$props_id.",
-                            `".$v['db_column']."` = ".$v['value']);
+                            INSERT INTO i_string SET 
+                            indexer_id=".(int)$old['id'].",
+                            props_id=1,
+                            val='".db_secur($v)."'
+                            ");
+                        }
+                    }
+                    break;
+                case 'product_name':
+                    $querys[] = " `name`='".db_secur($prop_item['value'])."' ";
+                    break;
+                case 'price':
+                    $querys[] = " `price`='".(float)($prop_item['value'])."' ";
+                    break;
+                case 'count':
+                    $querys[] = " `count`='".(float)($prop_item['value'])."' ";
+                    break;
+                case 'city_id':
+                    $querys[] = " `city_id`=".(int)$prop_item['value']." ";
+                    $coords[] = " `city_id`=".(int)$prop_item['value']." ";
+                    break;
+                case 'country_id':
+                    $coords[] = " `country_id`=".(int)$prop_item['value']." ";
+                    break;
+                case 'latitude':
+                    $coords[] = " `lat`='".(float)($prop_item['value'])."' ";
+                    break;
+                case 'longitude':
+                    $coords[] = " `lng`='".(float)($prop_item['value'])."' ";
+                    break;
+                case 'category':
+                    $querys[] = " `shops_categorys`='".(int)($prop_item['value'])."' ";
+                    break;
+                case 'under-cat':
+                    $querys[] = " `shops_undercats`='".(int)($prop_item['value'])."' ";
+                    break;
+                case 'action-list':
+                    $querys[] = " `shops_lists`='".(int)($prop_item['value'])."' ";
+                    break;
+                default:
+                    switch($prop_item['type']) {
+                        case 'bool':
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_bool SET 
+                                val=".(int)$prop_item['value']." 
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
                             break;
                         case 'string':
-                        case 'link':
-                        case 'file':
-                        case 'list':
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_string SET 
+                                val='".db_secur($prop_item['value'])."' 
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
+                            break;
+                        case 'float':
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_float SET 
+                                val='".(float)($prop_item['value'])."' 
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
+                            break;
                         case 'text':
-                            q("
-                            INSERT INTO `val_".$shop_id."` SET 
-                            `product_id`=".$product_id.",
-                            `props_id`=".$props_id.",
-                            `".$v['db_column']."` = '".$v['value']."'
-                            ");
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_text SET 
+                                val='".db_secur($prop_item['value'])."' 
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
+                            break;
+                        case 'int':
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_int SET 
+                                val=".(int)$prop_item['value']." 
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
                             break;
                     }
+                    break;
             }
         }
+
+        if(!empty($querys)) {
+            q("UPDATE indexer SET ".implode(',',$querys).", changed='".SITE::$dt."' WHERE id=".(int)$old['id']);
+        }
+
+        if(!empty($coords)) {
+            q("UPDATE coords SET ".implode(',',$coords).", changed='".date('Y-m-d')."' WHERE id=".(int)$old['id']);
+        }
+
         return true;
     }
 
+    public static function create_product_in_shop($shop_id, $props=[]): bool {
+        $shop_id = (int)$shop_id;
+
+        if($shop_id < 1) {
+            Message::addError('Не передан ID магазина');
+            return false;
+        }
+
+        if(!SHOP::is_my_shop($shop_id, SITE::$user_id)) {
+            Message::addError('Нельзя работать с товарами не своего магазина!..');
+            return false;
+        }
+
+        self::insert_products_array([$props], $shop_id);
+
+        return true;
+    }
+
+    private static function insert_products_array(array $arr, int $shop_id): void
+    {
+        $schema = get_schema('product_fields');
+        SORT::change_preview_key($schema, 'alias', 'field_name', true);
+
+        $address = [];
+
+        $shop = SHOP::get_shop($shop_id);
+        if(empty($shop['city']) || empty($shop['city']['shirota']) || empty($shop['city']['id'])) {
+            Message::addError('Не удалось определить координаты города в магазине');
+            return;
+        } else {
+            $address = [
+                'city_id'=>($shop['city']['id'] ?? -1),
+                'latitude'=>$shop['city']['shirota'],
+                'longitude'=>$shop['city']['dolgota'],
+                'country_id'=>GEONAMER::country_name_to_id(($shop['city']['id_country'] ?? '-')),
+            ];
+        }
+
+        $main_table = [];
+        $coords = [];
+
+        $i_string = [];
+        $i_float = [];
+        $i_int = [];
+        $i_text = [];
+        $i_bool = [];
+        $i_json = [];
+
+        $first_id = SUBD::get_next_id_for_column('indexer', 'prod_id', 'shop_id', $shop_id);
+        $indexer_next_id = SUBD::get_next_id('indexer', true);
+
+        $product_id = $first_id;
+
+        if(!isset($arr[0]) || !isset($arr[0]['product_name'])) {
+            t('Передан некоректный массив с товарами');
+            Message::addError('Передан некоректный массив с товарами');
+            return;
+        }
+
+        // Собирается основная таблица товаров
+
+        foreach($arr as $k=>$v) {
+            $country_id = (int)($v['country_id']['value'] ?? ($address['country_id'] ?? -1));
+            $city_id = (int)($v['city_id']['value'] ?? ($address['city_id'] ?? -1));
+            $latitude = (float)($v['latitude']['value'] ?? -1);
+            $longitude = (float)($v['longitude']['value'] ?? -1);
+
+            $main_table[$product_id] = "(
+            0, 'not_show', 
+            '".($v['product_name']['value'] ?? '-')."',
+            '".(float)($v['price']['value'] ?? 0)."',
+            '".(float)($v['count']['value'] ?? 0)."',
+            ".$product_id.",
+            ".$shop_id.",
+            ".SITE::$user_id++.",
+            '".$city_id."',
+            0,
+            '".(int)($v['category']['value'] ?? -1)."',
+            '".(int)($v['under-cat']['value'] ?? -1)."',
+            '".(int)($v['action-list']['value'] ?? -1)."',
+            '".SITE::$dt."',
+            '".SITE::$dt."'
+            )";
+
+            unset($v['product_name'], $v['price'], $v['count'], $v['country_id'], $v['city_id'],
+                $v['category'], $v['under-cat'], $v['action-list'], $v['latitude'], $v['longitude']);
+
+            // Собираются поля для таблицы coords
+
+            $coords[] = "(".$indexer_next_id.",'".$latitude."','".$longitude."',".$country_id.",".$city_id.",".$shop_id.",".$product_id.",0,'".SITE::$dt."')";
+
+            // Собираются все другие свойства в поля
+
+            foreach($v as $props) {
+                switch($props['type']) {
+                    case 'string':
+                        $value = $props['value'] ?? '';
+                        if(is_array($value)) {
+                            foreach($value as $item_string) {
+                                if(!empty($item_string)) {
+                                    $i_string[] = "(".$indexer_next_id.",".(int)$props['id'].",'".db_secur($item_string)."')";
+                                }
+                            }
+                        } else {
+                            $i_string[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        }
+                        break;
+                    case 'float':
+                        $value = (float)($props['value'] ?? 0);
+                        $i_float[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        break;
+                    case 'int':
+                        $value = (int)($props['value'] ?? 0);
+                        $i_int[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        break;
+                    case 'text':
+                        $value = db_secur($props['value'] ?? '');
+                        $i_text[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        break;
+                    case 'bool':
+                        $value = (int)(db_secur($props['value'] ?? 0));
+                        $i_bool[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        break;
+                }
+            }
+
+            ++$product_id;
+            ++$indexer_next_id;
+        }
+
+        // Инстантирование подготовленных данных в таблицы
+
+        start_transaction();
+        q("INSERT INTO `indexer` (`active`, `status`, `name`, `price`, `count`, `prod_id`, `shop_id`, 
+        `owner_id`, `city_id`, `showed`, `shops_categorys`, `shops_undercats`, `shops_lists`, `created`, `active_to`) 
+        VALUES ".implode(',',$main_table)." ");
+
+        if(!empty($i_string)) {
+            q("INSERT INTO `i_string` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_string)." ");
+        }
+        if(!empty($i_float)) {
+            q("INSERT INTO `i_float` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_float)." ");
+        }
+        if(!empty($i_int)) {
+            q("INSERT INTO `i_int` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_int)." ");
+        }
+        if(!empty($i_text)) {
+            q("INSERT INTO `i_text` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_text)." ");
+        }
+        if(!empty($i_bool)) {
+            q("INSERT INTO `i_bool` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_bool)." ");
+        }
+
+        // Собираются данные в таблицу координат
+
+        q("INSERT INTO `coords` (`id`, `lat`, `lng`, `country_id`, `city_id`, `shop_id`, `product_id`, 
+        `active`, `changed`) VALUES ".implode(',',$coords)." ");
+        end_transaction();
+
+    }
+
     public static function delete_products_arr($shop_id, $arr=[]): bool {
+        $codes = [];
         if(!empty($arr)) {
             foreach($arr as $k=>$v) {
-                $arr[$k] = (int)$v;
+                $codes[] = $shop_id."_".$v;
             }
-            $lst_files_drop = SQL_ROWS_FIELD(q("SELECT DISTINCT `val_file` FROM `val_".(int)$shop_id."` WHERE `product_id` IN (".implode(',',$arr).") AND `val_file` != ''"), 'val_file');
-            $names = [];
-            foreach($lst_files_drop as $k=>$v) {
-                $names[] = $k;
-            }
-            FILER::delete($names);
-            q("DELETE FROM `products_".(int)$shop_id."` WHERE `id` IN (".implode(',',$arr).") ");
-            q("DELETE FROM `val_".(int)$shop_id."` WHERE `product_id` IN (".implode(',',$arr).") ");
-            q("DELETE FROM `indexer` WHERE `shop_id`=".(int)$shop_id." AND `prod_id` IN (".implode(',',$arr).") ");
+
+            $indexer_ids = SHOP::product_code_to_indexer_ids($codes);
+
+            q("DELETE FROM `indexer` WHERE `id` IN (".implode(',',$indexer_ids).") ");
+            q("DELETE FROM `coords` WHERE `id` IN (".implode(',',$indexer_ids).") ");
+
+            q("DELETE FROM i_string WHERE `indexer_id` IN (".implode(',',$indexer_ids).")");
+            q("DELETE FROM i_float WHERE `indexer_id` IN (".implode(',',$indexer_ids).")");
+            q("DELETE FROM i_int WHERE `indexer_id` IN (".implode(',',$indexer_ids).")");
+            q("DELETE FROM i_text WHERE `indexer_id` IN (".implode(',',$indexer_ids).")");
+            q("DELETE FROM i_bool WHERE `indexer_id` IN (".implode(',',$indexer_ids).")");
+
             q("DELETE FROM `best_prod` WHERE `shop_id`=".(int)$shop_id." AND `product_id` IN (".implode(',',$arr).") ");
 
             REVIEWS_PROD::delete_reviews_array($shop_id, $arr);
@@ -370,30 +460,6 @@ class SHOP {
         }
         Message::addError('Не найден параметр с искомым ID');
         return false;
-    }
-
-    public static function get_props_id($shop_id, $types, $type_field, $props_name, $visible=1, $block=0): int {
-        if(!isset($_SESSION['props_'.$shop_id])) {
-            $_SESSION['props_'.$shop_id] = SQL_ROWS_FIELD(q("SELECT * FROM `props_".$shop_id."` "), 'props_name');
-            $props = $_SESSION['props_'.$shop_id];
-        } else {
-            $props = $_SESSION['props_'.$shop_id];
-        }
-        if(isset($props[$props_name]) && $props[$props_name]['types'] === $types) {
-            return (int)$props[$props_name]['id'];
-        } else {
-            q("
-            INSERT INTO `props_".$shop_id."` SET
-            `types`='".db_secur($types)."',
-            `field_type`='".db_secur($type_field)."',
-            `props_name`='".db_secur($props_name)."',
-            `visible`=".(int)$visible.",
-            `block`=".(int)$block."
-            ");
-            $last_id = SUBD::get_last_id();
-            $_SESSION['props_'.$shop_id] = SQL_ROWS_FIELD(q("SELECT * FROM `props_".$shop_id."` "), 'props_name');
-            return $last_id;
-        }
     }
 
     public static function get_all_props($id_shop): array
@@ -420,9 +486,206 @@ class SHOP {
         }
     }
 
-    public static function get_products_list_at_id($shop_id, $id_arr=[], $with_categorys=false, $sorted_by="name", $askOrDesc="ASC"): array {
+    public static function get_only_main_parameters_at_product_code(string $product_code): bool|array
+    {
+        return SQL_ONE_ROW(q("SELECT * FROM indexer WHERE CONCAT(shop_id, '_', prod_id) = '".db_secur($product_code)."'"));
+    }
+
+    public static function get_one_product_at_code_if_isset(string $product_code="234_34"): bool|array
+    {
+        $count = (int)SQL_ONE_ROW(q("SELECT COUNT(*) AS count FROM indexer WHERE CONCAT(shop_id, '_', prod_id) = '".db_secur($product_code)."' "))['count'];
+        if($count > 0) {
+            $product = self::get_products_list_at_code_array([$product_code], true, 'name', 'ASC', [0,1])[0];
+            $coords_props = GEONAMER::generate_scheama_array($product['id']);
+
+            foreach($coords_props as $k=>$v) {
+                $product['PROPS'][$k] = $v;
+            }
+            return $product;
+        }
+        return false;
+    }
+
+    public static function get_products_list_at_code_array(array $code_of_products, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50]): array
+    {
+        if($direct !== 'ASC') {
+            $direct = 'DESC';
+        }
+        $limit = " LIMIT ".(int)$limit[0].",".(int)$limit[1];
+        $ids = "id > 0 ";
+        if(!empty($code_of_products)) {
+
+            $code_of_products = array_map(function($value) {
+                return "'" . $value . "'";
+            }, $code_of_products);
+
+            $ids .= " AND CONCAT(indexer.shop_id, '_', indexer.prod_id) IN (".implode(',', $code_of_products).") ";
+        }
+        switch($sorted_by) {
+            case 'id':
+            case 'code':
+            case 'city_id':
+            case 'shop_id':
+            case 'prod_id':
+            case 'count':
+            case 'created':
+            case 'active_to':
+
+                break;
+            default: $sorted_by = 'name';
+        }
+
+        $sorted_by = " ORDER BY ".$sorted_by;
+
+        $rows = SQL_ROWS(q("
+        SELECT 
+        indexer.id,
+        CONCAT(indexer.shop_id, '_', indexer.prod_id) AS code,
+        indexer.city_id,
+        indexer.shop_id,
+        indexer.prod_id,
+        indexer.status, 
+        indexer.name, 
+        indexer.price, 
+        indexer.showed, 
+        indexer.shops_categorys AS main_cat, 
+        indexer.shops_undercats AS under_cat, 
+        indexer.shops_lists AS action_list,
+        indexer.count,
+        indexer.created,
+        indexer.active_to FROM indexer
+        WHERE ".$ids." ".$sorted_by." ".$direct." ".$limit."
+        "));
+
+        $cat = null;
+        if($with_categorys) {
+            include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
+            $cat = new CATALOGER();
+        }
+
+        foreach($rows as $k=>$v) {
+            if ($with_categorys) {
+                $v['main_cat_trans'] = $cat->id2main_cat($v['main_cat'], true);
+                $v['under_cat_trans'] = $cat->id2under_cat($v['under_cat'], true);
+                $v['action_list_trans'] = VALUES::translit($cat->id2action_list($v['action_list']), true);
+
+                $v['main_cat_id'] = $v['main_cat'];
+                $v['main_cat'] = $cat->id2main_cat($v['main_cat']);
+
+                $v['under_cat_id'] = $v['under_cat'];
+                $v['under_cat'] = $cat->id2under_cat($v['under_cat']);
+
+                $v['action_list_id'] = $v['action_list'];
+                $v['action_list'] = $cat->id2action_list($v['action_list']);
+                $rows[$k] = $v;
+            }
+        }
+
+        INCLUDE_CLASS('shops', 'props_commander');
+
+        $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'));
+        $pr = $PROPS->get_all_props();
+        foreach($rows as &$v) {
+            $v['PROPS'] = $pr[$v['id']];
+        }
+
+        return $rows;
+    }
+
+    public static function get_products_list_at_indexer_ids(array $indexer_ids, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50]):array {
+        if($direct !== 'ASC') {
+            $direct = 'DESC';
+        }
+        $limit = " LIMIT ".(int)$limit[0].",".(int)$limit[1];
+        $ids = "id > 0 ";
+        if(!empty($indexer_ids)) {
+
+            $indexer_ids = array_map(function($value) {
+                return "'" . $value . "'";
+            }, $indexer_ids);
+
+            $ids .= " AND indexer.id IN (".implode(',', $indexer_ids).") ";
+        }
+        switch($sorted_by) {
+            case 'id':
+            case 'code':
+            case 'city_id':
+            case 'shop_id':
+            case 'prod_id':
+            case 'count':
+            case 'created':
+            case 'active_to':
+
+                break;
+            default: $sorted_by = 'name';
+        }
+
+        $sorted_by = " ORDER BY ".$sorted_by;
+
+        $rows = SQL_ROWS(q("
+        SELECT 
+        indexer.id,
+        CONCAT(indexer.shop_id, '_', indexer.prod_id) AS code,
+        indexer.city_id,
+        indexer.shop_id,
+        indexer.prod_id,
+        indexer.status, 
+        indexer.name, 
+        indexer.price, 
+        indexer.showed, 
+        indexer.shops_categorys AS main_cat, 
+        indexer.shops_undercats AS under_cat, 
+        indexer.shops_lists AS action_list,
+        indexer.count,
+        indexer.created,
+        indexer.active_to FROM indexer
+        WHERE ".$ids." ".$sorted_by." ".$direct." ".$limit."
+        "));
+
+        $cat = null;
+        if($with_categorys) {
+            include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
+            $cat = new CATALOGER();
+        }
+
+        foreach($rows as $k=>$v) {
+            if ($with_categorys) {
+                $v['main_cat_trans'] = $cat->id2main_cat($v['main_cat'], true);
+                $v['under_cat_trans'] = $cat->id2under_cat($v['under_cat'], true);
+                $v['action_list_trans'] = VALUES::translit($cat->id2action_list($v['action_list']), true);
+
+                $v['main_cat_id'] = $v['main_cat'];
+                $v['main_cat'] = $cat->id2main_cat($v['main_cat']);
+
+                $v['under_cat_id'] = $v['under_cat'];
+                $v['under_cat'] = $cat->id2under_cat($v['under_cat']);
+
+                $v['action_list_id'] = $v['action_list'];
+                $v['action_list'] = $cat->id2action_list($v['action_list']);
+                $rows[$k] = $v;
+            }
+        }
+
+        INCLUDE_CLASS('shops', 'props_commander');
+
+        $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'));
+        $pr = $PROPS->get_all_props();
+        foreach($rows as &$v) {
+            $v['PROPS'] = $pr[$v['id']];
+        }
+
+        return $rows;
+    }
+
+
+    public static function get_products_list_at_id($shop_id, $id_arr=[], $with_categorys=false, $sorted_by="name", $askOrDesc="ASC", $limit="0,50"): array {
         if($askOrDesc !== 'ASC') {
             $askOrDesc = 'DESC';
+        }
+        $limit = " LIMIT ".$limit;
+        $ids = "";
+        if(!empty($id_arr)) {
+            $ids = " AND indexer.prod_id IN (".implode(',', $id_arr).") ";
         }
         switch($sorted_by) {
             case 'id':
@@ -431,30 +694,31 @@ class SHOP {
             default: $sorted_by = 'name';
         }
         $shop = SUBD::get_executed_rows('shops', 'id', (int)$shop_id)[$shop_id];
-        $res = [];
-        $PR = "props_".(int)$shop_id;
-        $PROPS = SQL_ROWS_FIELD(q("SELECT * FROM `".$PR."`"), 'id');
-        $PN = "products_".(int)$shop_id;
-        $VAL = "val_".(int)$shop_id;
-        $rows =SQL_ROWS(q("
+
+        $rows = SQL_ROWS(q("
         SELECT 
-        '".$shop['city']."' AS CITY,
-        ".$PN.".id AS ID_product, 
-        ".$PN.".status, 
-        ".$PN.".name, 
-        ".$PN.".trans, 
-        ".$PN.".main_cat, 
-        ".$PN.".under_cat, 
-        ".$PN.".action_list,
-        ".$PN.".count,
-        ".$PN.".created,
-        ".$PN.".changed,
-        ".$PN.".to_active,
-        ".$VAL.".* FROM `".$PN."` LEFT JOIN `".$VAL."`
-        ON ".$VAL.".product_id = ".$PN.".id WHERE 
-        ".$PN.".id IN (".implode(',',$id_arr).") ORDER BY ".$PN.".".$sorted_by." ".$askOrDesc."
+        indexer.id,
+        CONCAT(indexer.shop_id, '_', indexer.prod_id) AS code,
+        '".$shop['city']."' AS city,
+        indexer.shop_id AS id_shop,
+        indexer.prod_id AS id_product,
+        indexer.status, 
+        indexer.name, 
+        indexer.price, 
+        indexer.shops_categorys AS main_cat, 
+        indexer.shops_undercats AS under_cat, 
+        indexer.shops_lists AS action_list,
+        indexer.count,
+        indexer.created,
+        indexer.active_to AS to_active FROM indexer
+        WHERE indexer.shop_id = ".$shop_id.$ids." ".$limit."
         "));
-//        say($rows);
+
+        $indexer_ids = array_column($rows, 'id');
+        $schema = get_schema('product_fields');
+        SORT::change_preview_key($schema, 'id', 'field_name');
+
+
 
         $cat = null;
         if($with_categorys) {
@@ -462,331 +726,120 @@ class SHOP {
             $cat = new CATALOGER();
         }
 
-        foreach($rows as $v) {
-            $val = [];
-            if(!isset($res[$v['ID_product']])) {
-                $val = [
-                    'STATUS'=>$v['status'],
-                    'CITY'=>$v['CITY'],
-                    'NAME'=>$v['name'],
-                    'TRANS'=>$v['trans'],
-                    'COUNT'=>$v['count'],
-                    'CREATED'=>$v['created'],
-                    'CHANGED'=>$v['changed'],
-                    'TO_ACTIVE'=>$v['to_active'],
-                ];
-                if($with_categorys) {
-                    $val['CAT'] = $cat->id2main_cat($v['main_cat']);
-                    $val['CAT_trans'] = $cat->id2main_cat($v['main_cat'], true);
-                    $val['UNDERCAT'] = $cat->id2under_cat($v['under_cat']);
-                    $val['UNDERCAT_trans'] = $cat->id2under_cat($v['under_cat'], true);
-                    $val['LIST'] = $cat->id2action_list($v['action_list']);
-                    $val['LIST_trans'] = VALUES::translit($cat->id2action_list($v['action_list']), true);
-                }
-
-                $val['VALS'] = [];
-
-                $val['VALS'][$v['id']] = [
-                    'name'=>$PROPS[$v['props_id']]['props_name'],
-                    'field_type'=>$PROPS[$v['props_id']]['field_type'],
-                    'types'=>$PROPS[$v['props_id']]['types'],
-                    'VALUE'=>$v[$PROPS[$v['props_id']]['types']],
-                    'visible'=>$PROPS[$v['props_id']]['visible'],
-                    'block'=>$PROPS[$v['props_id']]['block'],
-                ];
-                $res[$v['ID_product']] = $val;
-            } else {
-                $res[$v['ID_product']]['VALS'][$v['id']] = [
-                    'name'=>$PROPS[$v['props_id']]['props_name'],
-                    'field_type'=>$PROPS[$v['props_id']]['field_type'],
-                    'types'=>$PROPS[$v['props_id']]['types'],
-                    'VALUE'=>$v[$PROPS[$v['props_id']]['types']],
-                    'visible'=>$PROPS[$v['props_id']]['visible'],
-                    'block'=>$PROPS[$v['props_id']]['block'],
-                ];
+        foreach($rows as $k=>$v) {
+            if ($with_categorys) {
+                $v['main_cat_trans'] = $cat->id2main_cat($v['main_cat'], true);
+                $v['under_cat_trans'] = $cat->id2under_cat($v['under_cat'], true);
+                $v['action_list_trans'] = VALUES::translit($cat->id2action_list($v['action_list']), true);
+                $v['main_cat'] = $cat->id2main_cat($v['main_cat']);
+                $v['under_cat'] = $cat->id2under_cat($v['under_cat']);
+                $v['action_list'] = $cat->id2action_list($v['action_list']);
+                $rows[$k] = $v;
             }
         }
-        return $res;
+        return $rows;
     }
 
     public static function get_random_products_from_one_shop($shop_id, $random=false, $count=-1, $main_cat_id=-1, $under_cat_id=-1, $action_list_id=-1, $only_active=false):array {
         return self::get_mix_products_at_all_shops($random, $count, -1, $main_cat_id, $under_cat_id, $action_list_id, [$shop_id], $only_active);
     }
 
-    public static function get_mix_products_at_all_shops(bool $random=false, int|array $count=10, int $city_id= -1, int $main_cat_id=-1, int $under_cat_id=-1, int $action_list_id=-1, array $shops_id_arr=[], bool $only_active=false, array $filters_props=[]): array
+    public static function get_mix_products_at_all_shops(bool $random=false, int|array $count=10, int $city_id= -1,
+                     int $main_cat_id=-1, int $under_cat_id=-1, int $action_list_id=-1, array $shops_id_arr=[]): array
     {
-//        say(debug_backtrace());
-//        say($filters_props);
-//        $start = microtime(true);
+        $rows = [];
         if($shops_id_arr === []) {
-            $shops = SQL_ROWS_FIELD(q("SELECT * FROM `shops` WHERE `active`=1 "), 'id');
+            $shops = SQL_ROWS(q("SELECT id FROM `shops` WHERE `active`=1 "));
         } else {
-            if(is_array($shops_id_arr) && count($shops_id_arr) > 0) {
-                foreach($shops_id_arr as $kkk=>$vvv) {
-                    $shops_id_arr[$kkk] = (int)$vvv;
-                }
+            if (is_array($shops_id_arr) && count($shops_id_arr) > 0) {
+                $shops = SQL_ROWS(q("SELECT id FROM shops WHERE id IN (".implode(',',$shops_id_arr).") AND active = 1"));
             } else {
                 Message::addError('Не найдены id магазинов на которые ссылается метод...');
                 exit;
             }
-            $shops = SQL_ROWS_FIELD(q("SELECT * FROM `shops` WHERE `id` IN (".implode(',',$shops_id_arr).") AND `active`=1 "), 'id');
         }
-        if(empty($shops)) {
-            return [];
-        }
-        $cities = SQL_ROWS_FIELD(q("SELECT * FROM `cities`"), 'id');
-        $querys = [];
-        $arr = [];
-        if($city_id !== -1) { $arr[] = " `city`=".$city_id." "; }
-        if($main_cat_id !== -1) { $arr[] = " `main_cat`=".$main_cat_id." "; }
-        if($under_cat_id !== -1) { $arr[] = " `under_cat`=".$under_cat_id." "; }
-        if($action_list_id !== -1) { $arr[] = " `action_list`=".$action_list_id." "; }
+        $shops = array_column($shops, 'id');
+        if(count($shops) > 0) {
 
-        if($only_active === true) {
-            $dt_now = date('Y-m-d H:i:s');
-            $arr[] = " `status`='active' AND `to_active` > '".$dt_now."' AND (`count` > 0 OR `count` = -1) ";
-        }
-
-        $finder = "";
-        if(count($arr) > 0) {
-            $finder = "WHERE ".implode(" AND ", $arr);
-        }
-        foreach($shops as $k=>$v) {
-            $querys[] = "SELECT id as id_product, changed, 'products_".$k."' as table_name, '".$v['name']."' as shop_name FROM `products_".$k."` ".$finder." ";
-        }
-        if($random) {
-            $rnd = " ORDER BY RAND() ";
-        } else {
-            if(count($filters_props) > 0 && isset($filters_props['self'])) {
-                if(isset($filters_props['self']['changed'])) {
-                    $dir = "ASC";
-                    if($filters_props['self']['changed'] === 'DESC') {
-                        $dir = "DESC";
-                    }
-                    $rnd = " ORDER BY `changed` ".$dir;
-                }
+            $end = "";
+            if(is_array($count)) {
+                $end = " LIMIT ".$count[0].",".$count[1];
             } else {
-                $rnd = "";
-            }
-        }
-
-//        say(implode(" UNION ALL ", $querys)." ".$rnd." LIMIT ".(int)$count[0].",".(int)$count[1]);
-
-        if(is_array($count) && count($count) === 2) {
-            $ask = q(implode(" UNION ALL ", $querys)." ".$rnd." LIMIT ".(int)$count[0].",".(int)$count[1]);
-        } else {
-            $ask = q(implode(" UNION ALL ", $querys)." ".$rnd." LIMIT ".(int)$count);
-        }
-
-        $rows = SQL_ROWS($ask);
-
-
-        $sh = [];
-        foreach($rows as $v) {
-            $sh[$v['table_name']][] = $v['id_product'];
-        }
-
-//        say($sh);
-//        say($finder);
-
-        $querys = [];
-        foreach($sh as $k=>$v) {
-            if($finder === '') {
-                $finder_all = " WHERE ".$k.".id IN (".implode(',',$v).") ";
-            } else {
-                $finder_all = $finder." AND ".$k.".id IN (".implode(',',$v).") ";
+                $end = " LIMIT ".$count;
             }
 
-//            say($finder_all);
-
-            $num_shop = (int)explode('_', $k)[1];
-            $shop_name = $shops[$num_shop]['name'];
-
-            $CITY = $cities[$shops[$num_shop]['city']]['name'] ?? '-';
-
-            $querys[] = "
-            SELECT '".$num_shop."' as ID_TABLPRODUCT, 
-            '".$shop_name."' as SHOP,
-            '".$CITY."' as CITY,
-            ".$k.".id as id_product,  
-            ".$k.".status,
-            ".$k.".name,
-            ".$k.".trans,
-            ".$k.".main_cat,
-            ".$k.".under_cat,
-            ".$k.".action_list,
-            ".$k.".count,
-            ".$k.".created,
-            ".$k.".changed,
-            ".$k.".to_active,
-            val_".$num_shop.".id as ID_VAL,
-            val_".$num_shop.".val_float as PRICE,
-            val_".$num_shop.".val_float as DISCOUNT,
-            val_".$num_shop.".val_file as IMG,
-            val_".$num_shop.".val_string as PLACE,
-            val_".$num_shop.".val_text as DESCR,
-            props_".$num_shop.".props_name
-            FROM `products_".$num_shop."` LEFT JOIN `val_".$num_shop."` ON
-            val_".$num_shop.".product_id = products_".$num_shop.".id INNER JOIN `props_".$num_shop."` ON
-            (props_".$num_shop.".props_name = 'Расположение' AND val_".$num_shop.".props_id = props_".$num_shop.".id) OR 
-            (props_".$num_shop.".props_name = 'Стоимость' AND val_".$num_shop.".props_id = props_".$num_shop.".id) OR 
-            (props_".$num_shop.".props_name = 'Описание' AND val_".$num_shop.".props_id = props_".$num_shop.".id) OR 
-            (props_".$num_shop.".props_name = 'Скидка %' AND val_".$num_shop.".props_id = props_".$num_shop.".id) OR 
-            (props_".$num_shop.".props_name = 'Изображение (фото)' AND val_".$num_shop.".props_id = props_".$num_shop.".id) ".$finder_all." 
-            ";
-        }
-
-        if(empty($querys)) {
-            return [];
-        }
-
-//        say($querys);
-// ROBIN   тут добавил .$rnd
-
-        if($rnd === '') {
-            if(count($filters_props) > 0 && isset($filters_props['params'])) {
-                if(isset($filters_props['params']['price']) && $filters_props['params']['price'] === 'DESC') {
-                    $rnd = " ORDER BY PRICE DESC";
-                }
+            if($random) {
+                $end = " ORDER BY RAND() ".$end;
             }
-        }
 
-//        say(implode(" UNION ALL ", $querys).$rnd);
-
-        $ask = q(implode(" UNION ALL ", $querys).$rnd);
-        $arr = SQL_ROWS($ask);
-        $rows = [];
-
-//        say($arr);
-        $arr = SORT::array_sort_by_column($arr, 'ID_VAL');
-
-        foreach($arr as $kk=>$v) {
-            $key = $v['ID_TABLPRODUCT'].'_'.$v['id_product'];
-            $props_name = $v['props_name'];
-            $price = $v['PRICE'];
-            $discount = (int)$v['DISCOUNT'];
-            $img = $v['IMG'];
-            $place = $v['PLACE'];
-            $descr = $v['DESCR'];
-
-            if(isset($rows[$key])) {
-                if(!isset($rows[$key]['PRICE']) && $props_name === 'Стоимость' && $price !== '0.00') {
-                    $rows[$key]['PRICE'] = $price;
-                }
-                if(!isset($rows[$key]['DISCOUNT']) && $props_name === 'Скидка %' && $discount !== 0) {
-                    $rows[$key]['DISCOUNT'] = $discount;
-                }
-                if(!isset($rows[$key]['PLACE']) && $props_name === 'Расположение' && $place !== '-') {
-                    $rows[$key]['PLACE'] = $place;
-                }
-                if(!isset($rows[$key]['DESCR']) && $props_name === 'Описание' && $descr !== '') {
-                    $rows[$key]['DESCR'] = $descr;
-                }
-                if($img !== '' && $img !== '-' && !in_array($img,  $rows[$key]['FILES'])) {
-                    $rows[$key]['FILES'][] = $img;
-                }
-            } else {
-                $rows[$key] = [
-                    'id_shop'=>explode('_', $key)[0],
-                    'SHOP_NAME'=>$v['SHOP'],
-                    'CITY'=>$v['CITY'],
-                    'id_product'=>$v['id_product'],
-                    'STATUS'=>$v['status'],
-                    'name'=>$v['name'],
-                    'trans'=>$v['trans'],
-                    'main_cat'=>$v['main_cat'],
-                    'under_cat'=>$v['under_cat'],
-                    'action_list'=>$v['action_list'],
-                    'COUNT'=>$v['count'],
-                    'CREATED'=>$v['created'],
-                    'CHANGED'=>$v['changed'],
-                    'TO_ACTIVE'=>$v['to_active'],
-                    'FILES'=>[],
-                    'DESCR'=>$v['DESCR'],  // тут правил последнее описание
-                ];
-                if($props_name === 'Стоимость' && $price !== '0.00') {
-                    $rows[$key]['PRICE'] = $price;
-                }
-                if($props_name === 'Скидка %' && $discount !== 0) {
-                    $rows[$key]['DISCOUNT'] = $discount;
-                }
-                if($props_name === 'Расположение' && $place !== '-') {
-                    $rows[$key]['PLACE'] = $place;
-                }
-                if($img !== '' && $img !== '-') {
-                    $rows[$key]['FILES'][] = $img;
-                }
+            $filter_city = "";
+            if($city_id !== -1) {
+                $filter_city = " AND city_id = ".$city_id." ";
             }
-//            if($rows[$key]['CITY'] === '-') {
-//                if(isset($rows[$key]['PLACE'])) {
-//                    $rows[$key]['CITY'] = $rows[$key]['PLACE'];
-//                }
-//            }
-
-        }
-
-//        say($filters_props);
-
-        if($rnd === '') {
-            if(count($filters_props) > 0 && isset($filters_props['params'])) {
-                if(isset($filters_props['params']['price'])) {
-                    if($filters_props['params']['price'] === 'ASC') {
-                        $rows = SORT::customMultiSort($rows, 'PRICE');
-                    }
-                }
+            $filter_maincat = "";
+            if($main_cat_id !== -1) {
+                $filter_maincat = " AND shops_categorys = ".$main_cat_id." ";
             }
-        } elseif($rnd ===' ORDER BY PRICE DESC') {
-            if($filters_props['params']['price'] === 'DESC') {
-                $rows = SORT::customMultiSort($rows, 'PRICE', 'DESC');
+            $filter_undercat = "";
+            if($under_cat_id !== -1) {
+                $filter_undercat = " AND shops_undercats = ".$under_cat_id." ";
             }
+            $filter_actionlist = "";
+            if($action_list_id !== -1) {
+                $filter_actionlist = " AND shops_lists = ".$action_list_id." ";
+            }
+
+            $rows = SQL_ROWS(q("
+            SELECT id FROM indexer WHERE 
+            shop_id IN (".implode(',',$shops).") AND 
+            status = 'active'
+            ".$filter_city."
+            ".$filter_maincat."
+            ".$filter_undercat."
+            ".$filter_actionlist." ".$end."
+            "));
+            $rows = array_column($rows, 'id');
+
+            if(empty($rows)) {
+                return [];
+            }
+
+            $rows = self::get_products_list_at_indexer_ids($rows);
         }
-//        t('EXEC='.microtime(true)-$start);
         return $rows;
     }
 
     public static function get_count_products($id_owner): int
     {
-        $count = 0;
-        $arr = SQL_ROWS_FIELD(q("SELECT id FROM `shops` WHERE `owner`=".(int)$id_owner), 'id');
-        if(count($arr) > 0) {
-            foreach($arr as $k=>$v) {
-                $count += SUBD::countRows('products_'.$k);
-            }
-        }
-        return $count;
+        return (int)SQL_ONE_ROW(q("SELECT COUNT(*) FROM `indexer` WHERE `owner_id`=".Access::userID()))['COUNT(*)'];
     }
 
     public static function get_count_status_all_my_products($id_owner, $main_cat_id=-1) {
         $main_cat_id = (int)$main_cat_id;
-        $arr = SQL_ROWS_FIELD(q("SELECT id FROM `shops` WHERE `owner`=".(int)$id_owner), 'id');
         $rows = [
             'active'=>[],
             'not_show'=>[],
             'backdrop'=>[],
             'archive'=>[]
         ];
-        if(count($arr) > 0) {
-            $dt = date('Y-m-d H:i:s');
-            foreach($arr as $k=>$v) {
-                q("UPDATE `products_".$k."` SET `status` = 'archive' WHERE `to_active` < '".$dt."' AND `status` = 'active' ");
-                $all = SUBD::getAllDB('products_'.$k);
-                foreach($all as $kk=>$vv) {
-                    if($main_cat_id === -1) {
+            $dt = SITE::$dt;
+            q("UPDATE indexer SET `status` = 'archive' WHERE `active_to` < '".$dt."' AND `status` = 'active' ");
+            $all = SQL_ROWS(q("SELECT prod_id, shop_id, status FROM indexer WHERE owner_id=".Access::userID()));
+            foreach($all as $vv) {
+                if($main_cat_id === -1) {
+                    $rows[$vv['status']][] = [
+                        'SHOP' => $vv['shop_id'],
+                        'ID_PRODUCT' => $vv['prod_id']
+                    ];
+                } else {
+                    if($main_cat_id === (int)$vv['main_cat']) {
                         $rows[$vv['status']][] = [
-                            'SHOP' => $k,
-                            'ID_PRODUCT' => $vv['id']
+                            'SHOP' => $vv['shop_id'],
+                            'ID_PRODUCT' => $vv['prod_id']
                         ];
-                    } else {
-                        if($main_cat_id === (int)$vv['main_cat']) {
-                            $rows[$vv['status']][] = [
-                                'SHOP' => $k,
-                                'ID_PRODUCT' => $vv['id']
-                            ];
-                        }
                     }
                 }
             }
-        }
         return $rows;
     }
 
@@ -798,8 +851,7 @@ class SHOP {
         return [];
     }
 
-    public static function set_active_status_products($id_shop, $products_arr=[], $count_hours=1): bool {
-        $id_shop = (int)$id_shop;
+    public static function set_active_status_products($products_arr=[], $count_hours=1): bool {
         if(count($products_arr) <= 0) {
             Message::addError('Товаров не может быть < или = 0');
             return false;
@@ -807,20 +859,18 @@ class SHOP {
         foreach($products_arr as $k=>$v) {
             $products_arr[$k] = (int)$v;
         }
-        if(!SUBD::existsTable('products_'.$id_shop)) {
-            Message::addError('Не удалось найти площадку с таким ID - '.$id_shop);
-            return false;
-        }
+
         $dt = VALUES::plus_hours($count_hours);
         $status = 'not_show';
         if(date('Y-m-d H:i:s') <= $dt) { $status = 'active'; }
         $hrs = "";
         if($count_hours > 0) {
-            $hrs = " `to_active`='".$dt."', ";
+            $hrs = " `active_to`='".$dt."', ";
         }
         q("
-        UPDATE `products_".$id_shop."` SET
+        UPDATE `indexer` SET
         `status`='".$status."',
+        `active`=1,
         ".$hrs."
         `changed`='".date('Y-m-d H:i:s')."'
         WHERE `id` IN (".implode(',',$products_arr).")
@@ -828,11 +878,9 @@ class SHOP {
 
         q("
         UPDATE `coords` SET `active`=1 WHERE
-        `shop_id`=".$id_shop." AND
-        `product_id` IN (".implode(',',$products_arr).")
+        `id` IN (".implode(',',$products_arr).")
         ");
 
-        q("UPDATE `indexer` SET `active`=1 WHERE `shop_id`=".(int)$id_shop." AND `prod_id` IN (".implode(',',$products_arr).") ");
         return true;
     }
 
@@ -845,16 +893,16 @@ class SHOP {
         foreach($products_arr as $k=>$v) {
             $products_arr[$k] = (int)$v;
         }
-        if(!SUBD::existsTable('products_'.$id_shop)) {
+        if(!SHOP::isset($id_shop)) {
             Message::addError('Не удалось найти площадку с таким ID - '.$id_shop);
             return false;
         }
         $status = 'not_show';
         q("
-        UPDATE `products_".$id_shop."` SET
+        UPDATE `indexer` SET
         `status`='".$status."',
         `changed`='".date('Y-m-d H:i:s')."'
-        WHERE `id` IN (".implode(',',$products_arr).")
+        WHERE `shop_id`=".$id_shop." AND `prod_id` IN (".implode(',',$products_arr).")
         ");
 
         q("
@@ -863,20 +911,18 @@ class SHOP {
         `product_id` IN (".implode(',',$products_arr).")
         ");
 
-        q("UPDATE `indexer` SET `active`=0 WHERE `shop_id`=".(int)$id_shop." AND `prod_id` IN (".implode(',',$products_arr).") ");
         return true;
     }
 
-    public static function archive_timeout_orders($id_shop, $without_if=false) {
+    public static function archive_timeout_orders(int $id_shop, bool $without_if=false) {
         if($without_if) {
-            $rows = SQL_ROWS(q("SELECT id FROM `products_".(int)$id_shop."` WHERE `status` = 'active' "));
+            $rows = SQL_ROWS(q("SELECT id FROM `indexer` WHERE `shop_id`=".$id_shop." AND `status` = 'active' "));
         } else {
-            $rows = SQL_ROWS(q("SELECT id FROM `products_".(int)$id_shop."` WHERE `to_active` < '".date('Y-m-d H:i:s')."' AND `status` = 'active' "));
+            $rows = SQL_ROWS(q("SELECT id FROM `indexer` WHERE `shop_id`=".$id_shop." AND `active_to` < '".date('Y-m-d H:i:s')."' AND `status` = 'active' "));
         }
         if(count($rows) > 0) {
             $ids = array_column($rows, 'id');
-            q("UPDATE `products_" . (int)$id_shop . "` SET `status` = 'archive' WHERE `id` IN (" . implode(',', $ids) . ") ");
-            q("UPDATE `indexer` SET `active`=0 WHERE `shop_id`=".(int)$id_shop." AND `prod_id` IN (".implode(',',$ids).") ");
+            q("UPDATE `indexer` SET `active`=0, `status`='not_show' WHERE `id` IN (".implode(',',$ids).") ");
         }
     }
 
@@ -899,11 +945,10 @@ class SHOP {
     }
 
     public static function active_notimeout_orders($id_shop) {
-        $rows = SQL_ROWS(q("SELECT id FROM `products_".(int)$id_shop."` WHERE `to_active` > '".date('Y-m-d H:i:s')."' AND `status` <> 'active' "));
+        $rows = SQL_ROWS(q("SELECT id FROM `indexer` WHERE `shop_id`=".$id_shop." AND `active_to` > '".date('Y-m-d H:i:s')."' AND `status` <> 'active' "));
         if(count($rows) > 0) {
             $ids = array_column($rows, 'id');
-            q("UPDATE `products_" . (int)$id_shop . "` SET `status` = 'active' WHERE `id` IN (" . implode(',', $ids) . ") ");
-            q("UPDATE `indexer` SET `active`=1 WHERE `shop_id`=".(int)$id_shop." AND `prod_id` IN (".implode(',',$ids).") ");
+            q("UPDATE `indexer` SET `active`=1, `status` = 'active' WHERE `id` IN (".implode(',',$ids).") ");
         }
     }
 
@@ -924,27 +969,11 @@ class SHOP {
     public static function get_published_time_for($orders_array): array
     {
         $arr = [];
-        $querys = [];
         foreach($orders_array as $v) {
-            $arr[$v['shop_id']][] = $v['item_id'];
+            $arr[] = "'".$v["shop_id"]."_".$v['item_id']."'";
         }
-        foreach($arr as $k=>$v) {
-            $querys[] = "SELECT '".$k."' AS shop_id, id AS item_id, to_active AS PUBLISHED_TIME FROM `products_".$k."` WHERE `id` IN (".implode(',',$v).")";
-        }
-        $ask = q(implode(" UNION ALL ", $querys));
+        $ask = q("SELECT id, active_to AS PUBLISHED_TIME FROM indexer WHERE CONCAT(shop_id, '_', prod_id) IN (".implode(',', $arr).")");
         return SQL_ROWS($ask);
-    }
-
-    public static function sorted_orders_at_shops($orders_array): array {
-        $ans = [];
-        foreach($orders_array as $v) {
-            $ans[$v['shop_id']][$v['item_id']] = [
-                    'shop_id'=>$v['shop_id'],
-                    'item_id'=>$v['item_id'],
-                    'PUBLISHED_TIME'=>$v['PUBLISHED_TIME'],
-            ];
-        }
-        return $ans;
     }
 
     /**
@@ -959,119 +988,27 @@ class SHOP {
     /**
      * В метод отправляется любой массив но с обязательными полями shop_id и product_id
      */
-    public static function get_products_list($array=[], $with_params_user=false): array
+    public static function get_products_list($array=[]): array
     {
-        $llist = [];
-        $shops_id = [];
-        $users = [];
-        $not_exists_shop = [];
+        $codes = [];
         foreach($array as $v) {
-            if(SHOP::get_shop($v['shop_id']) !== false) {
-                if (isset($v['shop_id'], $v['product_id'])) {
-                    $llist[$v['shop_id']][] = $v['product_id'];
-                    $shops_id[] = (int) $v['shop_id'];
-                }
+            $codes[] = $v['shop_id']."_".$v['product_id'];
+        }
+        $indexer_prods = self::get_products_list_at_code_array($codes);
+        $prods = [];
+        foreach($indexer_prods as $v) {
+            $prods[$v['code']] = $v;
+        }
+
+        unset($indexer_prods);
+
+        foreach($array as $k=>$v) {
+            $code = $v['shop_id']."_".$v['product_id'];
+            if(isset($prods[$code])) {
+                $array[$k]['ITEM'] = $prods[$code];
             }
         }
-        if($with_params_user) {
-            $with_params_user = " users.params AS PARAMS, ";
-        } else {
-            $with_params_user = "";
-        }
-        if(count($llist) > 0) {
-            $ans = [];
-
-            $users = SQL_ROWS_FIELD(q("
-            SELECT 
-            shops.id AS SHOP_ID,
-            shops.logo AS SHOP_LOGO,
-            shops.name AS SHOP_NAME,
-            shops.active AS SHOP_STATUS,
-            users.id AS USERS_ID,
-            users.avatar AS USERS_AVATAR,
-            users.login AS USERS_LOGIN,
-            ".$with_params_user."
-            users.status AS USERS_STATUS 
-            FROM shops LEFT JOIN users
-            ON
-            users.id = shops.owner
-            WHERE shops.id IN (".implode(',',$shops_id).")
-            "), 'SHOP_ID');
-
-            foreach($llist as $k=>$v) {
-                $k = (int)$k;
-                $querys[] = "
-                SELECT 
-                ".$k." AS SHOP_ID,
-                products_".$k.".id AS PRODUCT_ID,
-                products_".$k.".name AS PRODUCT_NAME,
-                products_".$k.".status,
-                products_".$k.".trans,
-                products_".$k.".main_cat,
-                products_".$k.".under_cat,
-                products_".$k.".action_list,
-                products_".$k.".count AS COUNT,
-                products_".$k.".to_active,  
-                (CASE WHEN props_".$k.".props_name = 'Изображение (фото)' THEN val_".$k.".val_file END) AS IMG,
-                (CASE WHEN props_".$k.".props_name = 'Стоимость' THEN val_".$k.".val_float END) AS PRICE,
-                (CASE WHEN props_".$k.".props_name = 'Расположение' THEN val_".$k.".val_string END) AS PLACE,
-                (CASE WHEN props_".$k.".props_name = 'Скидка %' THEN val_".$k.".val_float END) AS DISCOUNT,
-                (CASE WHEN props_".$k.".props_name = 'Описание' THEN val_".$k.".val_text END) AS DESCR
-                FROM products_".$k." 
-                LEFT JOIN val_".$k." ON val_".$k.".product_id = products_".$k.".id
-                LEFT JOIN props_".$k." ON val_".$k.".props_id = props_".$k.".id
-                WHERE products_".$k.".id IN (".implode(',', $v).")
-                ";
-            }
-
-            $ask = q(implode(" UNION ALL ", $querys));
-            $rows = SQL_ROWS($ask);
-
-            INCLUDE_CLASS('shops', 'cataloger');
-            $CATS = new CATALOGER();
-
-            foreach($rows as $v) {
-                $key = $v['SHOP_ID']."_".$v['PRODUCT_ID'];
-                if(!isset($ans[$key])) {
-                    $ans[$key] = $v;
-                } else {
-                    if(!is_null($v['IMG']) && $v['IMG'] !== '') {
-                        $ans[$key]['IMG'] = $v['IMG'];
-                    }
-                    if(isset($v['DESCR']) && mb_strlen($v['DESCR']) > 0) {
-                        $ans[$key]['DESCR'] = $v['DESCR'];
-                    }
-                    if((float)$v['PRICE'] > 0) {
-                        $ans[$key]['PRICE'] = $v['PRICE'];
-                    }
-                    if((float)$v['DISCOUNT'] > 0) {
-                        $ans[$key]['DISCOUNT'] = (int)$v['DISCOUNT'];
-                    }
-                    if((string)$v['PLACE'] !== '') {
-                        $ans[$key]['PLACE'] = (string)$v['PLACE'];
-                    }
-                }
-            }
-
-            foreach($array as $k=>$v) {
-                $dt = date('Y-m-d H:i:s');
-                $key = $v['shop_id']."_".$v['product_id'];
-                if(isset($ans[$key])) {
-                    if(isset($v['datatime'])) {
-                        $ans[$key]['F_DATA'] = date('d.m.Y H:i', strtotime($v['datatime']));
-                    } else {
-                        $ans[$key]['F_DATA'] = $dt;
-                    }
-                    $ans[$key]['ACTION_LIST'] = VALUES::translit($CATS->id2action_list((int)$ans[$key]['action_list'], true));
-                    $ans[$key]['INFO'] = $users[$v['shop_id']];
-                    $array[$k]['SHOP'] = $ans[$key];
-                } else {
-                    $array[$k]['SHOP'] = [];
-                }
-            }
-            return $array;
-        }
-        return [];
+        return $array;
     }
 
     /**
@@ -1167,24 +1104,22 @@ class SHOP {
         $sh = SHOP::get_shop($id_shop);
         FILER::delete($sh['logo']);
         q("DELETE FROM `shops` WHERE `id`=".$id_shop);
-        if(SUBD::existsTable("products_".$id_shop)) { q("DROP TABLE `products_".$id_shop."`"); }
-        if(SUBD::existsTable("props_".$id_shop)) { q("DROP TABLE `props_".$id_shop."`"); }
-        if(SUBD::existsTable("val_".$id_shop)) {
-            $lst_files_drop = SQL_ROWS_FIELD(q("SELECT DISTINCT `val_file` FROM `val_".$id_shop."` WHERE `val_file` != ''"), 'val_file');
-            $names = [];
-            foreach($lst_files_drop as $k=>$v) {
-                $names[] = $k;
-            }
-            FILER::delete($names);
-            q("DROP TABLE `val_".$id_shop."`");
-        }
-        q("DELETE FROM `access` WHERE `table_name` = 'products_".$id_shop."' ");
-        q("DELETE FROM `access` WHERE `table_name` = 'props_".$id_shop."' ");
-        q("DELETE FROM `access` WHERE `table_name` = 'val_".$id_shop."' ");
+
+        $product_ids_for_delete = SQL_ROWS(q("SELECT id FROM indexer WHERE shop_id=".$id_shop));
+        $product_ids_for_delete = array_column($product_ids_for_delete, 'id');
+
+        q("DELETE FROM indexer WHERE shop_id=".$id_shop);
+
         q("DELETE FROM `coords` WHERE `shop_id`=".$id_shop);
-        q("DELETE FROM `indexer` WHERE `shop_id`=".$id_shop);
         q("DELETE FROM `best_prod` WHERE `shop_id`=".$id_shop);
         q("DELETE FROM `reviews_prod` WHERE `shop_id`=".$id_shop);
+
+        q("DELETE FROM `i_bool` WHERE `indexer_id` IN (".implode(',', $product_ids_for_delete).")");
+        q("DELETE FROM `i_float` WHERE `indexer_id` IN (".implode(',', $product_ids_for_delete).")");
+        q("DELETE FROM `i_int` WHERE `indexer_id` IN (".implode(',', $product_ids_for_delete).")");
+        q("DELETE FROM `i_json` WHERE `indexer_id` IN (".implode(',', $product_ids_for_delete).")");
+        q("DELETE FROM `i_string` WHERE `indexer_id` IN (".implode(',', $product_ids_for_delete).")");
+        q("DELETE FROM `i_text` WHERE `indexer_id` IN (".implode(',', $product_ids_for_delete).")");
 
         if($with_chats) {
             foreach(ROOM::get_all_rooms_from_shop_id($id_shop) as $k=>$v) {
@@ -1263,7 +1198,11 @@ class SHOP {
         return false;
     }
     public static function add_count_to_product(int $shop_id, int $product_id, int $count_plus) {
-        if($row = SQL_ONE_ROW(q("SELECT count FROM products_".$shop_id." WHERE id=".$product_id." LIMIT 1"))) {
+        if($row = SQL_ONE_ROW(q("
+            SELECT id, count FROM indexer WHERE 
+            shop_id=".$shop_id." AND 
+            prod_id=".$product_id." LIMIT 1
+            "))) {
             $count_now = (int)$row['count'];
             if($count_now !== -1) {
                 if ($count_plus > 0) {
@@ -1273,7 +1212,7 @@ class SHOP {
                         $count_now += $count_plus;
                     }
                 }
-                q("UPDATE products_".$shop_id." SET count=".$count_now." WHERE id=".$product_id);
+                q("UPDATE indexer SET count=".$count_now." WHERE id=".(int)$row['id']);
                 if($count_now === 0) {
                     SHOP::set_deactive_status_products($shop_id, [$product_id]);
                 }
@@ -1332,63 +1271,28 @@ class SHOP {
      *
      * @param array $arr (УСЛОВИЯ ОТБОРА ТОВАРОВ) прим. - ['(Название товара) in (роз)', '(Скидка %) >= 10, (Количество) < 5']
      * @param string $query_shops (УСЛОВИЯ ОТБОРА МАГАЗИНОВ) прим. - "owner = 2 AND active = 1"
-     * @param string $shops_limit (ПАГИНАЦИЯ ДЛЯ МАГАЗИНОВ) прим. - "0, 50"
-     * @param string $products_limit (ПАГИНАЦИЯ ДЛЯ ТОВАРОВ) прим. - "0, 50"
+     * @param array $shops_limit (ПАГИНАЦИЯ ДЛЯ МАГАЗИНОВ) прим. - [0, 50]
+     * @param array $products_limit (ПАГИНАЦИЯ ДЛЯ ТОВАРОВ) прим. - [0, 50]
      * @return array (возвращает массив кодов товаров вида) - ["205_34", "123_44", "12_54"] (где первая цифра id-магазина, 2-ая id-товара)
      */
-    public static function filter(array $arr, string $query_shops="", string $shops_limit="0, 50", string $products_limit="0, 50"): array
+    public static function filter(array $arr, string $query_shops="", array $shops_limit=[0,50], array $products_limit=[0,50]): array
     {
+        $buff = [];
+        $querys = [];
+        $joins = [];
+        $schema = get_schema('product_fields');
+        $pattern = '/\((.*?)\)\s*(>=|<=|=|>|<|in)\s*(\(?[^)]*\)?)/';
+
         if($query_shops !== "") {
             $query_shops = " WHERE ".db_secur($query_shops);
         }
+        $shops_limit = $shops_limit[0].",".$shops_limit[1];
         $shops_limit = " LIMIT ".$shops_limit;
+
+        $products_limit = $products_limit[0].",".$products_limit[1];
         $products_limit = " LIMIT ".$products_limit;
 
-        $shops = SQL_ROWS(q("SELECT id FROM `shops` ".$query_shops." ".$shops_limit));
-        $rows = [];
-        if(!empty($shops)) {
-            $shops = array_column($shops, 'id');
-            $querys = [];
-            foreach($shops as $shop_id) {
-                $product_conditions = [];
-                $prod_queries = "";
-                $join = "";
-                $query_part = self::re_parse($shop_id, $arr, $product_conditions);
-                if(!empty($product_conditions)) {
-                    $join = " LEFT JOIN products_".$shop_id." ON products_".$shop_id.".id = val_".$shop_id.".product_id ";
-                    $prod_queries = implode(' AND ', $product_conditions)." AND ";
-                }
-                $querys[] = "
-                SELECT 
-                CONCAT(".$shop_id.", '_', val_".$shop_id.".product_id) AS CODE,
-                CASE props_".$shop_id.".types
-                    WHEN 'val_float' THEN val_".$shop_id.".val_float
-                    WHEN 'val_string' THEN val_".$shop_id.".val_string
-                    WHEN 'val_text' THEN val_".$shop_id.".val_text
-                    WHEN 'val_file' THEN val_".$shop_id.".val_file
-                END AS value
-                FROM val_".$shop_id." 
-                LEFT JOIN props_".$shop_id." ON
-                props_".$shop_id.".id = val_".$shop_id.".props_id 
-                ".$join."
-                WHERE ".$prod_queries."
-                ".implode(' AND ', $query_part)."
-                ";
-            }
-            $ask = q(implode(" UNION ALL ", $querys)." ".$products_limit);
-            $rows = SQL_ROWS($ask);
-            if(!empty($rows)) {
-                $rows = array_column($rows, 'CODE');
-            }
-        }
-        return $rows;
-    }
-
-    private static function re_parse(int $shop_id, array $conditions, &$product_conditions): array {
-        $ans = [];
-        $product_fields = ['Название товара', 'Количество', 'Тип (категория)', 'Подкатегория', 'Множество'];
-        $pattern = '/\((.*?)\)\s*(>=|<=|=|>|<|in)\s*(\(?[^)]*\)?)/';
-        foreach ($conditions as $condition) {
+        foreach ($arr as $condition) {
             if (preg_match($pattern, $condition, $matches)) {
                 $field = trim($matches[1]);
                 $operator = trim($matches[2]);
@@ -1400,29 +1304,55 @@ class SHOP {
                     $operator = $operator . "'" . db_secur(self::remove_surrounding_brackets($value)) . "' ";
                 }
 
-                if(in_array($field, $product_fields)) {
-                    switch($field) {
-                        case 'Название товара': $product_conditions[] = " products_".$shop_id.".name ".$operator ; break;
-                        case 'Количество': $product_conditions[] = " products_".$shop_id.".count ".$operator ; break;
-                        case 'Тип (категория)': $product_conditions[] = " products_".$shop_id.".main_cat ".$operator ; break;
-                        case 'Подкатегория': $product_conditions[] = " products_".$shop_id.".under_cat ".$operator ; break;
-                        case 'Множество': $product_conditions[] = " products_".$shop_id.".action_list ".$operator ; break;
+                if(isset($schema[$field])) {
+                    $column = $schema[$field]['column'];
+                    $is_main_table = 0;
+                    $table = "i_".$schema[$field]['type'];
+                    if($column !== '') {
+                        $is_main_table = 1;
+                        $table = 'indexer';
                     }
-                } else {
-                    $ans[] = "
-                    props_" . $shop_id . ".props_name = '" . db_secur($field) . "' AND (
-                    (props_" . $shop_id . ".types = 'val_float' AND val_" . $shop_id . ".val_float " . $operator . ") OR
-                    (props_" . $shop_id . ".types = 'val_string' AND val_" . $shop_id . ".val_string " . $operator . ") OR
-                    (props_" . $shop_id . ".types = 'val_text' AND val_" . $shop_id . ".val_text " . $operator . ") OR
-                    (props_" . $shop_id . ".types = 'val_file' AND val_" . $shop_id . ".val_file " . $operator . ")
-                    )";
+
+                    $buff[] = [
+                        'prop_id'=>$schema[$field]['id'],
+                        'field_name'=>$field,
+                        'value'=>$operator,
+                        'type'=>$table,
+                        'is_main_table'=>$is_main_table,
+                        'column'=>$column,
+                    ];
                 }
             }
         }
-        if(empty($ans)) {
-            $ans[] = "props_" . $shop_id . ".props_name = 'Стоимость' AND props_" . $shop_id . ".types = 'val_float' AND val_" . $shop_id . ".val_float >= 0 ";
+
+        foreach($buff as $v) {
+            if($v['is_main_table'] === 1) {
+                $querys[] = "indexer.".$v['column']." ".$v['value'];
+            } else {
+                $querys[] = "".$v['type'].".val".$v['value'];
+                if(!isset($joins[$v['type']])) {
+                    $joins[$v['type']] = " LEFT JOIN ".$v['type']." ON ".$v['type'].".indexer_id=indexer.id AND ".$v['type'].".props_id=".$v['prop_id']." ";
+                }
+            }
         }
-        return $ans;
+
+        $query = "
+        SELECT CONCAT(indexer.shop_id, '_', indexer.prod_id) AS CODE FROM indexer
+        ".implode(' ', $joins)."
+        WHERE
+        ".implode(' AND ', $querys)."
+        LIMIT 0, 50
+        ";
+
+        wtf($buff, 1);
+        wtf($query, 1);
+
+        $rows = SQL_ROWS(q($query));
+        if(count($rows) > 0) {
+            return array_column($rows, 'CODE');
+        }
+
+        return [];
     }
 
     private static function remove_surrounding_brackets($str) {

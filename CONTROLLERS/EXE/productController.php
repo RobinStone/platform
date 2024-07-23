@@ -7,32 +7,33 @@ include_once './APPLICATIONS/SHOPS/libs/class_PROPS_COMMANDER.php';
 include_CDN_JS('https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey='.Core::$YANDEXGEOCODER.'&suggest_apikey='.Core::$SUGGEST_GEOCODER);
 
 include_JS('map_coder');
-
+//wtf($row);
 $items = [
-    $row['CAT'] => $row['CAT_trans'],
-    $row['UNDERCAT'] => $row['UNDERCAT_trans'],
-    $row['LIST'] => $row['LIST_trans'],
+    $row['main_cat'] => $row['main_cat_trans'],
+    $row['under_cat'] => $row['under_cat_trans'],
+    $row['action_list'] => $row['action_list_trans'],
 ];
 
-$PRO = new PROPS_COMMANDER($row['VALS']);
-
-$img_proff = $PRO->get_all_props_at_field_name('Изображение (фото)', true)['VALUE'];
+$img_proff = $row['PROPS']['images'][0]['value'];
 add_META('<meta property="og:image" content="'.Core::$DOMAIN.'IMG/img100x100/'.$img_proff.'">');
-add_META('<meta property="og:title" content="'.$row['NAME'].'">');
+add_META('<meta property="og:title" content="'.$row['name'].'">');
 
-$descr_id = $PRO->get_all_props_at_field_name('Описание', true)['ID'];
-$descr = $PRO->get_all_props_at_field_name('Описание', true)['VALUE'];
-$place = $PRO->get_all_props_at_field_name('Расположение', true)['VALUE'];
-$discount = (int)$PRO->get_all_props_at_field_name('Скидка %', true)['VALUE'];
+$descr_id = $row['PROPS']['descr'][0]['id'];
+$descr = $row['PROPS']['descr'][0]['value'];
+$place = $row['PROPS']['place'][0]['value'];
+$discount = (int)$row['PROPS']['discount'][0]['value'];
 $discount_price = 0;
 
-$price = round((float)$PRO->get_all_props_at_field_name('Стоимость', true)['VALUE'], 2);
+$price = round((float)$row['price'], 2);
 
 if($discount > 0) {
     $discount_price = $price - ($discount/100*$price);
 }
 
-$slides = $PRO->get_all_props_at_field_type('file');
+$slides = [];
+foreach($row['PROPS']['images'] as $imgs) {
+    $slides[] = $imgs['value'];
+}
 
 
 $preview_products = SHOP::get_random_products_from_one_shop((int)$row['SHOP']['id'], true, 8, -1, -1, -1, true);
@@ -44,13 +45,6 @@ foreach($preview_products as $k=>$v) {
 }
 
 //wtf($preview_products);
-
-$CAT = new CATALOGER();
-foreach($preview_products as $k=>$v) {
-    $preview_products[$k]['main_cat_trans'] = $CAT->id2main_cat($v['main_cat'], true);
-    $preview_products[$k]['under_cat_trans'] = $CAT->id2under_cat($v['under_cat'], true);
-    $preview_products[$k]['action_list_trans'] = $CAT->id2action_list($v['action_list'], true);
-}
 
 $shop_id = (int)$_GET['s'];
 $product_id = (int)$_GET['prod'];
@@ -91,7 +85,7 @@ if(count($best) > 0) {
     $best = '';
 }
 
-$phone = $PRO->get_all_props_at_field_name('Телефон заказа', true)['VALUE'];
+$phone = $row['PROPS']['phone'][0]['value'];
 
 $B = new BASKET($_SESSION['basket'] ?? '');
 $basket = $B->get_basket();
@@ -110,8 +104,8 @@ if(isset($basket[$code_product])) {
 //wtf($basket, 1);
 //wtf($_SERVER, 1);
 
-$data_created = explode('-', explode(' ', $row['CREATED'])[0]);
-$time_created = explode(':', explode(' ', $row['CREATED'])[1]);
+$data_created = explode('-', explode(' ', $row['created'])[0]);
+$time_created = explode(':', explode(' ', $row['created'])[1]);
 
 $data_created = $data_created[2]." ".VALUES::intToMonth($data_created[1], true).", ".$data_created[0];
 $time_created = $time_created[0].":".$time_created[1];
@@ -123,3 +117,4 @@ $showed = SHOP::get_showed_count($row['ID']);
 SHOP::add_showed_count_plus($row['ID']);
 
 //wtf($showed, 1);
+//wtf($slides, 1);

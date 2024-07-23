@@ -7,7 +7,6 @@ if(Access::scanLevel() > 0) {
 }
 
 //wtf($arr, 1);
-$PROPS = new PROPS_COMMANDER($arr['arr']['VALS']);
 
 //$country = Access::scanCountry($_SERVER['REMOTE_ADDR']);
 //t($country);
@@ -81,7 +80,7 @@ if(isset($arrm['country']['iso'])) {
                     </ul>
                 </li>
                 <li class="flex column between" style="align-items: flex-start">
-                    <div class="price" style="font-size: 24px; line-height: 24px">К оплате - <?=VALUES::price_format($PROPS->get_all_props_at_field_name('Стоимость', true)['VALUE'])?> P</div>
+                    <div class="price" style="font-size: 24px; line-height: 24px">К оплате - <?=VALUES::price_format($arr['price'])?> P</div>
                     <div>Способ оплаты</div>
                     <div>
                         <select>

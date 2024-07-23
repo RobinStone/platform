@@ -40,32 +40,43 @@ class BUY {
     #[ArrayShape(['errors' => "array", 'arr' => "array"])] public static function preparation($arr): array
     {
         $errors = [];
+//        say($arr);
         $ids = array_column($arr['products'], 'product_id');
+//        say($ids);
         $rows = SHOP::get_products_list_at_id((int)$arr['shop_id'], $ids, true);
+        $ids = array_column($rows, 'id_product');
+        $rows = array_combine($ids, $rows);
+
+//        say($rows);
         $total_summ = 0;
+//
+//        say($arr['products']);
+//        say($rows);
 
         foreach($arr['products'] as $k=>$v) {
             if(isset($rows[$v['product_id']])) {
                 $obj = $rows[$v['product_id']];
-                $count_all = (int)$obj['COUNT'];
+                $count_all = (int)$obj['count'];
                 if($count_all === -1 || $count_all >= (int)$v['count']) {
-                    $v['name'] = $obj['NAME'];
+                    $v['name'] = $obj['name'];
                     $pages = [];
-                    if (isset($obj['CAT_trans']) && $obj['CAT_trans'] !== '-' && $obj['CAT_trans'] !== '') {
-                        $pages[] = $obj['CAT_trans'];
+                    if (isset($obj['main_cat_trans']) && $obj['main_cat_trans'] !== '-' && $obj['main_cat_trans'] !== '') {
+                        $pages[] = $obj['main_cat_trans'];
                     }
-                    if (isset($obj['UNDERCAT_trans']) && $obj['UNDERCAT_trans'] !== '-' && $obj['UNDERCAT_trans'] !== '') {
-                        $pages[] = $obj['UNDERCAT_trans'];
+                    if (isset($obj['under_cat_trans']) && $obj['under_cat_trans'] !== '-' && $obj['under_cat_trans'] !== '') {
+                        $pages[] = $obj['under_cat_trans'];
                     }
-                    if (isset($obj['LIST_trans']) && $obj['LIST_trans'] !== '-' && $obj['LIST_trans'] !== '') {
-                        $pages[] = $obj['LIST_trans'];
+                    if (isset($obj['action_list_trans']) && $obj['action_list_trans'] !== '-' && $obj['action_list_trans'] !== '') {
+                        $pages[] = $obj['action_list_trans'];
                     }
                     $pages[] = VALUES::translit($v['name']);
                     $v['link'] = implode('/', $pages) . "?s=" . $arr['shop_id'] . "&prod=" . $v['product_id'];
-                    $pro = new PROPS_COMMANDER($obj['VALS']);
-                    $discount = (int)$pro->get_all_props_at_field_name('Скидка %', true)['VALUE'];
-                    $v['img'] = $pro->get_all_props_at_field_name('Изображение (фото)', true)['VALUE'];
-                    $price = round((float)$pro->get_all_props_at_field_name('Стоимость', true)['VALUE'], 2);
+
+                    $shop_id = (int)$arr['shop_id'];
+                    $prod_id = (int)$v['product_id'];
+
+                    $discount = (int)PROPS_COMMANDER::get_prop($shop_id, $prod_id, 'Скидка %');
+                    $price = round((float)$obj['price'], 2);
                     $v['price'] = $price;
                     $v['discount'] = $discount;
                     if ($discount > 0) {
