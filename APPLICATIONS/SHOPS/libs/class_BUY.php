@@ -76,8 +76,10 @@ class BUY {
                     $prod_id = (int)$v['product_id'];
 
                     $discount = (int)PROPS_COMMANDER::get_prop($shop_id, $prod_id, 'Скидка %');
+                    $img = PROPS_COMMANDER::get_prop($shop_id, $prod_id, 'Изображение');
                     $price = round((float)$obj['price'], 2);
                     $v['price'] = $price;
+                    $v['img'] = $img;
                     $v['discount'] = $discount;
                     if ($discount > 0) {
                         $v['price_with_discount'] = $price - ($price * $discount / 100);
@@ -113,6 +115,8 @@ class BUY {
             SHOP::add_count_to_product((int)$arr['shop_id'], (int)$v['product_id'], -(int)$v['count']);
         }
         end_transaction();
+
+        say($arr);
 
         q("
         INSERT INTO orders SET
