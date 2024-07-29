@@ -1,34 +1,32 @@
-<div class="wrapper">
-    <button onclick="tester()">GET</button>
-    <br>
-    <button onclick="tester2()">SET</button>
-    <br>
-    <button onclick="tester3()">DELETE</button>
-</div>
+<link href="./TEMPLATES/CSS/quill.css" rel="stylesheet">
+<script src="./TEMPLATES/JS/quill.js"></script>
+
+
+
+<script src="./JS/jquery-3.6.0.min.js"></script>
+<script src="./JS/sysMessages.js"></script>
+<script src="./TEMPLATES/JS/general_files.js"></script>
+
+
+
+
+<div id="field">Проверка микрофона</div>
 
 <script>
-    function tester() {
-        // PROFIL.get_list({cash: 0, about: '---', city: 'not set', blaster: 'oleg', phone: ''}, function(mess) {
-        //     console.dir(mess);
-        // }, true);
-        //
-        // PROFIL.get('cash', function(mess) {
-        //     say(mess, 2);
-        // })
-    }
-
-    function tester2() {
-        // PROFIL.set_list({cash: 0, about: '---', city: 'Вилейка', blaster: 'oleg', phone: ''}, function(mess) {
-        //     console.dir(mess);
-        // }, true);
-
-        // PROFIL.set('cash', '5000', function(mess) {
-        //     console.log('------------');
-        //     console.dir(mess);
-        // });
-    }
-
-    function tester3() {
-        PROFIL.delete(['ooo', 'cash', 'SEO', 'blaster']);
-    }
+    window.addEventListener('load', function() {
+        const quill = new Quill('#field', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'], // Форматирование текста
+                    [{'list': 'ordered'}, {'list': 'bullet'}], // Списки
+                    [{'color': []}, {'background': []}], // Цвет текста и фона
+                    [{'font': []}, {'size': []}], // Шрифты и размеры
+                    [{'align': []}], // Выравнивание
+                    ['link', 'image', 'video'], // Вставка
+                    ['clean'] // Очистка форматирования
+                ],
+            },
+            theme: 'snow'
+        });
+    });
 </script>

@@ -1,5 +1,5 @@
-stay_visible = new Event();
-stay_hidden = new Event();
+stay_visible = new EventRBS();
+stay_hidden = new EventRBS();
 
 let functions = [];
 

@@ -19,6 +19,9 @@ if(isset($_GET['only_chat'])) {
 
     </div>
 </section>
+<?php
+echo render('player');
+?>
 
 <!-- При рендаре robot ОБЯЗАТЕЛЬНО ПЕРЕДАЁМ room, type_room, params-->
 

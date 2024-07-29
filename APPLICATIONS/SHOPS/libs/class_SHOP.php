@@ -211,6 +211,22 @@ class SHOP {
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
                             }
                             break;
+                        case 'json':
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_json SET 
+                                val='".serialize($prop_item['value'])."'
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
+                            break;
+                        case 'char':
+                            if(!empty($prop_item['id_i'])) {
+                                q("
+                                UPDATE i_char SET 
+                                val='".mb_strtoupper($prop_item['value'])."' 
+                                WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            }
+                            break;
                         case 'string':
                             if(!empty($prop_item['id_i'])) {
                                 q("
@@ -279,7 +295,7 @@ class SHOP {
 
     private static function insert_products_array(array $arr, int $shop_id): void
     {
-        $schema = get_schema('product_fields');
+        $schema = get_product_schema();
         SORT::change_preview_key($schema, 'alias', 'field_name', true);
 
         $address = [];
@@ -306,6 +322,7 @@ class SHOP {
         $i_text = [];
         $i_bool = [];
         $i_json = [];
+        $i_char = [];
 
         $first_id = SUBD::get_next_id_for_column('indexer', 'prod_id', 'shop_id', $shop_id);
         $indexer_next_id = SUBD::get_next_id('indexer', true);
@@ -378,6 +395,14 @@ class SHOP {
                         $value = db_secur($props['value'] ?? '');
                         $i_text[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
                         break;
+                    case 'json':
+                        $value = serialize(($props['json'] ?? ''));
+                        $i_json[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        break;
+                    case 'char':
+                        $value = ((mb_strtoupper($props['char']) ?? '-'));
+                        $i_char[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
+                        break;
                     case 'bool':
                         $value = (int)(db_secur($props['value'] ?? 0));
                         $i_bool[] = "(".$indexer_next_id.",".(int)$props['id'].",'".$value."')";
@@ -410,6 +435,12 @@ class SHOP {
         }
         if(!empty($i_bool)) {
             q("INSERT INTO `i_bool` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_bool)." ");
+        }
+        if(!empty($i_json)) {
+            q("INSERT INTO `i_json` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_json)." ");
+        }
+        if(!empty($i_char)) {
+            q("INSERT INTO `i_char` (`indexer_id`, `props_id`, `val`) VALUES ".implode(',',$i_char)." ");
         }
 
         // Собираются данные в таблицу координат
@@ -715,7 +746,7 @@ class SHOP {
         "));
 
         $indexer_ids = array_column($rows, 'id');
-        $schema = get_schema('product_fields');
+        $schema = get_product_schema();
         SORT::change_preview_key($schema, 'id', 'field_name');
 
 
@@ -824,7 +855,7 @@ class SHOP {
         ];
             $dt = SITE::$dt;
             q("UPDATE indexer SET `status` = 'archive' WHERE `active_to` < '".$dt."' AND `status` = 'active' ");
-            $all = SQL_ROWS(q("SELECT prod_id, shop_id, status FROM indexer WHERE owner_id=".Access::userID()));
+            $all = SQL_ROWS(q("SELECT prod_id, shop_id, status, shops_categorys FROM indexer WHERE owner_id=".Access::userID()));
             foreach($all as $vv) {
                 if($main_cat_id === -1) {
                     $rows[$vv['status']][] = [
@@ -832,7 +863,7 @@ class SHOP {
                         'ID_PRODUCT' => $vv['prod_id']
                     ];
                 } else {
-                    if($main_cat_id === (int)$vv['main_cat']) {
+                    if($main_cat_id === (int)$vv['shops_categorys']) {
                         $rows[$vv['status']][] = [
                             'SHOP' => $vv['shop_id'],
                             'ID_PRODUCT' => $vv['prod_id']
@@ -1280,7 +1311,7 @@ class SHOP {
         $buff = [];
         $querys = [];
         $joins = [];
-        $schema = get_schema('product_fields');
+        $schema = get_product_schema();
         $pattern = '/\((.*?)\)\s*(>=|<=|=|>|<|in)\s*(\(?[^)]*\)?)/';
 
         if($query_shops !== "") {
@@ -1343,9 +1374,6 @@ class SHOP {
         ".implode(' AND ', $querys)."
         LIMIT 0, 50
         ";
-
-        wtf($buff, 1);
-        wtf($query, 1);
 
         $rows = SQL_ROWS(q($query));
         if(count($rows) > 0) {

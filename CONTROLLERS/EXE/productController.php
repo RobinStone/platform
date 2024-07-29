@@ -118,3 +118,5 @@ SHOP::add_showed_count_plus($row['ID']);
 
 //wtf($showed, 1);
 //wtf($slides, 1);
+
+//wtf($row);

@@ -525,30 +525,30 @@ function template(template, params={}, call_back) {
     });
 }
 
-// function fullScreen($bool) {
-//     if ($bool == true) {
-//         if (document.documentElement.requestFullscreen) {
-//             document.documentElement.requestFullscreen();
-//         } else if (document.documentElement.msRequestFullscreen) {
-//             document.documentElement.msRequestFullscreen();
-//         } else if (document.documentElement.mozRequestFullScreen) {
-//             document.documentElement.mozRequestFullScreen();
-//         } else if (document.documentElement.webkitRequestFullscreen) {
-//             document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-//         }
-//     } else {
-//         if (document.exitFullscreen) {
-//             document.exitFullscreen();
-//         } else if (document.msExitFullscreen) {
-//             document.msExitFullscreen();
-//         } else if (document.mozCancelFullScreen) {
-//             document.mozCancelFullScreen();
-//         } else if (document.webkitExitFullscreen) {
-//             document.webkitExitFullscreen();
-//         }
-//     }
-// }
-
+// // function fullScreen($bool) {
+// //     if ($bool == true) {
+// //         if (document.documentElement.requestFullscreen) {
+// //             document.documentElement.requestFullscreen();
+// //         } else if (document.documentElement.msRequestFullscreen) {
+// //             document.documentElement.msRequestFullscreen();
+// //         } else if (document.documentElement.mozRequestFullScreen) {
+// //             document.documentElement.mozRequestFullScreen();
+// //         } else if (document.documentElement.webkitRequestFullscreen) {
+// //             document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+// //         }
+// //     } else {
+// //         if (document.exitFullscreen) {
+// //             document.exitFullscreen();
+// //         } else if (document.msExitFullscreen) {
+// //             document.msExitFullscreen();
+// //         } else if (document.mozCancelFullScreen) {
+// //             document.mozCancelFullScreen();
+// //         } else if (document.webkitExitFullscreen) {
+// //             document.webkitExitFullscreen();
+// //         }
+// //     }
+// // }
+//
 function copyToClipboard($text) {
     var $temp = $("<input>");
     $("body").append($temp);
@@ -916,13 +916,13 @@ function rubber(obj) {
 }
 
 
-function Event() {
+function EventRBS() {
     this.subscribers = [];
 }
-Event.prototype.subscribe = function(fn) {
+EventRBS.prototype.subscribe = function(fn) {
     this.subscribers.push(fn);
 };
-Event.prototype.action = function(data) {
+EventRBS.prototype.action = function(data) {
     for(let i = 0; i < this.subscribers.length; i++) {
         this.subscribers[i](data);
     }

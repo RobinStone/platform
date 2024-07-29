@@ -97,9 +97,7 @@
     </div>
 </section>
 
-<?php //echo render('chat_m', ['style'=>'user_page', 'call_room'=>'self', 'auto_start'=>true]); ?>
-
-<?php echo render('tiny', ['stars'=>true]); ?>
+<button onclick="open_window()">TEST</button>
 
 <!-- При рендаре robot ОБЯЗАТЕЛЬНО ПЕРЕДАЁМ room, type_room, params-->
 
@@ -113,4 +111,12 @@
 
 <script>
     cash = <?=PROFIL::init(Access::userID())->get('cash', 0)?>;
+
+    function open_window() {
+        let winn = window.open('https://rumbra.ru/player', 'Музыкальный Плеер', 'width=400,height=600,top=100,left=100');
+
+        setInterval(function() {
+            winn.focus();
+        }, 100);
+    }
 </script>

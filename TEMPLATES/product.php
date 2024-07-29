@@ -71,6 +71,7 @@
                 if($discount_price > 0) { echo VALUES::price_format($discount_price)." P"; }
                 ?>
                 </span>
+
             </div>
             <div class="flex align-center gap-20">
                 <button onclick="show_number(this, '<?=$phone?>')" class="btn" style="white-space: nowrap">Показать номер</button>

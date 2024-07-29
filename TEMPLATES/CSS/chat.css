@@ -64,6 +64,9 @@
 .profil .column-right .final {
     height: 100%;
 }
+#jp_container_1.opener {
+    z-index: 9999999;
+}
 
 @media screen and (max-width: 950px) {
     .column-right .main-chat-wrapper {

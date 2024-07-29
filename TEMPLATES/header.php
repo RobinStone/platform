@@ -37,10 +37,6 @@
     <script src="/JS/sysMessages.js?<?= filemtime('./JS/sysMessages.js') ?>"></script>
     <script src="/JS/informator.js?<?= filemtime('./JS/informator.js') ?>"></script>
 
-    <script async="async" src="https://cdn.tiny.cloud/1/7gjf6kwpz0c9ibyyqwqlogs78kvprk56ar1csufu5bmw17ca/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-
-<!--    <script src="/TEMPLATES/JS/header.js?--><?//= filemtime('./TEMPLATES/JS/header.js') ?><!--"></script>-->
-
     <?php
     if (count(Core::$CSS) > 0) {
         echo implode("\r\n", Core::$CSS);

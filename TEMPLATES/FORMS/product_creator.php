@@ -12,7 +12,7 @@ $list_places = explode('~~', $P->get_sys_param('list_places'));
 
 $place = '';
 
-$schema = get_schema('product_fields');
+$schema = get_product_schema();
 
 if(!empty($order)) {
     foreach($order['PROPS'] as $one_prop) {
@@ -196,12 +196,12 @@ $count = (int)$count;
                     break;
                 case 'tiny':
                     ?>
-                    <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                    <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=urlencode($params['value'] ?? $params['default'])?>">
                         <td><?=$field_name?></td>
                         <td colspan="2">
                             <?php
                             $d_text = $descr ?? '';
-                            echo render('tiny', [
+                            echo render('quill', [
                                 'visible'=>true,
                                 'text'=>$d_text,
                                 'width'=>'60vw',

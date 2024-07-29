@@ -178,4 +178,23 @@ class GEONAMER {
             ],
         ];
     }
+    public static function get_cityID_countryID(): array
+    {
+        SITE::$IP_region_fool = GEO2IP::get_info();
+        $P = PROFIL::init(Access::userID());
+        $city_name = $P->get('city', (SITE::$my_place[0] ?? '-'));
+        $country_name = $P->get('country', SITE::$IP_region_fool['country']['name_ru']);
+        if(GEONAMER::city_name_to_id($city_name) === -1) {
+            $city_name = SITE::$IP_region_fool['city']['name_ru'];
+            $P->set('city', $city_name, false);
+            $P->set('country', SITE::$IP_region_fool['country']['name_ru']);
+
+            $my_place = SITE::$IP_region_fool['city']['name_ru'] . "|" . mb_strtolower(SITE::$IP_region_fool['city']['name_en']);
+            setcookie('my_place', $my_place, time() + 31556926, '/');
+        }
+
+        $city_id = GEONAMER::city_name_to_id($city_name) ?? -1;
+        $country_id = GEONAMER::country_name_to_id($country_name) ?? -1;
+        return [$city_id, $country_id];
+    }
 }
