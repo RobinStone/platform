@@ -47,6 +47,12 @@ enum MODALITY:string {
     case seo_operator = 'seo-operator';
 }
 
+enum PRODUCT_GROUP:string {
+    case MAIN_CAT = 'shops_categorys';
+    case UNDER_CAT = 'shops_undercats';
+    case ACTION_LIST = 'shops_lists';
+}
+
 Core::$DT = date('Y-m-d H:i:s');
 Core::$SESSIONCODE = md5(session_id().Core::$CRYPTER_SALT_1);
 SITE::set('CODE', Core::$SESSIONCODE);
