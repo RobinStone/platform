@@ -29,11 +29,11 @@ class CATALOGER {
 
     public static function INIT() {
         unset($_SESSION['cataloger']);
-        if(file_exists('./RESURSES/cataloger.txt')) {
-            return unserialize(file_get_contents('./RESURSES/cataloger.txt'));
+        if(file_exists(Core::$path.'/RESURSES/cataloger.txt')) {
+            return unserialize(file_get_contents(Core::$path.'/RESURSES/cataloger.txt'));
         } else {
             $CAT = new CATALOGER();
-            file_put_contents('./RESURSES/cataloger.txt', serialize($CAT));
+            file_put_contents(Core::$path.'/RESURSES/cataloger.txt', serialize($CAT));
             return $CAT;
         }
 //        if(isset($_SESSION['cataloger'])) {

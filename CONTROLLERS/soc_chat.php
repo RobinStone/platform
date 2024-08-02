@@ -40,6 +40,7 @@ require_once __DIR__.'/../libs/class_PHONEBOOK.php';
 require_once __DIR__.'/../APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
 require_once __DIR__.'/../APPLICATIONS/SHOPS/libs/class_SHOP.php';
 require_once __DIR__.'/../libs/class_SEARCH.php';
+require_once __DIR__.'/../libs/class_SORT.php';
 require_once __DIR__.'/../libs/class_Message.php';
 require_once __DIR__.'/../libs/class_PROFIL.php';
 require_once __DIR__.'/../CONTROLLERS/soc_autoload.php';

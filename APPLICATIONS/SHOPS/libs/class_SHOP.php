@@ -590,7 +590,8 @@ class SHOP {
 
         $cat = null;
         if($with_categorys) {
-            include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
+//            include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
+            include_once Core::$path.'/APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
             $cat = new CATALOGER();
         }
 
@@ -612,7 +613,8 @@ class SHOP {
             }
         }
 
-        INCLUDE_CLASS('shops', 'props_commander');
+//        INCLUDE_CLASS('shops', 'props_commander');
+        include_once Core::$path.'/APPLICATIONS/SHOPS/libs/class_PROPS_COMMANDER.php';
 
         $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'));
         $pr = $PROPS->get_all_props();
