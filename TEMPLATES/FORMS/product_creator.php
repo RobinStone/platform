@@ -15,9 +15,23 @@ $place = '';
 $schema = get_product_schema();
 
 if(!empty($order)) {
+//    wtf($order);
     foreach($order['PROPS'] as $one_prop) {
-        $schema[$one_prop[0]['field_name']]['value'] = $one_prop[0]['value'];
-        $schema[$one_prop[0]['field_name']]['id_i'] = $one_prop[0]['id'];
+        if($one_prop[0]['schema_id'] <= 17) {
+            $schema[$one_prop[0]['field_name']]['value'] = $one_prop[0]['value'];
+            $schema[$one_prop[0]['field_name']]['id_i'] = $one_prop[0]['id'];
+        }
+    }
+//wtf($schema);
+//wtf($order['PROPS']);
+    $additional_fields = SHOP::get_additional_fields_for_cats(
+            $order['main_cat_id'],
+            $order['under_cat_id'],
+            $order['action_list_id']
+    );
+
+    if(is_array($additional_fields)) {
+        PROPS_COMMANDER::aply_values_for_additional_schema($additional_fields, $order['PROPS']);
     }
 
     $CAT = CATALOGER::INIT();
@@ -39,6 +53,32 @@ if(!empty($order)) {
     SORT::change_preview_key($schema, 'field_name', 'alias');
 }
 
+if(isset($_GET['main'])) {
+    $CAT = CATALOGER::INIT();
+    SORT::change_preview_key($schema, 'alias', 'field_name');
+
+    $schema['category']['value'] = $CAT->id2main_cat((int)$_GET['main']);
+    $schema['category']['real'] = (int)$_GET['main'];
+
+    if (isset($_GET['under'])) {
+        $schema['under-cat']['value'] = $CAT->id2under_cat((int)$_GET['under']);
+        $schema['under-cat']['real'] = (int)$_GET['under'];
+    } else {
+        $schema['under-cat']['value'] = '-';
+        $schema['under-cat']['real'] = -1;
+    }
+    if (isset($_GET['list'])) {
+        $schema['action-list']['value'] = $CAT->id2action_list((int)$_GET['list']);
+        $schema['action-list']['real'] = (int)$_GET['list'];
+    } else {
+        $schema['action-list']['value'] = '-';
+        $schema['action-list']['real'] = -1;
+    }
+
+    $additional_fields = SHOP::get_additional_fields_for_cats((int)$_GET['main'], $schema['under-cat']['real'], $schema['action-list']['real']);
+
+    SORT::change_preview_key($schema, 'field_name', 'alias');
+}
 //wtf($order, 1);
 //wtf($schema, 1);
 
@@ -83,12 +123,42 @@ $count = (int)$count;
         </tr>
 
         <?php
+        $descr = $descr ?? "";
 
-        foreach($schema as $field_name=>$params) {
-            $class = "";
-            if($params['visible'] !== 1) {
+        if(isset($additional_fields) && is_array($additional_fields)) {
+            $schema = array_merge($schema, $additional_fields);
+        }
+
+//        wtf($schema);
+//        wtf($additional_fields);
+
+
+        render_rows($schema, $cats, $descr);
+
+        ?>
+    </table>
+</div>
+
+<?php
+function render_rows(array $rows, $cats, $descr='') {
+    global $place;
+    ob_start();
+    foreach($rows as $field_name=>$params) {
+
+        $params['field_name'] = $field_name;
+
+        $params['id_i'] = $params['id_i'] ?? '';
+
+        $class = "";
+
+        if(is_array($params) && isset($params['alias'])) {
+            if($params['visible'] != 1) {
                 $class = "invisible";
             }
+            if(isset($params['disabled']) && $params['disabled'] == 1) {
+                $class .= " disabled ";
+            }
+
             switch($params['field']) {
                 case 'input':
                     if($params['type'] === 'string') { ?>
@@ -129,6 +199,9 @@ $count = (int)$count;
                     <?php
                     break;
                 case 'input-object-cat':
+                    if(isset($_GET['main'])) {
+                        $class .= " disabled ";
+                    }
                     ?>
                     <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['real'] ?? $params['default']?>">
                         <td><?=$field_name?></td>
@@ -152,6 +225,9 @@ $count = (int)$count;
                     <?php
                     break;
                 case 'input-object-undercat':
+                    if(isset($_GET['under'])) {
+                        $class .= " disabled ";
+                    }
                     ?>
                     <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['real'] ?? $params['default']?>">
                         <td><?=$field_name?></td>
@@ -168,6 +244,9 @@ $count = (int)$count;
                     <?php
                     break;
                 case 'input-object-actionlist':
+                    if(isset($_GET['list'])) {
+                        $class .= " disabled ";
+                    }
                     ?>
                     <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['real'] ?? $params['default']?>">
                         <td><?=$field_name?></td>
@@ -222,14 +301,31 @@ $count = (int)$count;
                     <?php
                     break;
             }
+
+            if(isset($params['ITEMS'])) {
+                render_rows($params['ITEMS'], $cats);
+            }
+
+        } else {
+//            wtf($params, 1);
+            echo '<tr class="clear-row"><td colspan="2"><div></div></td></tr>';
+            echo '<tr class="title-header-row"><td colspan="2"><h1 style="font-size: 22px; font-weight: 800; text-align: left">'.$field_name.'</h1></td></tr>';
+            foreach($params as $key_param=>$param2) {
+                if(isset($param2['alias'])) {
+                    $param2['field_name'] = $key_param;
+                } else {
+                    unset($params[$key_param]);
+                }
+            }
+            render_rows($params, $cats);
+            echo '<tr class="clear-row down"><td colspan="2"><div></div></td></tr>';
         }
 
-        ?>
+    }
+    echo ob_get_clean();
+}
+?>
 
-
-
-    </table>
-</div>
 <table class="set-to_bottom">
     <tr class="gray-box">
         <?php if(isset($_GET['com']) && $_GET['com'] === 'edit') { ?>
@@ -241,13 +337,13 @@ $count = (int)$count;
         <?php } ?>
         <td></td>
         <td style="text-align: right">
-            <button onclick="add_properties()" class="btn-just" style="padding: 2px 10px">+ Добавить свойство</button>
+<!--            <button onclick="add_properties()" class="btn-just" style="padding: 2px 10px">+ Добавить свойство</button>-->
         </td>
     </tr>
 </table>
 
 <script>
-    props_items = <?=json_encode($schema, JSON_UNESCAPED_UNICODE)?>;
+    props_items = <?=json_encode(FILTERS::get_all_nesting_fields($schema), JSON_UNESCAPED_UNICODE)?>;
 
     list_places = <?=json_encode($list_places, JSON_UNESCAPED_UNICODE)?>;
     phones = <?=json_encode($phones, JSON_UNESCAPED_UNICODE)?>;

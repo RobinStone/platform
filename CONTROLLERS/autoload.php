@@ -96,6 +96,20 @@ function SQL_ROWS($ask): array
 
     return $arr;
 }
+function SQL_FIELD($ask, string $field_name) {
+    if ($ask === false) {
+        return false;
+    }
+    if (is_a($ask, 'mysqli_result')) {
+        $arr = $ask->fetch_assoc();
+    } else {
+        $arr = $ask[0] ?? null;
+    }
+    if (isset($arr[$field_name]) && !empty($arr[$field_name])) {
+        return $arr[$field_name];
+    }
+    return false;
+}
 
 function SQL_ROWS_FIELD($ask, $field_name): array
 {
@@ -654,28 +668,11 @@ function linker(string &$html) {
 }
 
 function get_product_schema() {
-    if(file_exists('./RESURSES/BUFFER/schema_all.json')) {
-        return unserialize(file_get_contents('./RESURSES/BUFFER/schema_all.json'));
+    if (file_exists('./CONTROLLERS/SCHEMAS/product_fields.php')) {
+        $rows = require './CONTROLLERS/SCHEMAS/product_fields.php';
+        return $rows;
     } else {
-        if (file_exists('./CONTROLLERS/SCHEMAS/product_fields.php')) {
-            $rows = require './CONTROLLERS/SCHEMAS/product_fields.php';
-
-//            $sql = SQL_ROWS_FIELD(q("SELECT * FROM `schemas` "), 'field_name');
-//            foreach ($sql as $k => $v) {
-//                if ($v['field'] === 'list') {
-//                    if (!empty($v['default'])) {
-//                        $v['default'] = explode('|', $v['default']);
-//                    } else {
-//                        $v['default'] = [0 => ''];
-//                    }
-//                }
-//                $rows[$k] = $v;
-//            }
-//            file_put_contents('./RESURSES/BUFFER/schema_all.json', serialize($rows));
-            return $rows;
-        } else {
-            wtf('not schema - ./CONTROLLERS/SCHEMAS/product_fields.php');
-        }
+        wtf('not schema - ./CONTROLLERS/SCHEMAS/product_fields.php');
     }
 }
 

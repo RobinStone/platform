@@ -33,7 +33,10 @@ class FILTERS {
             $row = unserialize($row['json']);
         }
         $result = [];
-        self::get_field($row, $result);
+        $last_id = SUBD::get_next_id('filters', true);
+        $last_id_buff = $last_id;
+
+        self::get_field($row, $result, $last_id);
 
         if(count($result) > 0) {
             foreach($result as $kk=>$vv) {
@@ -60,9 +63,13 @@ class FILTERS {
             }
 
             if(count($result) > 0) {
+
+                q("UPDATE `".$group->value."` SET `json` = '".serialize($row)."' WHERE `id`=".$id_group);
+
                 $querys = [];
                 foreach($result as $k=>$v) {
                     $querys[] = "(
+                    ".$last_id_buff++.",
                     '".db_secur($v['alias'])."',
                     ".(int)$v['order'].",
                     '".$v['type']."',
@@ -76,7 +83,7 @@ class FILTERS {
                 }
 
                 q("
-                INSERT INTO `filters` (`alias`,`order`,`type`,`field`,`default`,`block`,`visible`,`required`,`field_name`) 
+                INSERT INTO `filters` (`id`, `alias`,`order`,`type`,`field`,`default`,`block`,`visible`,`required`,`field_name`) 
                 VALUES ".implode(',', $querys)." 
                 ");
             }
@@ -84,16 +91,44 @@ class FILTERS {
         return $result;
     }
 
-    private static function get_field($arr, &$result)
+    private static function get_field(&$arr, &$result, &$last_id=-1)
     {
-        foreach($arr as $k=>$v) {
+        foreach($arr as $k=>&$v) {
             if(is_array($v) && isset($v['alias'])) {
+                if(isset($v['ITEMS'])) {
+                    foreach($v['ITEMS'] as $kkk=>&$vvv) {
+                        if($last_id !== -1 && !isset($vvv['id'])) {
+                            $vvv['id'] = $last_id++;
+                        }
+                        $result[$kkk] = $vvv;
+                    }
+                    if($last_id === -1) {
+                        unset($v['ITEMS']);
+                    }
+                }
+                if($last_id !== -1 && !isset($v['id'])) {
+                    $v['id'] = $last_id++;
+                }
                 $result[$k] = $v;
             } else {
                 if(is_array($v)) {
-                    self::get_field($v, $result);
+                    self::get_field($v, $result, $last_id);
                 }
             }
         }
     }
+
+    /**
+     * Возвращает все вложенные поля в виде обычного массива
+     *
+     * @param $arr
+     * @return array
+     */
+    public static function get_all_nesting_fields($arr): array
+    {
+        $result = [];
+        self::get_field($arr, $result);
+        return $result;
+    }
 }
+

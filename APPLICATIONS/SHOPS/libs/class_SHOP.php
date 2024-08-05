@@ -625,7 +625,7 @@ class SHOP {
         return $rows;
     }
 
-    public static function get_products_list_at_indexer_ids(array $indexer_ids, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50]):array {
+    public static function get_products_list_at_indexer_ids(array $indexer_ids, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50], $all_props=false):array {
         if($direct !== 'ASC') {
             $direct = 'DESC';
         }
@@ -701,7 +701,7 @@ class SHOP {
 
         INCLUDE_CLASS('shops', 'props_commander');
 
-        $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'));
+        $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'), $all_props);
         $pr = $PROPS->get_all_props();
         foreach($rows as &$v) {
             $v['PROPS'] = $pr[$v['id']];
@@ -1391,5 +1391,28 @@ class SHOP {
         } else {
             return $str;
         }
+    }
+
+    /**
+     * Получает список дополнительных (необязательных) полей для товаров
+     *
+     * @param int $main_cat_id
+     * @param int $under_cat_id
+     * @param int $action_list_id
+     * @return mixed
+     */
+    public static function get_additional_fields_for_cats(int $main_cat_id, int $under_cat_id=-1, int $action_list_id=-1): mixed
+    {
+        if($action_list_id !== -1 && $json = SQL_FIELD(q("SELECT json FROM shops_lists WHERE id=".$action_list_id." LIMIT 1"), 'json')) {
+            $json = unserialize($json);
+        } else if($under_cat_id !== -1 && $json = SQL_FIELD(q("SELECT json FROM shops_undercats WHERE id=".$under_cat_id." LIMIT 1"), 'json')) {
+            $json = unserialize($json);
+        } else if($json = SQL_FIELD(q("SELECT json FROM shops_categorys WHERE id=".$main_cat_id." LIMIT 1"), 'json')) {
+            $json = unserialize($json);
+        } else {
+            $json = false;
+        }
+
+        return $json;
     }
 }

@@ -506,9 +506,6 @@ body a.h2:active {
 .title-log:active {
     transform: scale(0.97);
 }
-.content.pre > .inner-class.main-class:nth-last-child(2) {
-    margin-bottom: 15px;
-}
 /*==================================================================*/
 
 /*==================================================================*/
