@@ -11,6 +11,10 @@ class GENERAL_UPLOADER {
                 echo json_encode($ans, JSON_UNESCAPED_UNICODE);
                 exit;
             }
+            if(isset($_POST['include'])) {
+                $type = 'EXECUTE';
+                include('./CONTROLLERS/UPLOAD_GENERAL_EXECUTERS/'.$post['executer'].'.php');
+            }
         }
     }
 

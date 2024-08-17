@@ -2,7 +2,7 @@
 $id = (int)$post['id'];
 $shop = SUBD::get_executed_rows('shops', 'id', $id)[$id];
 $shop_vals = SUBD::getLineDB('shops', 'id', $id);
-$cities = SQL_ROWS_FIELD(q("SELECT `id`, `name`, `country` FROM `cities`"), 'id');
+$cities = SQL_ROWS_FIELD(q("SELECT `id`, `name`, `id_country` FROM `city`"), 'id');
 
 $created = VALUES::dateToFormat($shop['created']);
 $active_to = VALUES::dateToFormat($shop['active_to']);

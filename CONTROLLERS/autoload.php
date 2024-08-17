@@ -698,6 +698,13 @@ SITE::$my_place  = $my_place;
 SITE::$profil = PROFIL::init(Access::userID());
 SITE::$GEO = GEONAMER::get_current_position();
 
+if(isset($_SESSION['user']['level'])) {
+    if($_SESSION['user']['level'] > 0) {
+        SITE::$USER_DIR = Core::$DOMAIN . "APPLICATIONS/SHOPS/user_storages/" . $_SESSION['user']['id'] . "/";
+        SITE::$USER_LOCAL_DIR = "./APPLICATIONS/SHOPS/user_storages/" . $_SESSION['user']['id'] . "/";
+    }
+}
+
 if(isset($_COOKIE['personal'])) {
     SITE::$personal = $_COOKIE['personal'];
 } else {

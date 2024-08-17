@@ -1,4 +1,4 @@
-ws_ss = new WebSocket('wss://rumbra.ru:2349')
+ws_ss = new WebSocket('wss://kokonk.com:2349')
 
 ws_ss.onopen = function (e) {
     console.log("Connection established SOC_APP");

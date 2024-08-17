@@ -11,7 +11,11 @@
 </style>
 
 <div class="flex center gap-10">
+    <?php if(!isset($path)) { ?>
     <img class="imger" src="/DOWNLOAD/<?=$img?>">
+    <?php } else { ?>
+        <img class="imger" src="<?=$path?>">
+    <?php } ?>
 </div>
 
 <script>

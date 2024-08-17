@@ -224,7 +224,7 @@ $wsWorker->onConnect = function($connection) use ($red, $wsWorker) {
 //                                    $params_ord = explode('~~', $row[0]['params']);
                                     if (!$red->isset_in_group('CONNECTED', $client_id_user)) { // отсутствует на сайте в любом из чатов на текущий момент
                                         if(isset($client) && $client['tele'] !== '-') {
-                                            $txt_mess = "Сообщние в чат: \r\n*" . $data['body']['text'] . "*\r\nhttps://rumbra.ru/messenger?room=" . $ROOM;
+                                            $txt_mess = "Сообщние в чат: \r\n*" . $data['body']['text'] . "*\r\nhttps://kokonk.com/messenger?room=" . $ROOM;
                                             TELE::send_at_user_name($client['login'], $txt_mess);
                                         }
                                     } else {  // где то на сайте в одном из чатов
@@ -243,7 +243,7 @@ $wsWorker->onConnect = function($connection) use ($red, $wsWorker) {
                             } else {   //  ПИШЕТ ПОКУПАТЕЛЬ ПРОДАВЦУ
 
                                 if (!$red->isset_in_group('CONNECTED', $owner_id_user)) {   // отсутствует на сайте в любом из чатов на текущий момент
-                                    $txt_mess = "Сообщние в чат: \r\n*" . $data['body']['text'] . "*\r\nhttps://rumbra.ru/messenger?room=" . $ROOM;
+                                    $txt_mess = "Сообщние в чат: \r\n*" . $data['body']['text'] . "*\r\nhttps://kokonk.com/messenger?room=" . $ROOM;
                                     TELE::send_at_user_id($owner_id_user, $txt_mess);
                                 } else {  // присутствует в каком то чате на сайте
 //                                    $client_id = $red->obj_get('ID-CONNECT', $owner_id_user);  //  $client_id - это id WsWorker
@@ -293,7 +293,7 @@ $wsWorker->onConnect = function($connection) use ($red, $wsWorker) {
                                                 if($us['tele'] !== '' && $us['tele'] !== '-') {
                                                     $code = crypter("wer".rand(1000, 9999));
                                                     Access::set_system_message($code, $us['login'], ActionsList::AUTH, (int)$v_itm, 60);
-                                                    TELE::send_at_user_name($us['login'], "Запрос в поддержку:\r\n".$data['body']['text']."\r\nhttps://rumbra.ru/admin?auto_auth=".$code."&room=".$query_row['room_id']);
+                                                    TELE::send_at_user_name($us['login'], "Запрос в поддержку:\r\n".$data['body']['text']."\r\nhttps://kokonk.com/admin?auto_auth=".$code."&room=".$query_row['room_id']);
                                                 }
                                             }
                                         }

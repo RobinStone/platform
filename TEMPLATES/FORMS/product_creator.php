@@ -159,6 +159,10 @@ function render_rows(array $rows, $cats, $descr='') {
                 $class .= " disabled ";
             }
 
+            if(isset($params['ITEMS'])) {
+                echo '<tr class="clear-row up"><td colspan="2"><div></div></td></tr>';
+            }
+
             switch($params['field']) {
                 case 'input':
                     if($params['type'] === 'string') { ?>
@@ -304,12 +308,13 @@ function render_rows(array $rows, $cats, $descr='') {
 
             if(isset($params['ITEMS'])) {
                 render_rows($params['ITEMS'], $cats);
+                echo '<tr class="clear-row down"><td colspan="2"><div></div></td></tr>';
             }
 
         } else {
 //            wtf($params, 1);
-            echo '<tr class="clear-row"><td colspan="2"><div></div></td></tr>';
-            echo '<tr class="title-header-row"><td colspan="2"><h1 style="font-size: 22px; font-weight: 800; text-align: left">'.$field_name.'</h1></td></tr>';
+//            echo '<tr class="clear-row"><td colspan="2"><div></div></td></tr>';
+            echo '<tr class="title-header-row"><td></td><td><h1 style="font-size: 22px; font-weight: 800; text-align: left">'.$field_name.'</h1></td></tr>';
             foreach($params as $key_param=>$param2) {
                 if(isset($param2['alias'])) {
                     $param2['field_name'] = $key_param;
@@ -318,7 +323,7 @@ function render_rows(array $rows, $cats, $descr='') {
                 }
             }
             render_rows($params, $cats);
-            echo '<tr class="clear-row down"><td colspan="2"><div></div></td></tr>';
+//            echo '<tr class="clear-row down"><td colspan="2"><div></div></td></tr>';
         }
 
     }

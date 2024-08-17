@@ -52,7 +52,7 @@ function map_coder_order_init(longitude, latitude, label_img, address = '', hint
             '<div style="position: relative; width: 70px; height: 70px; transform: translate(-26px, -37px)">' +
             '<div style="position: absolute; background: url(/DOWNLOAD/20230729-164009_id-2-778703.svg) no-repeat center; width: 70px; height: 70px; background-size: 100%"></div>' +
             '<div style="position: absolute; left: 15px; top: 2px; background-color: #ffffff; width: 40px; height: 40px; border-radius: 50%; "></div>' +
-            '<div style="position: absolute; left: 15px; top: 2px; background: url(https://rumbra.ru/IMG/img100x100/' + label_img + ') no-repeat center; border-radius: 50%; width: 40px; height: 40px; background-size: 80%"></div>' +
+            '<div style="position: absolute; left: 15px; top: 2px; background: url(https://kokonk.com/IMG/img100x100/' + label_img + ') no-repeat center; border-radius: 50%; width: 40px; height: 40px; background-size: 80%"></div>' +
             '</div>', {});
 
         // say('[' + address + ']');

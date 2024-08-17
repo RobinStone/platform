@@ -113,7 +113,7 @@
     cash = <?=PROFIL::init(Access::userID())->get('cash', 0)?>;
 
     function open_window() {
-        let winn = window.open('https://rumbra.ru/player', 'Музыкальный Плеер', 'width=400,height=600,top=100,left=100');
+        let winn = window.open('https://kokonk.com/player', 'Музыкальный Плеер', 'width=400,height=600,top=100,left=100');
 
         setInterval(function() {
             winn.focus();

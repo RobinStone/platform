@@ -4,7 +4,7 @@
             <?=RBS::SVG('burger.svg'); ?>
         </button>
         <div class="logo-row">
-            <a href="/" class="svg-wrapper" style="display: inline-block; height: 20px"><?=RBS::SVG('20230814-102825_id-2-423088.svg')?></a>
+            <a href="/" class="svg-wrapper" style="display: inline-block; height: 20px"><?=RBS::SVG('20240815-150558_id-2-611390.svg')?></a>
         </div>
         <?php if(Access::scanLevel() === 0) { ?>
         <button onclick="auth()" class="svg-wrapper btn btn-white svg-red profil-btn-action">

@@ -3,7 +3,6 @@ include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
 include_once './APPLICATIONS/SHOPS/libs/class_SHOP.php';
 include_once './APPLICATIONS/SHOPS/libs/class_PROPS_COMMANDER.php';
 
-
 include_CDN_JS('https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey='.Core::$YANDEXGEOCODER.'&suggest_apikey='.Core::$SUGGEST_GEOCODER);
 
 include_JS('map_coder');
@@ -50,29 +49,29 @@ $shop_id = (int)$_GET['s'];
 $product_id = (int)$_GET['prod'];
 
 $row['SHOP']['CITY_ALL'] = SUBD::getLineDB('cities', 'name', $row['SHOP']['city']);
-if($row['SHOP']['CITY_ALL'] === false) {
-    $row_c = SQL_ROWS(q("SELECT * FROM `coords` WHERE `shop_id`=".$shop_id." AND `product_id`=".$product_id." LIMIT 1"));
-    if(count($row_c) > 0) {
-        $address = explode(', ', $PRO->get_all_props_at_field_name('Расположение', true)['VALUE']);
-        $address = array_reverse($address);
-        $row['SHOP']['CITY_ALL'] = [
-            'id'=>-1,
-            'shirota'=>$row_c[0]['lat'],
-            'dolgota'=>$row_c[0]['lng'],
-        ];
-        if(is_array($address)) {
-            $row['SHOP']['CITY_ALL']['name'] = $address[0];
-            if(count($address) >= 2) {
-                $row['SHOP']['CITY_ALL']['region'] = $address[1];
-            }
-            if(count($address) >= 3) {
-                $row['SHOP']['CITY_ALL']['country'] = $address[2];
-            }
-        } else {
-            $row['SHOP']['CITY_ALL']['name'] = $address;
-        }
-    }
-}
+//if($row['SHOP']['CITY_ALL'] === false) {
+//    $row_c = SQL_ROWS(q("SELECT * FROM `coords` WHERE `shop_id`=".$shop_id." AND `product_id`=".$product_id." LIMIT 1"));
+//    if(count($row_c) > 0) {
+//        $address = explode(', ', $PRO->get_all_props_at_field_name('Расположение', true)['VALUE']);
+//        $address = array_reverse($address);
+//        $row['SHOP']['CITY_ALL'] = [
+//            'id'=>-1,
+//            'shirota'=>$row_c[0]['lat'],
+//            'dolgota'=>$row_c[0]['lng'],
+//        ];
+//        if(is_array($address)) {
+//            $row['SHOP']['CITY_ALL']['name'] = $address[0];
+//            if(count($address) >= 2) {
+//                $row['SHOP']['CITY_ALL']['region'] = $address[1];
+//            }
+//            if(count($address) >= 3) {
+//                $row['SHOP']['CITY_ALL']['country'] = $address[2];
+//            }
+//        } else {
+//            $row['SHOP']['CITY_ALL']['name'] = $address;
+//        }
+//    }
+//}
 
 if($place === '') {
     $place = $row['SHOP']['city'];

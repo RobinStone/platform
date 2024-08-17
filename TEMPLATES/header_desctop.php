@@ -8,7 +8,7 @@ $my_place = SITE::$my_place;
             <span style="display: inline-block; min-width: 170px; position: relative" onclick="change_my_place(this)" title="Город указан не верно?" data-my_place="<?=$my_place[1]?>">г. <?=$my_place[0]?></span>
         </div>
         <div class="logo-row">
-            <a href="/" class="svg-wrapper" style="display: inline-block; height: 26px"><?=RBS::SVG('20230814-102825_id-2-423088.svg')?></a>
+            <a href="/" class="svg-wrapper" style="display: inline-block; height: 26px"><?=RBS::SVG('20240815-150558_id-2-611390.svg')?></a>
         </div>
         <ul class="action-menu flex align-center gap-20">
             <li class="action-btn" onclick="theme_checker()">

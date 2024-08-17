@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@500;700&display=swap" rel="stylesheet">
 
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?49376" type="image/x-icon">
 
     <link rel="stylesheet" href="/CSS/reset.css">
     <link rel="stylesheet" href="/CSS/style.css?<?= filemtime('./CSS/style.css') ?>">
@@ -22,7 +22,7 @@
     <script src="/JS/jquery.cookie.js"></script>
     <script src="/JS/sysMessages.js?<?= filemtime('./JS/sysMessages.js') ?>"></script>
     <script src="/JS/informator.js?<?= filemtime('./JS/informator.js') ?>"></script>
-    <?
+    <?php
     if (count(Core::$CSS) > 0) {
         echo implode("\r\n", Core::$CSS);
     }
@@ -41,7 +41,7 @@
 <body class="admin-pages" id="body">
 
 <script>
-    <?
+    <?php
     global $JS_VARS;
     foreach($JS_VARS as $k=>$v) {
         echo $k.'='.$v.';';

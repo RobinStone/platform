@@ -8,6 +8,7 @@
       "ext-mbstring": "*",
       "ext-mysqli": "*",
       "ext-curl": "*",
-        "phpoffice/phpspreadsheet": "^2.1"
+        "phpoffice/phpspreadsheet": "^2.1",
+      "ext-fileinfo": "*"
     }
 }

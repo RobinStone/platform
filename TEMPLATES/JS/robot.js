@@ -431,7 +431,7 @@ function active_chat(room, type_room='free|shop|product|personal', params={}) {
         type_room: type_room,
         params: params,
     }
-    ws = new WebSocket('wss://rumbra.ru:2348');
+    ws = new WebSocket('wss://kokonk.com:2348');
     ws.onopen = function (e) {
         consol('Чат - запущен', 1);
         let arr = {

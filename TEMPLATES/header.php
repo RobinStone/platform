@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" href="/favicon.ico?342342" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?3423425" type="image/x-icon">
 
     <?php
     if(Core::$CANONICAL !== '') {

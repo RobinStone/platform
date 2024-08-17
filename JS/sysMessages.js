@@ -996,19 +996,20 @@ $(document).on('click', '.overlay-gray-2', function(e) {
     close_popup($(this).attr('data-overlay'))
 });
 function open_popup(popup_name, datas={}, call_back=function(mess_params) {}) {
+    let div = setOverlayJust2();
+    let place = $('<div class="place-popap"><div class="loader-cont flex column gap-10"><img width="100" height="100" src="./DOWNLOAD/20230609-201051_id-2-217564.gif"><div>Ожидайте. Документ структурируется...</div></div><button onclick="close_popup(\''+popup_name+'\')" class="closer popap-closer-btn"></button></div>');
     SENDER('get_popup', {name: popup_name, datas: datas}, function(mess) {
         mess_executer(mess, function(mess) {
-            let div = setOverlayJust2();
-            let place = $('<div class="place-popap"><button onclick="close_popup(\''+popup_name+'\')" class="closer popap-closer-btn"></button></div>');
             $(place).append(mess.params);
-            $(div).append(place);
-            $(div).attr('data-overlay', popup_name);
-            setTimeout(function() {
-                place.addClass('showed');
-            }, 100);
+            $('.loader-cont').remove();
             call_back();
         });
     });
+    $(div).append(place);
+    $(div).attr('data-overlay', popup_name);
+    setTimeout(function() {
+        place.addClass('showed');
+    }, 100);
 }
 function close_popup(popup_name) {
     let overl = $('.overlay-gray-2[data-overlay="'+popup_name+'"]');
@@ -1045,4 +1046,42 @@ function isset_param_in_address_row(param) {
 }
 function decode_phone(str_number) {
     return str_number.replace(/[^0-9+\-()]/g, '');
+}
+function get_extention(file_name) {
+    let exp = file_name.split('.');
+    exp = exp[exp.length - 1];
+    exp = exp.toLowerCase();
+    switch(exp) {
+        case 'jpg':
+        case 'jpeg':
+        case 'webp':
+        case 'png':
+        case 'gif':
+            return 'image';
+        case 'mp3':
+        case 'ogg':
+        case 'wav':
+        case 'ape':
+        case 'flac':
+            return 'audio';
+        case 'mp4':
+        case 'webm':
+        case 'wmv':
+        case 'avi':
+            return 'video';
+        case 'svg':
+            return 'svg';
+        case 'txt':
+            return 'txt';
+        case 'doc':
+        case 'docx':
+            return 'word';
+        case 'xlsx':
+        case 'xlsm':
+            return 'tabs';
+        case 'pdf':
+            return 'pdf';
+        default:
+            return 'file';
+    }
 }

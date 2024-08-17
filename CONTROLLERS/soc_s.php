@@ -20,8 +20,8 @@ require_once __DIR__.'/../CONTROLLERS/soc_autoload.php';
 
 $context = [
     'ssl' => [
-        'local_cert' => '/var/www/httpd-cert/www-root/rumbra.ru_le3.crt',
-        'local_pk' => '/var/www/httpd-cert/www-root/rumbra.ru_le3.key',
+        'local_cert' => '/var/www/httpd-cert/www-root/rumbra.ru_le4.crt',
+        'local_pk' => '/var/www/httpd-cert/www-root/rumbra.ru_le4.key',
         'verify_peer' => false,
     ],
 ];

@@ -7,6 +7,40 @@ switch($_POST['com']) {
     case 'test':
         echo 'Тут находится тестовое сообщение для настройки информационнфх панелей на несколько строк';
         break;
+    case 'moove_in':
+        $err = isset_columns($_POST, ['arr', 'folder_in']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        TOTALCOMANDER::moove_items_to_folder($post['arr'], $post['folder_in']);
+        ans('ok');
+        break;
+    case 'del_items':
+        $err = isset_columns($_POST, ['arr']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        $errors = [];
+        foreach($post['arr'] as $k=>$v) {
+            if(isset($v['SYSIMGS'])) {
+                $errors[] = $v['name'];
+                unset($post['arr'][$k]);
+            }
+        }
+        TOTALCOMANDER::delete_items($post['arr']);
+        if(count($errors) > 0) {
+            ans('ok', ['errors'=>$errors]);
+        }
+        ans('ok');
+        break;
+    case 'add_folder':
+        $err = isset_columns($_POST, ['path', 'name']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        TOTALCOMANDER::add_folder($post['path'], $post['name']);
+        ans('ok');
+        break;
     case 'update_total':
         $err = isset_columns($_POST, ['left', 'right']);
         if(is_array($err)) {

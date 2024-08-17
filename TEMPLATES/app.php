@@ -1,7 +1,7 @@
 <h1 id="h1">labuton</h1>
 <button onclick="send_com('com=test~|text=ROBIN BOBIN~|status=ofigitelno')">send</button>
 <script>
-    ws_ss = new WebSocket('wss://rumbra.ru:2349')
+    ws_ss = new WebSocket('wss://kokonk.com:2349')
 
     ws_ss.onopen = function (e) {
         console.log("Connection established SOC_APP");
