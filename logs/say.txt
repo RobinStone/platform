@@ -1,0 +1,1233 @@
+Array
+(
+    [Изображение] => Array
+        (
+            [id] => 1
+            [alias] => images
+            [order] => 10
+            [type] => string
+            [field] => image
+            [column] => 
+            [default] => none.svg
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Изображение
+            [value] => 20231201-071154_id-5-415336.png
+            [id_i] => 257
+        )
+
+    [Название товара] => Array
+        (
+            [id] => 2
+            [alias] => product_name
+            [order] => 20
+            [type] => string
+            [field] => input
+            [column] => name
+            [default] => 
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Название товара
+            [value] => toyota camry
+        )
+
+    [В наличии] => Array
+        (
+            [id] => 17
+            [alias] => active
+            [order] => 24
+            [type] => bool
+            [field] => bool
+            [column] => 
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Есть
+                            [1] => Нету
+                        )
+
+                    [preset] => 1
+                )
+
+            [block] => 1
+            [visible] => 1
+            [required] => 0
+            [field_name] => В наличии
+            [value] => 1
+            [id_i] => 61
+        )
+
+    [Стоимость] => Array
+        (
+            [id] => 3
+            [alias] => price
+            [order] => 30
+            [type] => float
+            [field] => input
+            [column] => price
+            [default] => 
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Стоимость
+            [value] => 4000000.00
+        )
+
+    [Расположение] => Array
+        (
+            [id] => 4
+            [alias] => place
+            [order] => 40
+            [type] => string
+            [field] => input-object-place
+            [column] => 
+            [default] => 
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Расположение
+            [value] => караульная 44
+            [id_i] => 262
+        )
+
+    [Тип (категория)] => Array
+        (
+            [id] => 5
+            [alias] => category
+            [order] => 50
+            [type] => int
+            [field] => input-object-cat
+            [column] => shops_categorys
+            [default] => -1
+            [block] => 1
+            [disabled] => 0
+            [visible] => 1
+            [required] => 1
+            [field_name] => Тип (категория)
+            [value] => Транспорт
+            [real] => 4
+        )
+
+    [Подкатегория] => Array
+        (
+            [id] => 6
+            [alias] => under-cat
+            [order] => 60
+            [type] => int
+            [field] => input-object-undercat
+            [column] => shops_undercats
+            [default] => -1
+            [block] => 1
+            [disabled] => 1
+            [visible] => 1
+            [required] => 0
+            [field_name] => Подкатегория
+            [value] => Автомобили
+            [real] => 1
+        )
+
+    [Множество] => Array
+        (
+            [id] => 7
+            [alias] => action-list
+            [order] => 70
+            [type] => int
+            [field] => input-object-actionlist
+            [column] => shops_lists
+            [default] => -1
+            [block] => 1
+            [disabled] => 1
+            [visible] => 1
+            [required] => 0
+            [field_name] => Множество
+            [value] => Toyota
+            [real] => 634
+        )
+
+    [Количество] => Array
+        (
+            [id] => 8
+            [alias] => count
+            [order] => 80
+            [type] => int
+            [field] => input-object-counter
+            [column] => count
+            [default] => -1
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Количество
+            [value] => -1.000
+        )
+
+    [Описание] => Array
+        (
+            [id] => 9
+            [alias] => descr
+            [order] => 90
+            [type] => text
+            [field] => tiny
+            [column] => 
+            [default] => 
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Описание
+            [value] => <p>японский автомобиль</p>
+            [id_i] => 42
+        )
+
+    [Широта] => Array
+        (
+            [id] => 10
+            [alias] => latitude
+            [order] => 100
+            [type] => float
+            [field] => input
+            [column] => 
+            [default] => 
+            [block] => 0
+            [visible] => 0
+            [required] => 1
+            [field_name] => Широта
+            [value] => 54.4878920
+            [id_i] => 21
+        )
+
+    [Долгота] => Array
+        (
+            [id] => 11
+            [alias] => longitude
+            [order] => 110
+            [type] => float
+            [field] => input
+            [column] => 
+            [default] => 
+            [block] => 0
+            [visible] => 0
+            [required] => 1
+            [field_name] => Долгота
+            [value] => 26.9150530
+            [id_i] => 21
+        )
+
+    [IDcity] => Array
+        (
+            [id] => 12
+            [alias] => city_id
+            [order] => 120
+            [type] => int
+            [field] => input
+            [column] => city_id
+            [default] => -1
+            [block] => 0
+            [visible] => 0
+            [required] => 1
+            [field_name] => IDcity
+            [value] => 4415
+            [id_i] => 21
+        )
+
+    [IDcountry] => Array
+        (
+            [id] => 13
+            [alias] => country_id
+            [order] => 130
+            [type] => int
+            [field] => input
+            [column] => 
+            [default] => -1
+            [block] => 0
+            [visible] => 0
+            [required] => 1
+            [field_name] => IDcountry
+            [value] => 22
+            [id_i] => 21
+        )
+
+    [Телефон заказа] => Array
+        (
+            [id] => 14
+            [alias] => phone
+            [order] => 140
+            [type] => string
+            [field] => list
+            [column] => 
+            [default] => Array
+                (
+                    [0] => НЕТ
+                )
+
+            [block] => 1
+            [visible] => 1
+            [required] => 1
+            [field_name] => Телефон заказа
+            [value] => +79233451515
+            [id_i] => 263
+        )
+
+    [Скидка %] => Array
+        (
+            [id] => 15
+            [alias] => discount
+            [order] => 150
+            [type] => int
+            [field] => input
+            [column] => 
+            [default] => 0
+            [block] => 1
+            [visible] => 1
+            [required] => 0
+            [field_name] => Скидка %
+            [value] => 10
+            [id_i] => 66
+        )
+
+    [Тип автомобиля] => Array
+        (
+            [alias] => transportAutoType
+            [order] => 120
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Не выбрано
+                    [1] => С пробегом
+                    [2] => Новые
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 28
+            [id_i] => 264
+            [value] => С пробегом
+        )
+
+    [Производитель] => Array
+        (
+            [alias] => transportProducer
+            [order] => 120
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Отечественные
+                            [1] => Иномарки
+                        )
+
+                    [preset] => 0
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [ITEMS] => Array
+                (
+                    [Отечественные] => Array
+                        (
+                            [alias] => rus
+                            [order] => 120
+                            [type] => string
+                            [field] => list
+                            [default] => Array
+                                (
+                                    [0] => Россия
+                                    [1] => Украина
+                                    [2] => Беларусь
+                                    [3] => Казахстан
+                                )
+
+                            [block] => 0
+                            [visible] => 1
+                            [required] => 0
+                            [id] => 29
+                            [id_i] => 265
+                            [value] => Россия
+                        )
+
+                    [Иномарки] => Array
+                        (
+                            [alias] => not_rus
+                            [order] => 120
+                            [type] => string
+                            [field] => list
+                            [default] => Array
+                                (
+                                    [0] => Китай
+                                    [1] => Корея
+                                    [2] => Япония
+                                    [3] => Германия
+                                    [4] => Франция
+                                    [5] => Европа
+                                    [6] => Азия
+                                    [7] => Америка
+                                )
+
+                            [block] => 0
+                            [visible] => 1
+                            [required] => 0
+                            [id] => 30
+                            [id_i] => 266
+                            [value] => Китай
+                        )
+
+                )
+
+            [id] => 31
+            [id_i] => 62
+            [value] => 0
+        )
+
+    [Выпуск / производство] => Array
+        (
+            [Год выпуска от] => Array
+                (
+                    [alias] => transportYearFrom
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 1980
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 32
+                    [id_i] => 67
+                    [value] => 2020
+                )
+
+            [Год выпуска до] => Array
+                (
+                    [alias] => transportYearTo
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 2000
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 33
+                    [id_i] => 68
+                    [value] => 2000
+                )
+
+        )
+
+    [Тип коробки передач] => Array
+        (
+            [alias] => transportBoxGearType
+            [order] => 140
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Механика
+                            [1] => Автоматическая
+                        )
+
+                    [preset] => 0
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [ITEMS] => Array
+                (
+                    [Автоматическая коробка] => Array
+                        (
+                            [alias] => automatic_gear
+                            [order] => 130
+                            [type] => string
+                            [field] => list
+                            [default] => Array
+                                (
+                                    [0] => Автомат
+                                    [1] => Вариатор
+                                    [2] => Робот
+                                )
+
+                            [block] => 0
+                            [visible] => 1
+                            [required] => 0
+                            [id] => 34
+                            [id_i] => 267
+                            [value] => Автомат
+                        )
+
+                )
+
+            [id] => 35
+            [id_i] => 63
+            [value] => 0
+        )
+
+    [Привод] => Array
+        (
+            [alias] => transportPrivod
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Задний
+                    [1] => Передний
+                    [2] => Полный
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 36
+            [id_i] => 268
+            [value] => Передний
+        )
+
+    [Пробег] => Array
+        (
+            [Пробег от] => Array
+                (
+                    [alias] => probeg_ot
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 0
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 37
+                    [id_i] => 69
+                    [value] => 100
+                )
+
+            [Пробег до] => Array
+                (
+                    [alias] => probeg_do
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 10000
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 38
+                    [id_i] => 70
+                    [value] => 10000
+                )
+
+        )
+
+    [Турбина] => Array
+        (
+            [alias] => transportTurbina
+            [order] => 130
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Есть
+                            [1] => Нет
+                        )
+
+                    [preset] => 0
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 39
+            [id_i] => 64
+            [value] => 1
+        )
+
+    [Тип двигателя] => Array
+        (
+            [alias] => transportGearType
+            [order] => 120
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Бензин
+                    [1] => Газ
+                    [2] => Гибрид
+                    [3] => Дизель
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 40
+            [id_i] => 269
+            [value] => Гибрид
+        )
+
+    [Регистрация авто в ГИБДД РФ] => Array
+        (
+            [alias] => transportGibdd
+            [order] => 130
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Зарегистрирован
+                            [1] => Нет регистрации
+                        )
+
+                    [preset] => 1
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 41
+            [id_i] => 65
+            [value] => 1
+        )
+
+    [Количество мест] => Array
+        (
+            [alias] => transportPlacesCount
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => 2
+                    [1] => 4
+                    [2] => 5
+                    [3] => 7
+                    [4] => 8
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 42
+            [id_i] => 270
+            [value] => 4
+        )
+
+    [Объём багажника] => Array
+        (
+            [Объём от] => Array
+                (
+                    [alias] => transportTrunkSizeFrom
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 0
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 43
+                    [id_i] => 71
+                    [value] => 0
+                )
+
+            [Объём до] => Array
+                (
+                    [alias] => transportTrunkSizeTo
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 0
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 44
+                    [id_i] => 72
+                    [value] => 0
+                )
+
+        )
+
+    [Клиренс] => Array
+        (
+            [Клиренс от] => Array
+                (
+                    [alias] => transportClearanceFrom
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 0
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 45
+                    [id_i] => 73
+                    [value] => 0
+                )
+
+            [Клиренс до] => Array
+                (
+                    [alias] => transportClearanceTo
+                    [order] => 130
+                    [type] => int
+                    [field] => input
+                    [default] => 0
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 46
+                    [id_i] => 74
+                    [value] => 0
+                )
+
+        )
+
+    [Руль] => Array
+        (
+            [alias] => transportSteeringWheel
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Неважно
+                    [1] => Левый
+                    [2] => Правый
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 47
+            [id_i] => 271
+            [value] => Левый
+        )
+
+    [Другие опции] => Array
+        (
+            [Кондиционер] => Array
+                (
+                    [alias] => transportOptionsConditioner
+                    [order] => 130
+                    [type] => bool
+                    [field] => bool
+                    [default] => Array
+                        (
+                            [states] => Array
+                                (
+                                    [0] => Есть
+                                    [1] => Нет
+                                )
+
+                            [preset] => 1
+                        )
+
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 48
+                    [id_i] => 66
+                    [value] => 1
+                )
+
+            [ABS (антиблокировочная система)] => Array
+                (
+                    [alias] => transportOptionsAbs
+                    [order] => 130
+                    [type] => bool
+                    [field] => bool
+                    [default] => Array
+                        (
+                            [states] => Array
+                                (
+                                    [0] => Есть
+                                    [1] => Нет
+                                )
+
+                            [preset] => 1
+                        )
+
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 49
+                    [id_i] => 67
+                    [value] => 1
+                )
+
+            [Обогрев передних сидений] => Array
+                (
+                    [alias] => transportOptionsFrontSeatsHeat
+                    [order] => 130
+                    [type] => bool
+                    [field] => bool
+                    [default] => Array
+                        (
+                            [states] => Array
+                                (
+                                    [0] => Есть
+                                    [1] => Нет
+                                )
+
+                            [preset] => 1
+                        )
+
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 50
+                    [id_i] => 68
+                    [value] => 1
+                )
+
+            [Усилитель руля] => Array
+                (
+                    [alias] => transportOptionsSteeringWhileBooster
+                    [order] => 130
+                    [type] => string
+                    [field] => list
+                    [default] => Array
+                        (
+                            [0] => Гидравлический
+                            [1] => Электрический
+                            [2] => Электрогидравлический
+                        )
+
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 51
+                    [id_i] => 272
+                    [value] => Гидравлический
+                )
+
+            [Память настроек] => Array
+                (
+                    [alias] => transportOptionsSettingsMemory
+                    [order] => 130
+                    [type] => string
+                    [field] => list
+                    [default] => Array
+                        (
+                            [0] => Передних сидений
+                            [1] => Задних сидений
+                            [2] => Зеркал
+                            [3] => Рулевой колонки
+                        )
+
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [id] => 52
+                    [id_i] => 273
+                    [value] => Передних сидений
+                )
+
+            [Цвет] => Array
+                (
+                    [id] => 24
+                    [alias] => color
+                    [order] => 130
+                    [type] => string
+                    [field] => list
+                    [default] => Array
+                        (
+                            [0] => Красный
+                            [1] => Оранжевый
+                            [2] => Жёлтый
+                            [3] => Зелёный
+                            [4] => Голубой
+                            [5] => Синий
+                            [6] => Фиолетовый
+                        )
+
+                    [block] => 0
+                    [visible] => 1
+                    [required] => 0
+                    [field_name] => Цвет
+                    [id_i] => 274
+                    [value] => Красный
+                )
+
+        )
+
+    [Состояние товара] => Array
+        (
+            [alias] => state
+            [order] => 160
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Не указано
+                    [1] => Новое
+                    [2] => Б / у
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 53
+            [id_i] => 275
+            [value] => Не указано
+        )
+
+)
+Array
+(
+    [Отечественные] => Array
+        (
+            [alias] => rus
+            [order] => 120
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Россия
+                    [1] => Украина
+                    [2] => Беларусь
+                    [3] => Казахстан
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 29
+            [id_i] => 265
+            [value] => Россия
+        )
+
+    [Иномарки] => Array
+        (
+            [alias] => not_rus
+            [order] => 120
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Китай
+                    [1] => Корея
+                    [2] => Япония
+                    [3] => Германия
+                    [4] => Франция
+                    [5] => Европа
+                    [6] => Азия
+                    [7] => Америка
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 30
+            [id_i] => 266
+            [value] => Китай
+        )
+
+)
+Array
+(
+    [Год выпуска от] => Array
+        (
+            [alias] => transportYearFrom
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 1980
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 32
+            [id_i] => 67
+            [value] => 2020
+        )
+
+    [Год выпуска до] => Array
+        (
+            [alias] => transportYearTo
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 2000
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 33
+            [id_i] => 68
+            [value] => 2000
+        )
+
+)
+Array
+(
+    [Автоматическая коробка] => Array
+        (
+            [alias] => automatic_gear
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Автомат
+                    [1] => Вариатор
+                    [2] => Робот
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 34
+            [id_i] => 267
+            [value] => Автомат
+        )
+
+)
+Array
+(
+    [Пробег от] => Array
+        (
+            [alias] => probeg_ot
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 0
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 37
+            [id_i] => 69
+            [value] => 100
+        )
+
+    [Пробег до] => Array
+        (
+            [alias] => probeg_do
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 10000
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 38
+            [id_i] => 70
+            [value] => 10000
+        )
+
+)
+Array
+(
+    [Объём от] => Array
+        (
+            [alias] => transportTrunkSizeFrom
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 0
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 43
+            [id_i] => 71
+            [value] => 0
+        )
+
+    [Объём до] => Array
+        (
+            [alias] => transportTrunkSizeTo
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 0
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 44
+            [id_i] => 72
+            [value] => 0
+        )
+
+)
+Array
+(
+    [Клиренс от] => Array
+        (
+            [alias] => transportClearanceFrom
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 0
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 45
+            [id_i] => 73
+            [value] => 0
+        )
+
+    [Клиренс до] => Array
+        (
+            [alias] => transportClearanceTo
+            [order] => 130
+            [type] => int
+            [field] => input
+            [default] => 0
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 46
+            [id_i] => 74
+            [value] => 0
+        )
+
+)
+Array
+(
+    [Кондиционер] => Array
+        (
+            [alias] => transportOptionsConditioner
+            [order] => 130
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Есть
+                            [1] => Нет
+                        )
+
+                    [preset] => 1
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 48
+            [id_i] => 66
+            [value] => 1
+        )
+
+    [ABS (антиблокировочная система)] => Array
+        (
+            [alias] => transportOptionsAbs
+            [order] => 130
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Есть
+                            [1] => Нет
+                        )
+
+                    [preset] => 1
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 49
+            [id_i] => 67
+            [value] => 1
+        )
+
+    [Обогрев передних сидений] => Array
+        (
+            [alias] => transportOptionsFrontSeatsHeat
+            [order] => 130
+            [type] => bool
+            [field] => bool
+            [default] => Array
+                (
+                    [states] => Array
+                        (
+                            [0] => Есть
+                            [1] => Нет
+                        )
+
+                    [preset] => 1
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 50
+            [id_i] => 68
+            [value] => 1
+        )
+
+    [Усилитель руля] => Array
+        (
+            [alias] => transportOptionsSteeringWhileBooster
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Гидравлический
+                    [1] => Электрический
+                    [2] => Электрогидравлический
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 51
+            [id_i] => 272
+            [value] => Гидравлический
+        )
+
+    [Память настроек] => Array
+        (
+            [alias] => transportOptionsSettingsMemory
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Передних сидений
+                    [1] => Задних сидений
+                    [2] => Зеркал
+                    [3] => Рулевой колонки
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [id] => 52
+            [id_i] => 273
+            [value] => Передних сидений
+        )
+
+    [Цвет] => Array
+        (
+            [id] => 24
+            [alias] => color
+            [order] => 130
+            [type] => string
+            [field] => list
+            [default] => Array
+                (
+                    [0] => Красный
+                    [1] => Оранжевый
+                    [2] => Жёлтый
+                    [3] => Зелёный
+                    [4] => Голубой
+                    [5] => Синий
+                    [6] => Фиолетовый
+                )
+
+            [block] => 0
+            [visible] => 1
+            [required] => 0
+            [field_name] => Цвет
+            [id_i] => 274
+            [value] => Красный
+        )
+
+)

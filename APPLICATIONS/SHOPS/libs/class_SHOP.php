@@ -522,11 +522,11 @@ class SHOP {
         return SQL_ONE_ROW(q("SELECT * FROM indexer WHERE CONCAT(shop_id, '_', prod_id) = '".db_secur($product_code)."'"));
     }
 
-    public static function get_one_product_at_code_if_isset(string $product_code="234_34"): bool|array
+    public static function get_one_product_at_code_if_isset(string $product_code="234_34", bool $all_props = false): bool|array
     {
         $count = (int)SQL_ONE_ROW(q("SELECT COUNT(*) AS count FROM indexer WHERE CONCAT(shop_id, '_', prod_id) = '".db_secur($product_code)."' "))['count'];
         if($count > 0) {
-            $product = self::get_products_list_at_code_array([$product_code], true, 'name', 'ASC', [0,1])[0];
+            $product = self::get_products_list_at_code_array([$product_code], true, 'name', 'ASC', [0,1], $all_props)[0];
             $coords_props = GEONAMER::generate_scheama_array($product['id']);
 
             foreach($coords_props as $k=>$v) {
@@ -537,7 +537,7 @@ class SHOP {
         return false;
     }
 
-    public static function get_products_list_at_code_array(array $code_of_products, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50]): array
+    public static function get_products_list_at_code_array(array $code_of_products, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50], bool $all_props=false): array
     {
         if($direct !== 'ASC') {
             $direct = 'DESC';
@@ -616,7 +616,7 @@ class SHOP {
 //        INCLUDE_CLASS('shops', 'props_commander');
         include_once Core::$path.'/APPLICATIONS/SHOPS/libs/class_PROPS_COMMANDER.php';
 
-        $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'));
+        $PROPS = new PROPS_COMMANDER(array_column($rows, 'id'), $all_props);
         $pr = $PROPS->get_all_props();
         foreach($rows as &$v) {
             $v['PROPS'] = $pr[$v['id']];
@@ -1414,5 +1414,131 @@ class SHOP {
         }
 
         return $json;
+    }
+
+    public static function render_rows(array $rows, $cats, $descr='', array $not_show_fields_array=[]) {
+        global $place;
+        ob_start();
+        foreach($rows as $field_name=>$params) {
+
+            if(in_array($field_name, $not_show_fields_array)) {
+                continue;
+            }
+
+            if(isset($params['psevdo']) && $params['psevdo'] == 1) {
+                continue;
+            }
+
+            if(isset($params['name2'])) {
+                $field_name = $params['name2'];
+            }
+
+            $params['field_name'] = $field_name;
+
+            $params['id_i'] = $params['id_i'] ?? '';
+
+            $class = "";
+
+            if(is_array($params) && isset($params['alias'])) {
+                if($params['visible'] != 1) {
+                    $class = "invisible";
+                }
+                if(isset($params['disabled']) && $params['disabled'] == 1) {
+                    $class .= " disabled ";
+                }
+
+                if(isset($params['ITEMS'])) {
+                    echo '<tr class="clear-row up"><td colspan="2"><div></div></td></tr>';
+                }
+
+                switch($params['field']) {
+                    case 'input':
+                        if($params['type'] === 'string') { ?>
+                            <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>"  data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                                <td><?=$field_name?></td>
+                                <td colspan="2"><?=$params['value'] ?? $params['default'];?></td>
+                            </tr>
+                        <?php } elseif($params['type'] === 'int' || $params['type'] === 'float') { ?>
+                            <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                                <td><?=$field_name?></td>
+                                <td colspan="2"><?=$params['value'] ?? $params['default'];?></td>
+                            </tr>
+                        <?php }
+                        break;
+                    case 'bool':
+                        $state = $params['value'] ?? $params['default']['preset'];
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$state?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2" style="position: relative" class="flex gap-5">
+                                <div class="flex toggler">
+                                    <?php
+                                    if($state == 1) { $state = 0; } else { $state = 1; }
+                                    echo $params['default']['states'][$state];
+                                    ?>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'input-object-counter':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2" class="flex gap-10">
+                                <?php
+                                if((float)$params['value'] != -1) {
+                                    echo $params['value'];
+                                } else {
+                                    echo '-';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'tiny':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=urlencode($params['value'] ?? $params['default'])?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2">
+                                <?php
+                                $d_text = $descr ?? '';
+                                echo $d_text;
+                                ?>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'list':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-list="<?=implode('|', $params['default'])?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default'][0]?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2"><?=$params['value'] ?? $params['default'][0]?></td>
+                        </tr>
+                        <?php
+                        break;
+                }
+
+                if(isset($params['ITEMS'])) {
+                    self::render_rows($params['ITEMS'], $cats);
+                    echo '<tr class="clear-row down"><td colspan="2"><div></div></td></tr>';
+                }
+
+            } else {
+                echo '<tr class="clear-row up"><td colspan="2"><div></div></td></tr>';
+                echo '<tr class="title-header-row"><td colspan="2"><h1 class="h1-title" style="font-size: 22px; font-weight: 800; text-align: left">'.$field_name.'</h1></td></tr>';
+                foreach($params as $key_param=>$param2) {
+                    if(isset($param2['alias'])) {
+                        $param2['field_name'] = $key_param;
+                    } else {
+                        unset($params[$key_param]);
+                    }
+                }
+                self::render_rows($params, $cats);
+            }
+
+        }
+        echo ob_get_clean();
     }
 }

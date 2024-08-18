@@ -147,6 +147,14 @@ function render_rows(array $rows, $cats, $descr='') {
 
         $params['field_name'] = $field_name;
 
+        if(isset($params['psevdo']) && $params['psevdo'] == 1) {
+            continue;
+        }
+
+        if(isset($params['name2'])) {
+            $field_name = $params['name2'];
+        }
+
         $params['id_i'] = $params['id_i'] ?? '';
 
         $class = "";

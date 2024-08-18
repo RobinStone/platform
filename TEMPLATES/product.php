@@ -105,9 +105,11 @@
             <?php } else { ?>
                 <button class="btn btn-shop disabled" style="width: 215px">Купить</button>
             <?php } ?>
-            <ul class="user-params b-2" style="margin-top: 20px">
-
-            </ul>
+            <table class="user-params b-2" style="margin-top: 20px">
+                <?php
+                    SHOP::render_rows($schema, $CAT, $schema['Описание']['value'], $not_show_fields);
+                ?>
+            </table>
         </div>
     </div>
 

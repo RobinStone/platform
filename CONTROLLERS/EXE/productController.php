@@ -49,29 +49,6 @@ $shop_id = (int)$_GET['s'];
 $product_id = (int)$_GET['prod'];
 
 $row['SHOP']['CITY_ALL'] = SUBD::getLineDB('cities', 'name', $row['SHOP']['city']);
-//if($row['SHOP']['CITY_ALL'] === false) {
-//    $row_c = SQL_ROWS(q("SELECT * FROM `coords` WHERE `shop_id`=".$shop_id." AND `product_id`=".$product_id." LIMIT 1"));
-//    if(count($row_c) > 0) {
-//        $address = explode(', ', $PRO->get_all_props_at_field_name('Расположение', true)['VALUE']);
-//        $address = array_reverse($address);
-//        $row['SHOP']['CITY_ALL'] = [
-//            'id'=>-1,
-//            'shirota'=>$row_c[0]['lat'],
-//            'dolgota'=>$row_c[0]['lng'],
-//        ];
-//        if(is_array($address)) {
-//            $row['SHOP']['CITY_ALL']['name'] = $address[0];
-//            if(count($address) >= 2) {
-//                $row['SHOP']['CITY_ALL']['region'] = $address[1];
-//            }
-//            if(count($address) >= 3) {
-//                $row['SHOP']['CITY_ALL']['country'] = $address[2];
-//            }
-//        } else {
-//            $row['SHOP']['CITY_ALL']['name'] = $address;
-//        }
-//    }
-//}
 
 if($place === '') {
     $place = $row['SHOP']['city'];
@@ -119,3 +96,56 @@ SHOP::add_showed_count_plus($row['ID']);
 //wtf($slides, 1);
 
 //wtf($row);
+
+if(!empty($row)) {
+    $schema = get_product_schema();
+
+    foreach($row['PROPS'] as $one_prop) {
+        if($one_prop[0]['schema_id'] <= 17) {
+            $schema[$one_prop[0]['field_name']]['value'] = $one_prop[0]['value'];
+            $schema[$one_prop[0]['field_name']]['id_i'] = $one_prop[0]['id'];
+        }
+    }
+    $additional_fields = SHOP::get_additional_fields_for_cats(
+        $row['main_cat_id'],
+        $row['under_cat_id'],
+        $row['action_list_id']
+    );
+
+    if(is_array($additional_fields)) {
+        PROPS_COMMANDER::aply_values_for_additional_schema($additional_fields, $row['PROPS']);
+    }
+
+    $CAT = CATALOGER::INIT();
+
+    SORT::change_preview_key($schema, 'alias', 'field_name');
+    $schema['product_name']['value'] = $row['name'];
+    $schema['price']['value'] = $row['price'];
+    $schema['count']['value'] = $row['count'];
+
+    $schema['category']['value'] = $row['main_cat'];
+    $schema['category']['real'] = $CAT->main_cat_name_to_id($row['main_cat']);
+
+    $schema['under-cat']['value'] = $row['under_cat'];
+    $schema['under-cat']['real'] = $CAT->under_cat_name_to_id($schema['category']['real'], $row['under_cat']);
+
+    $schema['action-list']['value'] = $row['action_list'];
+    $schema['action-list']['real'] = $CAT->action_list_name_to_id($row['action_list']);
+
+    SORT::change_preview_key($schema, 'field_name', 'alias');
+
+    if(isset($additional_fields) && is_array($additional_fields)) {
+        $schema = array_merge($schema, $additional_fields);
+    }
+
+    $not_show_fields = [
+        'Название товара',
+        'Стоимость',
+        'Описание',
+        'Телефон заказа',
+        'Скидка %',
+    ];
+
+//    wtf($schema);
+}
+

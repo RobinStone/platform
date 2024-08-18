@@ -197,7 +197,21 @@
     text-decoration: line-through;
     transform: scale(0.7) translateX(15%);
 }
-
+.clear-row.up div,
+.clear-row.down div {
+    border-top: 1px dotted #008000ab;
+    margin: 5px 0;
+}
+.product h1.h1-title {
+    margin: -10px 0 0 10px;
+}
+.user-params.b-2 td {
+    padding: 2px 6px;
+}
+.right-side {
+    overflow-y: auto;
+    max-height: calc(100vh - 280px);
+}
 
 
 @media screen and (max-width: 950px) {
