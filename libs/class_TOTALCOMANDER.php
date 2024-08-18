@@ -138,6 +138,20 @@ class TOTALCOMANDER {
                 right: []
             };
             class TOTALCOMMANDER {
+                save(path, content, call_back=function () {}) {
+                    BACK('total_commander', 'save', {path: path, content: content}, (mess) => {
+                        mess_executer(mess, (mess) => {
+                            this.update();
+                            call_back();
+                        });
+                    });
+                }
+                /**
+                 * Переместить файл / папку из одной папки в другую
+                 * @param array_items
+                 * @param folder_in
+                 * @returns {boolean}
+                 */
                 moove(array_items, folder_in) {
                     if(destination_folder === 'home/SYSIMGS') {
                         say('В эту папку запрещено премещать что-либо...', 2);
@@ -296,6 +310,7 @@ class TOTALCOMANDER {
                                     break;
                                 case 'txt':
                                     file_type = 'text';
+                                    data_file_name = arr[i]['path'];
                                     ico = './DOWNLOAD/a4e2f8736a5fab5ae02dab92e36a7143.svg'
                                     break;
                                 case 'png':
@@ -453,6 +468,9 @@ class TOTALCOMANDER {
                                     break;
                                 case 'pdf':
                                     open_popup('pdf', {path: obj.attr('data-file-name')});
+                                    break;
+                                case 'txt':
+                                    open_popup('txt', {path: obj.attr('data-file-name')});
                                     break;
                                 case 'tabs':
                                     say('Если файл большой, необходимо подождать пока он будет структурирован...');

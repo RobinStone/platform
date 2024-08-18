@@ -7,6 +7,19 @@ switch($_POST['com']) {
     case 'test':
         echo 'Тут находится тестовое сообщение для настройки информационнфх панелей на несколько строк';
         break;
+    case 'save':
+        $err = isset_columns($_POST, ['path', 'content']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        $path_arr = explode("/", $post['path']);
+        if(!isset($path_arr[4]) || (int)$path_arr[4] !== SITE::$user_id) {
+            error("Запрещена запись посторонним лицам...");
+        }
+
+        file_put_contents($post['path'], $post['content']);
+        ans('ok');
+        break;
     case 'moove_in':
         $err = isset_columns($_POST, ['arr', 'folder_in']);
         if(is_array($err)) {
