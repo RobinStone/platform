@@ -118,6 +118,23 @@ class FILTERS {
         }
     }
 
+    public static function get_schema_from_additional_fields_array(array $additional_fields):array {
+        foreach($additional_fields as $k=>$v) {
+            $additional_fields[$k] = db_secur($v);
+        }
+        $additional_fields = VALUES::wrap_array_elements_around($additional_fields);
+        $rows = SQL_ROWS_FIELD(q("
+        SELECT * FROM filters WHERE 
+        field_name IN (".implode(',', $additional_fields).") 
+        "), "field_name");
+
+//        foreach($rows as $k=>$v) {
+//            $rows[$k]['']
+//        }
+
+        return $rows;
+    }
+
     /**
      * Возвращает все вложенные поля в виде обычного массива
      *
@@ -129,6 +146,169 @@ class FILTERS {
         $result = [];
         self::get_field($arr, $result);
         return $result;
+    }
+
+    public static function render($main_cat_id, $under_cat_id, $action_list_id) {
+        $schema = get_product_schema();
+        $additional_fields = SHOP::get_additional_fields_for_cats($main_cat_id, $under_cat_id, $action_list_id);
+        if($additional_fields) {
+            $rows = array_merge($schema, $additional_fields);
+        } else {
+            $rows = $schema;
+        }
+        echo '<table class="filter-table">';
+        self::render_tmp($rows);
+        echo '<tr style="position: sticky; bottom: 10px"><td></td><td style="padding-top: 15px"><button onclick="apply_filter()" class="btn-send-filter">Применить фильтр</button></td></tr>';
+        echo '</table>';
+    }
+
+    private static function render_tmp(array $rows, $descr='') {
+        global $place;
+        ob_start();
+        foreach($rows as $field_name=>$params) {
+
+            if(isset($params['filter']) && $params['filter'] == 0) {
+                continue;
+            }
+
+            $params['field_name'] = $field_name;
+
+//            if(isset($params['name2'])) {
+//                $field_name = $params['name2'];
+//            }
+
+            $params['id_i'] = $params['id_i'] ?? '';
+
+            $class = "";
+
+            if(is_array($params) && isset($params['alias'])) {
+                if($params['visible'] != 1) {
+                    $class = "invisible";
+                }
+                if(isset($params['disabled']) && $params['disabled'] == 1) {
+                    $class .= " disabled ";
+                }
+
+                if(isset($params['ITEMS'])) {
+                    echo '<tr class="clear-row up"><td colspan="2"><div></div></td></tr>';
+                }
+
+                switch($params['field']) {
+                    case 'input':
+                        $compare = "";
+                        $compare_field = "";
+                        if(isset($params['compare'])) {
+                            $compare = 'data-compare="'.$params['compare'].'"';
+                        }
+                        if(isset($params['compare_field_from'])) {
+                            $compare_field = 'data-compare-field="'.$params['compare_field_from'].'"';
+                        }
+                        if($params['type'] === 'string') { ?>
+                            <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" <?=$compare?> <?=$compare_field?> data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                                <td><?=$field_name?></td>
+                                <td colspan="2"><input value="" type="text"></td>
+                            </tr>
+                        <?php } elseif($params['type'] === 'int' || $params['type'] === 'float') { ?>
+                            <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" <?=$compare?> <?=$compare_field?> data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                                <td><?=$field_name?></td>
+                                <td colspan="2"><input placeholder="число" value="" type="number"></td>
+                            </tr>
+                        <?php }
+                        break;
+                    case 'input-object-place':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2" style="position: relative" class="flex gap-5">
+                                <input id="address" placeholder="Введите новое место сделки" data-name="place" value="<?=$params['value'] ?? $place?>" type="text">
+                                <button onclick="show_list()" class="svg-wrapper inpt-btn not-border action-btn"><?=RBS::SVG('20230530-211804_id-2-236725.svg')?></button>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'bool':
+                        $state = $params['value'] ?? $params['default']['preset'];
+                        if(isset($params['checker']) && $params['checker'] == 1) {
+                            $class .= " checker-toggler ";
+                        }
+                        $state = -1;
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$state?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2" style="position: relative" class="flex gap-5">
+                                <div class="flex toggler">
+                                    <button onclick="change_bool_state(this, true)" class="toggler-item on <?php if($state == 1) { echo 'sel'; } ?>"><?=$params['default']['states'][0]?></button>
+                                    <button onclick="change_bool_state(this, false)" class="toggler-item off <?php if($state == 0) { echo 'sel'; } ?>"><?=$params['default']['states'][1]?></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'input-object-counter':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2" class="flex gap-10">
+                                <div class="switcher flex between"><span onclick="set_count_type(true)" class="checked">Ограничено</span><span onclick="set_count_type(false)" class="checked">Неогранич.</span></div>
+                                <input min="-1" oninput="check_count_type()" data-name="count" value="<?=$params['value'] ?? $count?>" type="number">
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'tiny':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=urlencode($params['value'] ?? $params['default'])?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2">
+                                <textarea>
+                                <?php
+                                $d_text = $descr ?? '';
+                                echo $d_text;
+                                ?>
+                                </textarea>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                    case 'list':
+                        ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-list="<?=implode('|', $params['default'])?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default'][0]?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2">
+                            <div class="flex column">
+                            <?php
+                            foreach($params['default'] as $param_item) {
+                                echo "<label class='flex gap-5 check-input'><input type='checkbox'><span>".$param_item."</span></label>";
+                            }
+                            ?>
+                            </div>
+                            </td>
+                        </tr>
+                        <?php
+                        break;
+                }
+
+                if(isset($params['ITEMS'])) {
+                    self::render_tmp($params['ITEMS']);
+                    echo '<tr class="clear-row down"><td colspan="2"><div></div></td></tr>';
+                }
+
+            } else {
+                if(!isset($params['no-title']) || $params['no-title'] != 1) {
+                    echo '<tr class="title-header-row"><td></td><td><h1 style="font-size: 22px; font-weight: 800; text-align: left">' . $field_name . '</h1></td></tr>';
+                }
+                foreach($params as $key_param=>$param2) {
+                    if(isset($param2['alias'])) {
+                        $param2['field_name'] = $key_param;
+                    } else {
+                        unset($params[$key_param]);
+                    }
+                }
+                self::render_tmp($params);
+            }
+
+        }
+        echo ob_get_clean();
     }
 }
 

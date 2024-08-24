@@ -3,6 +3,8 @@ include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
 include_once './APPLICATIONS/SHOPS/libs/class_SHOP.php';
 include_once './APPLICATIONS/SHOPS/libs/class_PROPS_COMMANDER.php';
 
+include_JS('checker-toggler');
+
 include_CDN_JS('https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey='.Core::$YANDEXGEOCODER.'&suggest_apikey='.Core::$SUGGEST_GEOCODER);
 
 include_JS('map_coder');

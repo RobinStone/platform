@@ -47,6 +47,17 @@
                     <div class="flex gap-5 align-center action-btn"><span class="svg-wrapper" style="display: inline-block; width: 20px; height: 20px"><?=RBS::SVG('map')?></span><span>Посмотреть на карте</span></div>
                 <?php } ?>
             </div>
+            <div id="map-place" class="map-place wrapper"><button onclick="$('#map-place').toggleClass('opened');" class="not-border action-btn svg-red"><?=RBS::SVG('20230606-112003_id-2-898918.svg')?></button></div>
+            <div class="descr-wrapper flex column gap-10 b-2 list-closer">
+                <div class="descr">Описание</div>
+                <div data-id="<?=$descr_id?>" class="descr-text"><?=$descr?></div>
+                <button onclick="$(this).parent().toggleClass('full-height')" class="closer-btn">Читать всё</button>
+            </div>
+            <table class="user-params b-2" style="margin-top: 20px">
+                <?php
+                SHOP::render_rows($schema, $CAT, $schema['Описание']['value'], $not_show_fields);
+                ?>
+            </table>
             <?=render('subscriptions', ['viber'=>str_replace("&", "&amp;", urlencode($_SERVER['REQUEST_URI']))])?>
         </div>
 
@@ -105,20 +116,9 @@
             <?php } else { ?>
                 <button class="btn btn-shop disabled" style="width: 215px">Купить</button>
             <?php } ?>
-            <table class="user-params b-2" style="margin-top: 20px">
-                <?php
-                    SHOP::render_rows($schema, $CAT, $schema['Описание']['value'], $not_show_fields);
-                ?>
-            </table>
         </div>
     </div>
 
-    <div id="map-place" class="map-place wrapper"><button onclick="$('#map-place').toggleClass('opened');" class="not-border action-btn svg-red"><?=RBS::SVG('20230606-112003_id-2-898918.svg')?></button></div>
-    <div class="descr-wrapper flex column gap-10 b-2 list-closer">
-        <div class="descr">Описание</div>
-        <div data-id="<?=$descr_id?>" class="descr-text"><?=$descr?></div>
-        <button onclick="$(this).parent().toggleClass('full-height')" class="closer-btn">Читать всё</button>
-    </div>
     <header class="header-product-card flex gap-40 align-center b-2">
         <div class="num-product">№ <?=$row['ID']?></div>
         <div><?=$data_created."г. ".$time_created?></div>

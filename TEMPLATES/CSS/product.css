@@ -17,7 +17,6 @@
 .descr-wrapper {
     margin: 20px 0;
     padding: 10px;
-    max-width: 60%;
 }
 .descr {
     font-size: 20px;
@@ -205,12 +204,32 @@
 .product h1.h1-title {
     margin: -10px 0 0 10px;
 }
+.user-params.b-2 {
+    margin-bottom: 20px;
+    width: 100%;
+}
 .user-params.b-2 td {
     padding: 2px 6px;
+    text-align: right;
+    width: 50%;
+}
+.user-params.b-2 td:nth-child(2) {
+    font-weight: 600;
+    text-align: left;
+}
+.user-params.b-2 tr:first-child td {
+    padding-top: 15px;
+}
+.user-params.b-2 tr:last-child td {
+    padding-bottom: 15px;
 }
 .right-side {
     overflow-y: auto;
     max-height: calc(100vh - 280px);
+}
+.disabled-row {
+    opacity: 0.2!important;
+    pointer-events: none!important;
 }
 
 
@@ -319,5 +338,19 @@
     }
     .descr-wrapper {
         max-width: unset;
+    }
+    .user-params.b-2 td:nth-child(1) {
+        max-width: calc(50vw - 28px);
+        word-break: keep-all;
+        overflow-x: hidden;
+    }
+    .user-params.b-2 td:nth-child(2) {
+        max-width: calc(50vw - 28px);
+        word-break: keep-all;
+        overflow-x: hidden;
+    }
+    .right-side {
+        max-height: unset;
+        overflow-y: unset;
     }
 }

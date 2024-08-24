@@ -18,10 +18,10 @@ switch($_POST['com']) {
                 $count = count(FILTERS::update_filter_item_group($post['id'], PRODUCT_GROUP::MAIN_CAT));
                 break;
             case 'shops_undercats':
-                $count = FILTERS::update_filter_item_group($post['id'], PRODUCT_GROUP::UNDER_CAT);
+                $count = count(FILTERS::update_filter_item_group($post['id'], PRODUCT_GROUP::UNDER_CAT));
                 break;
             case 'shops_lists':
-                $count = FILTERS::update_filter_item_group($post['id'], PRODUCT_GROUP::ACTION_LIST);
+                $count = count(FILTERS::update_filter_item_group($post['id'], PRODUCT_GROUP::ACTION_LIST));
                 break;
             default:
                 error('Пресет можно добавить только для товаров');

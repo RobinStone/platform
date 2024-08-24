@@ -2206,11 +2206,12 @@ a.btn-gradient {
     margin: 10px 0;
 }
 #map-place.opened {
-    max-width: 62%;
+    max-width: 100%;
+    width: 100%;
 }
 #map {
     position: absolute;
-    width: 80%;
+    width: 100%;
     min-height: 600px;
     left: 0;
     top: 0;

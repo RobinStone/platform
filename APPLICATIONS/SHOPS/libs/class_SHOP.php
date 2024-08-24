@@ -209,6 +209,13 @@ class SHOP {
                                 UPDATE i_bool SET 
                                 val=".(int)$prop_item['value']." 
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_bool SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_bool');
                             }
                             break;
                         case 'json':
@@ -217,6 +224,13 @@ class SHOP {
                                 UPDATE i_json SET 
                                 val='".serialize($prop_item['value'])."'
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_json SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_json');
                             }
                             break;
                         case 'char':
@@ -225,6 +239,13 @@ class SHOP {
                                 UPDATE i_char SET 
                                 val='".mb_strtoupper($prop_item['value'])."' 
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_char SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_char');
                             }
                             break;
                         case 'string':
@@ -233,6 +254,13 @@ class SHOP {
                                 UPDATE i_string SET 
                                 val='".db_secur($prop_item['value'])."' 
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_string SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_string');
                             }
                             break;
                         case 'float':
@@ -241,6 +269,13 @@ class SHOP {
                                 UPDATE i_float SET 
                                 val='".(float)($prop_item['value'])."' 
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_float SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_float');
                             }
                             break;
                         case 'text':
@@ -249,6 +284,13 @@ class SHOP {
                                 UPDATE i_text SET 
                                 val='".db_secur($prop_item['value'])."' 
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_text SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_text');
                             }
                             break;
                         case 'int':
@@ -257,6 +299,13 @@ class SHOP {
                                 UPDATE i_int SET 
                                 val=".(int)$prop_item['value']." 
                                 WHERE id=".(int)$prop_item['id_i']." AND indexer_id=".(int)$old['id']);
+                            } else {
+                                q("
+                                INSERT INTO i_int SET
+                                indexer_id=".(int)$old['id'].",
+                                props_id=".(int)$prop_item['id'].",
+                                val='".db_secur($prop_item['value'])."'");
+                                say('Заполнена новая ячейка i_int');
                             }
                             break;
                     }
@@ -1316,6 +1365,23 @@ class SHOP {
         $schema = get_product_schema();
         $pattern = '/\((.*?)\)\s*(>=|<=|=|>|<|in)\s*(\(?[^)]*\)?)/';
 
+        $additional_items = [];
+        foreach($arr as $v) {
+            $item = self::get_text_inside_brackets(explode("=", $v)[0]);
+            if(!isset($schema[$item])) {
+                $additional_items[] = "'".db_secur($item)."'";
+            }
+        }
+
+        if(count($additional_items) > 0) {
+            $rows = SQL_ROWS_FIELD(q("
+            SELECT *, '-' as `column` FROM filters WHERE 
+            field_name IN (".implode(',', $additional_items).") 
+            "), 'field_name');
+
+            $schema = array_merge($schema, $rows);
+        }
+
         if($query_shops !== "") {
             $query_shops = " WHERE ".db_secur($query_shops);
         }
@@ -1332,16 +1398,16 @@ class SHOP {
                 $value = trim($matches[3]);
 
                 if ($operator === 'in') {
-                    $operator = " LIKE '%" . db_secur(self::remove_surrounding_brackets($value)) . "%' ";
+                    $operator = " LIKE '%" . db_secur(self::remove_surrounding_brackets($value)) . "%'";
                 } else {
-                    $operator = $operator . "'" . db_secur(self::remove_surrounding_brackets($value)) . "' ";
+                    $operator = $operator . "'" . db_secur(self::remove_surrounding_brackets($value)) . "'";
                 }
 
                 if(isset($schema[$field])) {
                     $column = $schema[$field]['column'];
                     $is_main_table = 0;
                     $table = "i_".$schema[$field]['type'];
-                    if($column !== '') {
+                    if($column !== '' && $column !== '-') {
                         $is_main_table = 1;
                         $table = 'indexer';
                     }
@@ -1358,25 +1424,61 @@ class SHOP {
             }
         }
 
+        $query_arr = [];
+        $main_query = "";
+        $query_counts = [];
+        $props_ids = [];
+
         foreach($buff as $v) {
             if($v['is_main_table'] === 1) {
                 $querys[] = "indexer.".$v['column']." ".$v['value'];
             } else {
-                $querys[] = "".$v['type'].".val".$v['value'];
                 if(!isset($joins[$v['type']])) {
-                    $joins[$v['type']] = " LEFT JOIN ".$v['type']." ON ".$v['type'].".indexer_id=indexer.id AND ".$v['type'].".props_id=".$v['prop_id']." ";
+                    $joins[$v['type']] = " LEFT JOIN ".$v['type']." ON ".$v['type'].".indexer_id=indexer.id ";
+                    $query_counts[$v['type']] = 0;
+                }
+                $query_arr[$v['type']][] = "(".$v['type'].".props_id=".$v['prop_id']." AND ".$v['type'].".val".$v['value'].")";
+                if(!in_array($v['prop_id'], $props_ids)) {
+                    ++$query_counts[$v['type']];
+                    $props_ids[] = $v['prop_id'];
                 }
             }
         }
 
-        $query = "
-        SELECT CONCAT(indexer.shop_id, '_', indexer.prod_id) AS CODE FROM indexer
-        ".implode(' ', $joins)."
-        WHERE
-        ".implode(' AND ', $querys)."
-        LIMIT 0, 50
-        ";
+        if(count($querys) > 0) {
+            $main_query = implode(' AND ', $querys);
+        }
 
+        foreach($query_arr as $i_type=>$conditions) {   // тут подумать если <= или >=  то ставить AND а не OR 
+            $query_arr[$i_type] = "(" . implode(" OR ", $conditions) . ")";
+        }
+
+        $counts = [];
+        foreach($query_counts as $k=>$v) {
+            $counts[] = " COUNT(DISTINCT ".$k.".props_id)=".(int)$v." ";
+        }
+
+        if(count($query_arr) > 0 && count($querys) > 0) {
+            $main_query = " AND ".$main_query;
+        }
+
+        $limit = $products_limit;
+
+        if(count($counts) > 0) {
+            $query = "
+            SELECT indexer.id, CONCAT(indexer.shop_id, '_', indexer.prod_id) AS CODE FROM indexer " . implode(' ', $joins) . " WHERE
+            " . implode(' AND ', $query_arr) . " " . $main_query . "
+            GROUP BY indexer.id
+            HAVING " . implode(' AND ', $counts) . $limit . "
+            ";
+        } else {
+            $query = "
+            SELECT indexer.id, CONCAT(indexer.shop_id, '_', indexer.prod_id) AS CODE FROM indexer " . implode(' ', $joins) . " WHERE
+            " . $main_query . "
+            GROUP BY indexer.id ".$limit."
+            ";
+        }
+say($query);
         $rows = SQL_ROWS(q($query));
         if(count($rows) > 0) {
             return array_column($rows, 'CODE');
@@ -1390,6 +1492,14 @@ class SHOP {
             return $matches[1];
         } else {
             return $str;
+        }
+    }
+
+    private static function get_text_inside_brackets($str) {
+        if (preg_match('/\((.*?)\)/', $str, $matches)) {
+            return $matches[1]; // Возвращает текст внутри скобок
+        } else {
+            return $str; // Если скобок нет, возвращает оригинальную строку
         }
     }
 
@@ -1467,6 +1577,9 @@ class SHOP {
                         break;
                     case 'bool':
                         $state = $params['value'] ?? $params['default']['preset'];
+                        if(isset($params['checker']) && $params['checker'] == 1) {
+                            $class .= " checker-toggler ";
+                        }
                         ?>
                         <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$state?>">
                             <td><?=$field_name?></td>
@@ -1527,7 +1640,9 @@ class SHOP {
 
             } else {
                 echo '<tr class="clear-row up"><td colspan="2"><div></div></td></tr>';
-                echo '<tr class="title-header-row"><td colspan="2"><h1 class="h1-title" style="font-size: 22px; font-weight: 800; text-align: left">'.$field_name.'</h1></td></tr>';
+                if(!isset($params['no-title']) || $params['no-title'] != 1) {
+                    echo '<tr class="title-header-row"><td colspan="2"><h1 class="h1-title" style="font-size: 22px; font-weight: 800; text-align: left">' . $field_name . '</h1></td></tr>';
+                }
                 foreach($params as $key_param=>$param2) {
                     if(isset($param2['alias'])) {
                         $param2['field_name'] = $key_param;

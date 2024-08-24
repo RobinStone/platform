@@ -99,7 +99,7 @@
     height: calc(100% - 10px);
     border-radius: 10px;
     transform: translate(-50%, 0);
-    object-fit: cover;
+    object-fit: contain;
     max-width: 200px;
     max-height: 200px;
 }
@@ -193,6 +193,101 @@ body .swiper-button-prev svg {
 }
 .banner-item {
     border: none!important;
+}
+.filter-table {
+    border-collapse: separate;
+    border-spacing: 3px;
+}
+.filter.grey-panel h1 {
+    margin-top: 7px;
+    margin-bottom: 5px;
+    font-size: 16px!important;
+}
+.filter.grey-panel tr {
+    cursor: pointer;
+}
+.filter.grey-panel tr.disabled-row {
+    display: none;
+}
+.filter.grey-panel tr td {
+    display: block;
+}
+.filter.grey-panel tr.clear-row,
+.filter.grey-panel tr:last-child {
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+.filter.grey-panel tr:nth-child(even) {
+    background-color: #eee;
+}
+.filter.grey-panel tr:hover:not(:last-child, .clear-row) {
+    outline: 1px solid rgba(0, 128, 0, 0.26);
+}
+.filter.grey-panel tr td:first-child {
+    min-width: 160px;
+}
+.filter.grey-panel tr:hover:not(:last-child, .clear-row) td:first-child {
+    text-shadow: 0 0 1px #000;
+}
+.filter.grey-panel tr td input[type="text"],
+.filter.grey-panel tr td input[type="number"] {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid rgba(0, 128, 0, 0.53);
+}
+.filter.grey-panel tr td:first-child {
+    vertical-align: top;
+    padding: 3px 0 5px 3px;
+    font-size: 15px;
+    font-weight: 600;
+}
+.filter.grey-panel tr td:last-child label {
+    cursor: pointer;
+    padding: 2px 0;
+}
+.filter.grey-panel tr td:last-child label.check-input:last-child {
+    padding-bottom: 9px!important;
+}
+.filter.grey-panel tr td:last-child label:hover {
+    background-color: rgba(15, 150, 64, 0.19);
+}
+.filter.grey-panel tr td .toggler-item {
+    cursor: pointer;
+}
+.filter.grey-panel tr td .check-input {
+    padding: 2px 5px 2px 15px!important;
+}
+.filter.grey-panel tr td .toggler-item.sel {
+    background-color: rgb(0, 89, 32);
+    color: #fff;
+}
+.filter.grey-panel tr td button {
+    min-height: 34px;
+    width: 100%;
+    border-radius: 6px;
+    margin: 0 2px 2px;
+    border: 1px solid rgba(0, 128, 0, 0.53);
+}
+.btn-send-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 34px;
+    width: 100%;
+    cursor: pointer;
+    background-color: rgb(0, 89, 32);
+    color: #fff;
+    border-radius: 4px;
+}
+.btn-send-filter:hover {
+    outline: 2px solid green;
+}
+.btn-send-filter:active {
+    transform: scale(0.95);
+}
+.topper {
+    position: sticky;
+    top: 0;
 }
 
 @media screen and (max-width: 950px) {

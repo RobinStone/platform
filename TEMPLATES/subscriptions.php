@@ -27,7 +27,7 @@ $links = [
     ],
 ];
 ?>
-<div class="flex between align-center gap-10 links b-2">
+<div class="flex between align-center gap-10 links b-2" style="margin-bottom: 20px">
     <?php foreach ($links as $k => $v) { ?>
         <a href="<?= $v['link'] ?>" class="flex column gap-5" title="<?= $v['text'] ?>">
             <img width="50" height="50" src="/DOWNLOAD/<?= $v['img'] ?>">

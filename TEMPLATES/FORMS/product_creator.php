@@ -1,5 +1,6 @@
 <?php
 include_once './APPLICATIONS/SHOPS/libs/class_SHOP.php';
+include_JS('checker-toggler');
 
 $cats = SUBD::getAllDB('shops_categorys');
 $cats = SORT::array_sort_by_column($cats, 'category');
@@ -143,6 +144,7 @@ $count = (int)$count;
 function render_rows(array $rows, $cats, $descr='') {
     global $place;
     ob_start();
+    wtf($rows);
     foreach($rows as $field_name=>$params) {
 
         $params['field_name'] = $field_name;
@@ -198,6 +200,9 @@ function render_rows(array $rows, $cats, $descr='') {
                     break;
                 case 'bool':
                     $state = $params['value'] ?? $params['default']['preset'];
+                    if(isset($params['checker']) && $params['checker'] == 1) {
+                        $class .= " checker-toggler ";
+                    }
                     ?>
                     <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$state?>">
                         <td><?=$field_name?></td>
@@ -365,5 +370,4 @@ function render_rows(array $rows, $cats, $descr='') {
     load_JSscript_once('/APPLICATIONS/SHOPS/JS/product_creator.js?<?=filemtime('./APPLICATIONS/SHOPS/JS/product_creator.js')?>');
 
     console.log('PHONES');
-    console.dir(phones);
-</script>
+    console.dir(ph
