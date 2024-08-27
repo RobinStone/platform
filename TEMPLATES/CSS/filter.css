@@ -233,7 +233,14 @@ body .swiper-button-prev svg {
     display: inline-block;
     box-sizing: border-box;
     width: 100%;
+    border-radius: 5px;
+    padding: 2px 5px;
     border: 1px solid rgba(0, 128, 0, 0.53);
+}
+.filter.grey-panel tr td input[type="text"]:focus,
+.filter.grey-panel tr td input[type="number"]:focus {
+    outline: 1px solid rgba(0, 128, 0, 0.62);
+    -moz-outline-radius: 5px;
 }
 .filter.grey-panel tr td:first-child {
     vertical-align: top;

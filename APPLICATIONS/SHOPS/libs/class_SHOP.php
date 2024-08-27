@@ -1364,15 +1364,16 @@ class SHOP {
         $joins = [];
         $schema = get_product_schema();
         $pattern = '/\((.*?)\)\s*(>=|<=|=|>|<|in)\s*(\(?[^)]*\)?)/';
-
+//say($arr);
         $additional_items = [];
         foreach($arr as $v) {
             $item = self::get_text_inside_brackets(explode("=", $v)[0]);
+//            say($item);
             if(!isset($schema[$item])) {
                 $additional_items[] = "'".db_secur($item)."'";
             }
         }
-
+//say($additional_items);
         if(count($additional_items) > 0) {
             $rows = SQL_ROWS_FIELD(q("
             SELECT *, '-' as `column` FROM filters WHERE 
@@ -1428,7 +1429,7 @@ class SHOP {
         $main_query = "";
         $query_counts = [];
         $props_ids = [];
-
+//say($buff);
         foreach($buff as $v) {
             if($v['is_main_table'] === 1) {
                 $querys[] = "indexer.".$v['column']." ".$v['value'];
@@ -1437,19 +1438,42 @@ class SHOP {
                     $joins[$v['type']] = " LEFT JOIN ".$v['type']." ON ".$v['type'].".indexer_id=indexer.id ";
                     $query_counts[$v['type']] = 0;
                 }
-                $query_arr[$v['type']][] = "(".$v['type'].".props_id=".$v['prop_id']." AND ".$v['type'].".val".$v['value'].")";
+                $query_arr[$v['type']][$v['prop_id']][] = "(".$v['type'].".props_id=".$v['prop_id']." AND ".$v['type'].".val".$v['value'].")";
                 if(!in_array($v['prop_id'], $props_ids)) {
                     ++$query_counts[$v['type']];
                     $props_ids[] = $v['prop_id'];
                 }
             }
         }
-
+//say($query_arr);
         if(count($querys) > 0) {
             $main_query = implode(' AND ', $querys);
         }
 
-        foreach($query_arr as $i_type=>$conditions) {   // тут подумать если <= или >=  то ставить AND а не OR 
+        $buff_arr = [];
+        foreach($query_arr as $i_type=>$conditions_arr) {
+            if($i_type === 'i_int') {
+                foreach($conditions_arr as $vv) {
+                    if(count($vv) === 2) {  // потом добавится а не проверка ли это диапазона
+                        $buff_arr[$i_type][] = " (".implode(' AND ', $vv).") ";
+                    } else {
+                        foreach($vv as $vvv) {
+                            $buff_arr[$i_type][] = $vvv;
+                        }
+                    }
+                }
+            } else {
+                foreach($conditions_arr as $vv) {
+                    foreach($vv as $vvv) {
+                        $buff_arr[$i_type][] = $vvv;
+                    }
+                }
+            }
+        }
+
+        $query_arr = $buff_arr;
+
+        foreach($query_arr as $i_type=>$conditions) {   // тут подумать если <= или >=  то ставить AND а не OR
             $query_arr[$i_type] = "(" . implode(" OR ", $conditions) . ")";
         }
 
@@ -1478,7 +1502,7 @@ class SHOP {
             GROUP BY indexer.id ".$limit."
             ";
         }
-say($query);
+
         $rows = SQL_ROWS(q($query));
         if(count($rows) > 0) {
             return array_column($rows, 'CODE');
@@ -1496,11 +1520,24 @@ say($query);
     }
 
     private static function get_text_inside_brackets($str) {
-        if (preg_match('/\((.*?)\)/', $str, $matches)) {
-            return $matches[1]; // Возвращает текст внутри скобок
-        } else {
-            return $str; // Если скобок нет, возвращает оригинальную строку
+        $stack = [];
+        $start = -1;
+
+        for ($i = 0; $i < strlen($str); $i++) {
+            if ($str[$i] === '(') {
+                if (empty($stack)) {
+                    $start = $i + 1;
+                }
+                $stack[] = $str[$i];
+            } elseif ($str[$i] === ')') {
+                array_pop($stack);
+                if (empty($stack)) {
+                    return trim(substr($str, $start, $i - $start));
+                }
+            }
         }
+        return $str;
+
     }
 
     /**
