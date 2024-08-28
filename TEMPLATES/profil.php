@@ -92,8 +92,21 @@
             </div>
         </div>
     </div>
+
     <div class="columns column-right">
         <?php echo "<div id='alerts'>" . render('alerts') . "</div>"?>
+        <div>
+            <h2 class="h2">Общие настройки</h2>
+            <div class="options">
+                <fieldset class="option">
+                    <legend>Только в моём городе</legend>
+                    <label class="flex gap-10">
+                        <input type="checkbox" <?php if(PP::_()->get('only_my_city', 'false') == 'true') { echo 'checked="checked"'; } ?>>
+                        <span>Показывать только те объявления, которые относятся к моему городу</span>
+                    </label>
+                </fieldset>
+            </div>
+        </div>
     </div>
 </section>
 

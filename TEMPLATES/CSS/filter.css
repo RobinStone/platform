@@ -375,7 +375,7 @@ body .swiper-button-prev svg {
         transform: translate(-50%, -22%) scale(1.05);
     }
     .filter.grey-panel {
-        display: none;
+        /*display: none;*/
         flex: 0;
     }
     .likes {
@@ -391,6 +391,19 @@ body .swiper-button-prev svg {
         width: 100%;
         justify-content: space-around;
         margin-bottom: 20px;
+    }
+    .swiper .swiper-wrapper {
+        padding: 10px 0;
+    }
+    .filter-shore summary {
+        display: flex;
+        justify-content: center;
+        box-sizing: border-box;
+        align-items: center;
+        width: 100%;
+        font-weight: 600;
+        font-size: 1.5em;
+        padding: 10px 0 25px;
     }
 }
 

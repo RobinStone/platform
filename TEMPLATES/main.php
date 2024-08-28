@@ -63,6 +63,8 @@ echo render('player');
 ]); ?>
 
 <script>
+    city_index = <?=$city_index?>;
+
     $(document).ready(function () {
         let swiper = new Swiper('.cats', {
             direction: 'horizontal',

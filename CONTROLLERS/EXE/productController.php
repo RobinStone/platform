@@ -45,7 +45,32 @@ foreach($preview_products as $k=>$v) {
     }
 }
 
-//wtf($preview_products);
+if(!empty($preview_products)) {
+    INCLUDE_CLASS('shops', 'favorite');
+    $preview_products = FAVORITE::verify_like_products($preview_products, Access::userID(), 'shop_id', 'prod_id');
+
+    if(Access::scanLevel() < 1) {
+        $basket = $_COOKIE['basket'] ?? '';
+    } else {
+        $basket = $_COOKIE['basket-id-user'] ?? '';
+    }
+
+    $basket_arr = $preview_products;
+    $preview_products = [];
+    foreach($basket_arr as $v) {
+        $preview_products[$v['code']] = $v;
+    }
+
+    if(isset($basket) && $basket !== '') {
+        $B = new BASKET($basket);
+        $preview_products = $B->verify_in_basket_product($preview_products);
+    } else {
+        foreach($preview_products as $k=>$v) {
+            $v['IN_BASKET'] = 0;
+            $preview_products[$k] = $v;
+        }
+    }
+}
 
 $shop_id = (int)$_GET['s'];
 $product_id = (int)$_GET['prod'];
@@ -70,17 +95,10 @@ $basket = $B->get_basket();
 
 $in_basket_svg = RBS::SVG('bag_box.svg');
 $code_product = $shop_id."_".$product_id;
-//t($code);
+
 if(isset($basket[$code_product])) {
     $in_basket_svg = RBS::SVG('basket_on.svg');
 }
-
-//wtf($row, 1);
-//wtf($PRO->get_only_non_static_params(), 1);
-//wtf($SEO, 1);
-
-//wtf($basket, 1);
-//wtf($_SERVER, 1);
 
 $data_created = explode('-', explode(' ', $row['created'])[0]);
 $time_created = explode(':', explode(' ', $row['created'])[1]);
@@ -88,16 +106,9 @@ $time_created = explode(':', explode(' ', $row['created'])[1]);
 $data_created = $data_created[2]." ".VALUES::intToMonth($data_created[1], true).", ".$data_created[0];
 $time_created = $time_created[0].":".$time_created[1];
 
-
-//wtf($popular, 1);
 $showed = SHOP::get_showed_count($row['ID']);
 
 SHOP::add_showed_count_plus($row['ID']);
-
-//wtf($showed, 1);
-//wtf($slides, 1);
-
-//wtf($row);
 
 if(!empty($row)) {
     $schema = get_product_schema();

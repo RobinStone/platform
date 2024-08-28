@@ -586,6 +586,17 @@ class SHOP {
         return false;
     }
 
+    /**
+     * Получает список товаров по заданным параметрам
+     *
+     * @param array $code_of_products - массив из ['203_43', '200_12', '205_1', ...]
+     * @param bool $with_categorys - в ответ будут включены указатели и названия категрий, подкатегорий и др
+     * @param string $sorted_by - покакому полю сортировать
+     * @param string $direct - направление сортировки DESC или ASC
+     * @param array $limit - лимит выдачи [1, 50]
+     * @param bool $all_props - добавлять ли в выдачу все найденные свойства
+     * @return array
+     */
     public static function get_products_list_at_code_array(array $code_of_products, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50], bool $all_props=false): array
     {
         if($direct !== 'ASC') {

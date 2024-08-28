@@ -14,6 +14,16 @@ $(document).on('click', '.wrapper-input input', function(e) {
         $(this).val('');
     }
 });
+$(document).on('click', '.option label', function(e) {
+    let obj = $(this);
+    if(obj.find('input[type="checkbox"]').length > 0) {
+        let ch = !obj.find('input[type="checkbox"]').is(':checked');
+        obj.find('input[type="checkbox"]').attr('checked', ch);
+        PROFIL.set('only_my_city', ch);
+    }
+    e.stopPropagation();
+    e.preventDefault();
+});
 
 $(document).on('dblclick', '.one-order', function(e) {
     let obj = this;

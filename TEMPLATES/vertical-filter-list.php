@@ -1,25 +1,7 @@
 <?php
-INCLUDE_CLASS('shops', 'favorite');
-$arr = FAVORITE::verify_like_products($arr, Access::userID(), 'id_shop', 'id_product');
 
-if(Access::scanLevel() < 1) {
-    $basket = $_COOKIE['basket'] ?? '';
-} else {
-    $basket = $_COOKIE['basket-id-user'] ?? '';
-}
-
-if(isset($basket) && $basket !== '') {
-    $B = new BASKET($basket);
-    $arr = $B->verify_in_basket_product($arr);
-} else {
-    foreach($arr as $k=>$v) {
-        $v['IN_BASKET'] = 0;
-        $arr[$k] = $v;
-    }
-}
-//wtf($arr, 1);
 ?>
-<ul class="flex column vertical-list-products">
+
     <?php foreach($arr as $k=>$v) {
         $shop_id = (int)$v['shop_id'];
         $product_id = (int)$v['prod_id'];
@@ -59,7 +41,7 @@ if(isset($basket) && $basket !== '') {
             }
             if(!SHOP::is_my_shop($shop_id)) {
                 if (isset($v['IN_BASKET'])) {
-                    if ($v['IN_BASKET'] === 0) {
+                    if ($v['IN_BASKET'] == 0) {
                         echo '<button onclick="in_basket(\'' . $k . '\', this)" class="basket action-btn">' . RBS::SVG('bag_box.svg') . '</button>';
                     } else {
                         echo '<button onclick="in_basket(\'' . $k . '\', this)" class="basket action-btn">' . RBS::SVG('basket_on.svg') . '</button>';
@@ -70,7 +52,7 @@ if(isset($basket) && $basket !== '') {
         </div>
     </li>
     <?php } ?>
-</ul>
+
 
 <script>
     function begin_chat_product(obj) {

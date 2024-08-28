@@ -91,7 +91,8 @@ class FAVORITE {
      * @param $name_field_of_ID_SHOP - имя поля для ID магазина в массиве которое нужно обрабатывать
      * @param $name_field_of_ID_PRODUCT - имя поля ID товара в массиве которое нужно обрабатывать
      */
-    public static function verify_like_products($arr, $user_id, $name_field_of_ID_SHOP, $name_field_of_ID_PRODUCT) {
+    public static function verify_like_products($arr, $user_id, $name_field_of_ID_SHOP, $name_field_of_ID_PRODUCT): array
+    {
         $finders = [];
         foreach($arr as $k=>$v) {
             if(isset($v[$name_field_of_ID_SHOP], $v[$name_field_of_ID_PRODUCT])) {

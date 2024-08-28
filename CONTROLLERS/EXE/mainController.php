@@ -142,48 +142,45 @@ $main_cats = $CAT->main_cats;
 $start_micro = microtime(true);
 
 $filter = [];
+$city_index = -1;
 
-//$filter = [
-//    'self'=>[
-//        'changed'=>'DESC',
-//    ],
-//];
+if(PP::_()->get('only_my_city', 'false') == 'true') {
+    $city_index = GEONAMER::city_name_to_id(SITE::$my_place[0]);
+}
 
-$preview_products = SHOP::get_mix_products_at_all_shops(true, [0,4], -1, -1, -1, -1, [], true, $filter);
-//foreach($preview_products as $k=>$v) {
-//    $preview_products[$k]['main_cat_trans'] = $CAT->id2main_cat($v['main_cat'], true);
-//    $preview_products[$k]['under_cat_trans'] = $CAT->id2under_cat($v['under_cat'], true);
-//    $preview_products[$k]['action_list_trans'] = $CAT->id2action_list($v['action_list'], true);
-//}
+$preview_products = SHOP::get_mix_products_at_all_shops(true, [0,4], $city_index, -1, -1, -1, []);
 
 $my_place = SITE::$my_place;
 
-//wtf($preview_products, 1);
+if(!empty($preview_products)) {
+    INCLUDE_CLASS('shops', 'favorite');
+    $preview_products = FAVORITE::verify_like_products($preview_products, Access::userID(), 'shop_id', 'prod_id');
 
-//say($preview_products);
+    if(Access::scanLevel() < 1) {
+        $basket = $_COOKIE['basket'] ?? '';
+    } else {
+        $basket = $_COOKIE['basket-id-user'] ?? '';
+    }
 
-//wtf($my_place, 1);
+    $basket_arr = $preview_products;
+    $preview_products = [];
+    foreach($basket_arr as $v) {
+        $preview_products[$v['code']] = $v;
+    }
+
+    if(isset($basket) && $basket !== '') {
+        $B = new BASKET($basket);
+        $preview_products = $B->verify_in_basket_product($preview_products);
+    } else {
+        foreach($preview_products as $k=>$v) {
+            $v['IN_BASKET'] = 0;
+            $preview_products[$k] = $v;
+        }
+    }
+}
 
 $poss = GEONAMER::get_current_position();
 
 if($poss === [0, 0]) {
     wtf('Пока закрыто для всяких левых...', 1);
 }
-//TELE::send_at_user_name('robin', (microtime(true) - $start_micro));
-//wtf($poss, 1);
-
-//$P = PROFIL::init(Access::userID());
-//$P->add_sys_param('tester', [
-//    'param1'=>'val1',
-//    'param2'=>[
-//        'robin'=>'bobin',
-//        'andron'=>'base',
-//        'bubu'=>[
-//            0=>'one',
-//            1=>'two',
-//            2=>'true',
-//        ],
-//        'copy2'=>123,
-//    ],
-//    'param3'=>'val3',
-//]);
