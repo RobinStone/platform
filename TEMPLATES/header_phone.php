@@ -3,6 +3,9 @@
         <button onclick="show_hide_menu()" class="svg-wrapper btn btn-white visually-hidden">
             <?=RBS::SVG('burger.svg'); ?>
         </button>
+        <a class="back-row" href="javascript:history.back()">
+            <img src="/DOWNLOAD/20230623-135730_id-2-501077.svg">
+        </a>
         <div class="logo-row">
             <a href="/" class="svg-wrapper" style="display: inline-block; height: 20px"><?=RBS::SVG('20240815-150558_id-2-611390.svg')?></a>
         </div>

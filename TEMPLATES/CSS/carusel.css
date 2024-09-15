@@ -90,11 +90,18 @@
 }
 
 @media screen and (max-width: 950px) {
+    .swiper-slide {
+        height: 35vh!important;
+    }
+    .img-table {
+        min-height: calc(35vh + 20px);
+    }
     section.slider-cats {
         margin: 10px auto 1em!important;
     }
     .swiper-slide img {
-        object-fit: contain;
+        object-fit: contain!important;
+        width: 100%;
     }
     .swiper-slide-active img {
         border-radius: 0;
@@ -117,5 +124,8 @@
     .title.cursive {
         font-size: 24px!important;
         font-weight: 800!important;
+    }
+    #slider-nav {
+        bottom: 19px;
     }
 }

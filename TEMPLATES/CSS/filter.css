@@ -32,7 +32,7 @@
 }
 .filter-buttons-wraper button.round-btn {
     font-size: 14px;
-    padding: 6px 15px;
+    padding: 2px 15px;
 }
 .filter-buttons-content.open {
     padding: 25px 15px 15px;
@@ -319,6 +319,9 @@ body .swiper-button-prev svg {
     #banner .banners-list {
         flex-direction: column!important;
     }
+    #banner {
+        margin-bottom: 5px;
+    }
     .round-btn {
         padding: 10px 10px;
     }
@@ -390,7 +393,26 @@ body .swiper-button-prev svg {
     .product .filter-buttons-wraper {
         width: 100%;
         justify-content: space-around;
-        margin-bottom: 20px;
+        margin: 0 0 10px;
+        height: 35px;
+    }
+    .filter-buttons-wraper button.round-btn {
+        display: flex!important;
+        height: 32px!important;
+        background: none;
+        background-color: #fff;
+        color: #000;
+        box-shadow: 0 0 3px rgba(0, 128, 0, 0.36);
+    }
+    .filter-buttons-wraper button.round-btn span {
+        color: #000;
+    }
+    .filter-buttons-wraper button.round-btn svg {
+        fill: green;
+    }
+    .filter-buttons-wraper button.round-btn svg path {
+        fill: green;
+        stroke: green;
     }
     .swiper .swiper-wrapper {
         padding: 10px 0;
@@ -404,6 +426,9 @@ body .swiper-button-prev svg {
         font-weight: 600;
         font-size: 1.5em;
         padding: 10px 0 25px;
+    }
+    #cat-list {
+        margin-top: 35px!important;
     }
 }
 

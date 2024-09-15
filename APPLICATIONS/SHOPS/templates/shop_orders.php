@@ -165,23 +165,28 @@ foreach($rows as $k=>$v) {
                 </div>
             </div>
             <div class="flex between width100perc" style="align-items: end;">
-                <ul class="items">
-                    <?php foreach($v['order_code'] as $vv) { ?>
-                    <li><a target="_blank" href="/<?=$vv['link']?>" class="flex gap-10 align-center">
-                            <img width="20" height="20" src="/IMG/img100x100/<?=$vv['img']?>">
-                            <span class="count-lines-1 name-of-product"><?=$vv['name']?></span>
-                            <span><?=$vv['count']?> шт.</span>
-                            <?php
-                            if((int)$vv['discount'] > 0) {
-                                echo '<b title="товар со скидкой" style="background-color: rgba(0,255,90,0.32)">' .$vv['price_with_discount'].' Р</b>';
-                            } else {
-                                echo $vv['price_with_discount'].' Р';
-                            }
-                            ?>
-                        </a>
-                    </li>
-                    <?php } ?>
-                </ul>
+                <div class="flex column gap-5">
+                    <div class="flex gap-5">
+
+                    </div>
+                    <ul class="items">
+                        <?php foreach($v['order_code'] as $vv) { ?>
+                        <li><a target="_blank" href="/<?=$vv['link']?>" class="flex gap-10 align-center">
+                                <img width="20" height="20" src="/IMG/img100x100/<?=$vv['img']?>">
+                                <span class="count-lines-1 name-of-product"><?=$vv['name']?></span>
+                                <span><?=$vv['count']?> шт.</span>
+                                <?php
+                                if((int)$vv['discount'] > 0) {
+                                    echo '<b title="товар со скидкой" style="background-color: rgba(0,255,90,0.32)">' .$vv['price_with_discount'].' Р</b>';
+                                } else {
+                                    echo $vv['price_with_discount'].' Р';
+                                }
+                                ?>
+                            </a>
+                        </li>
+                        <?php } ?>
+                    </ul>
+                </div>
                 <div class="flex column" style="max-width: min-content; align-items: end">
                     <span class="type-pay"><?=$v['type_pay']?></span>
                     <?php

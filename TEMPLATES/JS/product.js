@@ -1,3 +1,5 @@
+let product_page = true;
+
 function show_hidden_chat(show=false) {
     // if($('.btn-chat').is(':visible')) {
     if(status_chat === 'hidden' || status_chat === 'off') {
@@ -71,3 +73,14 @@ function closed_complaint_form() {
         $('.back-fone').removeClass('active');
     }, 500);
 }
+
+$(document).ready(function(e) {
+    if(!$mobile) {
+        $('#place').append($('.user-params.b-2'));
+    } else {
+        $('.img-table.b-2').after($('.right-side'));
+        $('.img-table.b-2').after($('h1'));
+        $('.map-controlers').after($('#map-place-mobile'));
+        $('.profil-btn-action').before($('.likes-carts'));
+    }
+});

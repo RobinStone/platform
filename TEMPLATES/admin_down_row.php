@@ -26,6 +26,7 @@
             <div id="actors-pnl" class="flex gap-5 align-center">
                 <?php if(Access::scanLevel() >= 6) { ?>
                 <button onclick="chat_activator(); $('.phone-book').toggleClass('showed')" class="svg-wrapper btn-gray btn-gray-text not-border micro-btn"><?=RBS::SVG('20230608-152503_id-2-821538.svg')?></button>
+                <button onclick="sms_agregator()" title="Остаток балланса по SMS-AERO" class="svg-wrapper btn-gray btn-gray-text not-border micro-btn"><?=RBS::SVG('20240416-185410_id-2-813950.svg')?></button>
                 <?php } ?>
             </div>
         </th>

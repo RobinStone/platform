@@ -23,6 +23,13 @@ function chat_activator() {
 
 }
 
+function sms_agregator() {
+    BACK('admin', 'sms_agregator', {}, function(mess) {
+        let money = parseFloat(mess);
+        say('Осталось: '+money+' Р');
+    });
+}
+
 function show_hidden_chat() {
     chat_activator();
 }

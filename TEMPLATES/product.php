@@ -7,7 +7,7 @@
     <?php echo "<div id='alerts'>" . render('alerts') . "</div>"?>
 </div>
 
-<section class="wrapper product">
+<section class="wrapper wrapper-max product">
 <?=render('bread-crumbs', ['items'=>$items]);?>
 
     <h1><?php
@@ -20,12 +20,19 @@
 
     <div class="product-card">
         <div class="left-side">
-            <div class="img-table b-2">
-                <?php
-                if(count($slides) > 0) {
-                    echo render('carusel_prod', ['slides'=>$slides]);
-                }
-                ?>
+            <div class="img-table b-2" style="position: relative">
+                <div class="flex f-slider-cards">
+                    <div class="flex column center" style="width: 57%">
+                    <?php
+                    if(count($slides) > 0) {
+                        echo render('carusel_prod', ['slides'=>$slides]);
+                    }
+                    ?>
+                    </div>
+                    <div id="place">
+
+                    </div>
+                </div>
             </div>
             <div style="margin: 20px 0" class="flex between align-center map-controlers">
                 <div class="flex gap-5 align-center">
@@ -37,8 +44,8 @@
                         $img = '20230721-222633_id-2-878998.svg';
                     }
                     ?>
-                    <div class="flex gap-5 align-center action-btn map-shower-wrapper" onclick="map_coder_init(<?=$row["SHOP"]["CITY_ALL"]["shirota"]?>,
-                    <?=$row["SHOP"]["CITY_ALL"]["dolgota"]?>,
+                    <div class="flex gap-5 align-center action-btn map-shower-wrapper" onclick="map_coder_init(<?=$row["PROPS"]["latitude"][0]["value"]?>,
+                    <?=$row["PROPS"]["longitude"][0]["value"]?>,
                             '<?=$img?>',
                             '<?=$place?>',
                             '<?=$row['SHOP']['name']?>',
@@ -53,18 +60,23 @@
                 <div data-id="<?=$descr_id?>" class="descr-text"><?=$descr?></div>
                 <button onclick="$(this).parent().toggleClass('full-height')" class="closer-btn">Читать всё</button>
             </div>
+            <?php if(isMobile()) { echo '<div class="descr-wrapper list-closer" style="padding: 0">'; } ?>
             <table class="user-params b-2" style="margin-top: 20px">
                 <?php
                 SHOP::render_rows($schema, $CAT, $schema['Описание']['value'], $not_show_fields);
                 ?>
             </table>
+            <?php if(isMobile()) {
+                echo '<button onclick="$(this).parent().toggleClass(\'full-height\')" class="closer-btn only-border-button">Читать всё</button>';
+                echo '</div>';
+            } ?>
             <?=render('subscriptions', ['viber'=>str_replace("&", "&amp;", urlencode($_SERVER['REQUEST_URI']))])?>
         </div>
 
         <div id="map-place-mobile"><button onclick="$('#map-place-mobile').toggleClass('opened');" class="not-border action-btn svg-red"><?=RBS::SVG('20230606-112003_id-2-898918.svg')?></button></div>
         <div class="right-side">
             <?php if(!SHOP::is_my_shop($shop_id) && Access::userID() > 0) { ?>
-            <div class="flex between wrap">
+            <div class="flex between wrap likes-carts">
                 <button onclick="add_rem_favorite(this, <?=$shop_id?>, <?=$product_id?>)" class="favourites not-border action-btn flex align-center gap-10">
                     <span class="svg-wrapper <?=$best?>"><?=RBS::SVG('hart_white')?></span>
                     <span>Добавить в избранное</span>
@@ -79,7 +91,10 @@
                 <span><?=VALUES::price_format($price)?> P</span>
                 <span>
                 <?php
-                if($discount_price > 0) { echo VALUES::price_format($discount_price)." P"; }
+                if($discount_price > 0) {
+                    echo VALUES::price_format($discount_price)." P";
+                    echo '<b class="discount-proc discount">-'.$discount.' %</b>';
+                }
                 ?>
                 </span>
 

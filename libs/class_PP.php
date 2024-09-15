@@ -1,7 +1,10 @@
 <?php
 class PP {
-    public static function _(): ?PROFIL
+    public static function _(): PROFIL|bool
     {
-        return PROFIL::init(Access::userID());
+        if(Access::scanLevel() > 0) {
+            return PROFIL::init(Access::userID());
+        }
+        return false;
     }
 }

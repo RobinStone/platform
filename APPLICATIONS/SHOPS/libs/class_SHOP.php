@@ -1587,6 +1587,11 @@ class SHOP {
                 continue;
             }
 
+            if(isset($params['value']) &&
+                ($params['value'] == '-' || $params['value'] === '' || $params['value'] == -1.000)) {
+                continue;
+            }
+
             if(isset($params['name2'])) {
                 $field_name = $params['name2'];
             }

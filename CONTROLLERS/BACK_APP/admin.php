@@ -7,6 +7,15 @@ switch($_POST['com']) {
         }
         echo 'Тут находится тестовое сообщение для настройки информационнфх панелей на несколько строк';
         break;
+    case 'sms_agregator':
+        $ans = SMSaero::ballance();
+        if(isset($ans['success']) && $ans['success'] == 1) {
+            echo (int)$ans['data']['balance'];
+            exit;
+        }
+        echo 0;
+        exit;
+        break;
     case 'save_preset':
         $err = isset_columns($_POST, ['table', 'column', 'id']);
         if(is_array($err)) {

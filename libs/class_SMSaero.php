@@ -17,4 +17,10 @@ class SMSaero {
             return false;
         }
     }
+
+    public static function ballance(): array
+    {
+        $smsaero_api = new SmsaeroApiV2('Kamranltd@yandex.ru', 'WB7RmbKlTu2VJq6GbpD6e9LIbfWf', 'LABUTON'); // api_key из личного кабинета
+        return $smsaero_api->balance();
+    }
 }

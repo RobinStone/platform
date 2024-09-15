@@ -144,7 +144,11 @@ $start_micro = microtime(true);
 $filter = [];
 $city_index = -1;
 
-if(PP::_()->get('only_my_city', 'false') == 'true') {
+if(Access::userID() > 0) {
+    if (PP::_()->get('only_my_city', 'false') == 'true') {
+        $city_index = GEONAMER::city_name_to_id(SITE::$my_place[0]);
+    }
+} else {
     $city_index = GEONAMER::city_name_to_id(SITE::$my_place[0]);
 }
 

@@ -252,12 +252,23 @@ li .phone-book ul {
         margin: 5px 0!important;
     }
     .logo-row {
-        position: absolute;
+        /*position: absolute;*/
+    }
+    .back-row img {
+        display: inline-block;
+        height: 30px;
+        width: 30px;
+        margin-left: 15px;
     }
     .profil-btn-action {
         margin-left: auto;
     }
     #body-s .header-padding {
         padding-top: 55px!important;
+    }
+    .header .favourites .svg-wrapper img  {
+        border-radius: unset;
+        width: 24px;
+        height: 24px;
     }
 }

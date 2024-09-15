@@ -10,25 +10,46 @@ if(mb_strlen($txt) >= 3) {
 
     $arr = SHOP::get_products_list($rows);
 
-    foreach($arr as $k=>$v) {
-        $key = $v['shop_id']."_".$v['product_id'];
+    foreach($arr as &$v) {
+        $v['code'] = $v['shop_id']."_".$v['product_id'];
+        $v['prod_id'] = $v['product_id'];
+        $v['main_cat_trans'] = $v['ITEM']['main_cat_trans'];
+        $v['under_cat_trans'] = $v['ITEM']['under_cat_trans'];
+        $v['action_list_trans'] = $v['ITEM']['action_list_trans'];
+        $v['price'] = $v['ITEM']['price'];
+        $v['PROPS'] = $v['ITEM']['PROPS'];
+        unset($v['ITEM']['PROPS']);
+    }
+//wtf($arr);
+    if(!empty($arr)) {
+        INCLUDE_CLASS('shops', 'favorite');
+        $arr = FAVORITE::verify_like_products($arr, Access::userID(), 'shop_id', 'prod_id');
 
-        $arr[$k]['trans'] = $v['SHOP']['trans'];
-        $arr[$k]['PRICE'] = $v['SHOP']['PRICE'];
-        $arr[$k]['PLACE'] = $v['SHOP']['PLACE'];
-        $arr[$k]['DISCOUNT'] = $v['SHOP']['DISCOUNT'];
-        $arr[$k]['FILES'][0] = $v['SHOP']['IMG'];
-        $arr[$k]['id_product'] = $v['product_id'];
-        $arr[$k]['main_cat_trans'] = $CAT->id2main_cat($v['SHOP']['main_cat'], true);
-        $arr[$k]['under_cat_trans'] = $CAT->id2under_cat($v['SHOP']['under_cat'], true);
-        $arr[$k]['action_list_trans'] = $CAT->id2action_list($v['SHOP']['action_list'], true);
+        if(Access::scanLevel() < 1) {
+            $basket = $_COOKIE['basket'] ?? '';
+        } else {
+            $basket = $_COOKIE['basket-id-user'] ?? '';
+        }
 
-        $arr[$key] = $arr[$k];
-        unset($arr[$k]);
+        $basket_arr = $arr;
+        $arr = [];
+        foreach($basket_arr as $v) {
+            $arr[$v['code']] = $v;
+        }
+
+        if(isset($basket) && $basket !== '') {
+            $B = new BASKET($basket);
+            $arr = $B->verify_in_basket_product($arr);
+        } else {
+            foreach($arr as $k=>$v) {
+                $v['IN_BASKET'] = 0;
+                $arr[$k] = $v;
+            }
+        }
     }
 
-//    wtf($arr, 1);
+//    wtf($arr);
 
 } else {
-    $rows = [];
+    $arr = [];
 }
