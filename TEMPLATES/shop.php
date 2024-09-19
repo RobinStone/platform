@@ -6,6 +6,10 @@
             <h1><?=$shop['name']?></h1>
             <p class="text count-lines-2"><?=$shop['descr']?></p>
         </div>
+        <div class="find-field flex align-center between gap-10" style="position: relative">
+            <input id="finder-shop" placeholder="Поиск по площадке" value="<?=@$_COOKIE['shop_arr_codes_text']?>" type="text">
+            <button onclick="search_context_in_shop(this)" class="btn flex align-center between gap-15">Найти</button>
+        </div>
     </div>
     <div class="line"></div>
     <div class="flex align-center">
@@ -43,6 +47,10 @@
         <h1><?=$shop['name']?></h1>
     </div>
     <p class="text count-lines-2" style="margin-bottom: 20px"><?=$shop['descr']?></p>
+    <div class="find-field flex align-center between gap-10" style="position: relative">
+        <input id="finder-shop" placeholder="Поиск по площадке" value="<?=@$_COOKIE['shop_arr_codes_text']?>" type="text">
+        <button onclick="search_context_in_shop(this)" class="btn flex align-center between gap-15">Найти</button>
+    </div>
     <div class="flex gap-15 column" style="margin-bottom: 30px">
         <button class="btn flex align-center between gap-15"><img width="25" height="25" src="/DOWNLOAD/20240107-203056_id-2-860597.svg"><span>Показать номер</span></button>
         <button onclick="show_main_chat()" class="btn flex align-center between gap-15 btn-white"><img width="25" height="25" src="/DOWNLOAD/20230530-211804_id-2-746301.svg"><span>Написать сообщение</span></button>
@@ -101,3 +109,7 @@ if(SHOP::is_my_shop($shop['id'])) {
     ]);
 }
 ?>
+
+<script>
+    shop_id = <?=(int)$shop['id']?>;
+</script>

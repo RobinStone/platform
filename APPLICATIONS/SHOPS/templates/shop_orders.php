@@ -37,6 +37,10 @@ foreach($rows as $k=>$v) {
         border-bottom: 3px solid #12561229;
         border-left: 3px solid #12561229;
     }
+    a b,
+    .total-summ {
+        white-space: nowrap;
+    }
     .order-item:hover {
         opacity: 1;
     }
@@ -170,8 +174,8 @@ foreach($rows as $k=>$v) {
 
                     </div>
                     <ul class="items">
-                        <?php foreach($v['order_code'] as $vv) { ?>
-                        <li><a target="_blank" href="/<?=$vv['link']?>" class="flex gap-10 align-center">
+                        <?php foreach($v['order_code']['products'] as $vv) { ?>
+                        <li><a target="_blank" href="/<?=$vv['link']?>" class="flex gap-5 align-center">
                                 <img width="20" height="20" src="/IMG/img100x100/<?=$vv['img']?>">
                                 <span class="count-lines-1 name-of-product"><?=$vv['name']?></span>
                                 <span><?=$vv['count']?> шт.</span>
@@ -186,6 +190,15 @@ foreach($rows as $k=>$v) {
                         </li>
                         <?php } ?>
                     </ul>
+                </div>
+                <div style="margin-bottom: 5px">
+                    <?php
+                    if(isMobile()) {
+                        echo '<button onclick="get_delivery_info('.$k.')" class="gray-btn margin-not"><img width="16" height="35" src="/DOWNLOAD/20230729-164009_id-2-778703.svg"></button>';
+                    } else {
+                        echo '<button onclick="get_delivery_info('.$k.')" class="gray-btn margin-not" style="padding: 7px 10px">Информация о доставке</button>';
+                    }
+                    ?>
                 </div>
                 <div class="flex column" style="max-width: min-content; align-items: end">
                     <span class="type-pay"><?=$v['type_pay']?></span>
@@ -210,3 +223,11 @@ foreach($rows as $k=>$v) {
         <?php } ?>
     </ul>
 </section>
+
+<script>
+    function get_delivery_info(order_id) {
+        open_popup('former', {order_id: order_id, type: 'delivery_info'}, function() {
+            
+        });
+    }
+</script>

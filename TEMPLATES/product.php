@@ -127,7 +127,9 @@
             </div>
 <!--            <button onclick="buy_form($shop_id, $product_id, order_params)" class="btn btn-shop" style="width: 215px">Купить</button>-->
             <?php if(!SHOP::is_my_shop($shop_id)) { ?>
-            <button onclick="in_basket_and_execute()" class="btn btn-shop" style="width: 215px">Купить</button>
+                    <div id="in-basket-container">
+                        <button onclick="in_basket_and_execute()" class="btn btn-shop" style="width: 215px">Купить</button>
+                    </div>
             <?php } else { ?>
                 <button class="btn btn-shop disabled" style="width: 215px">Купить</button>
             <?php } ?>

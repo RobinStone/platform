@@ -317,6 +317,9 @@ html ,body, body * {
 .not-active {
     pointer-events: none;
 }
+.margin-not {
+    margin: 0!important;
+}
 .modal {
     background-color: rgba(0, 0, 0, 0.37);
 }

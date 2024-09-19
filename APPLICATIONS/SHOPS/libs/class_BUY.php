@@ -40,18 +40,12 @@ class BUY {
     #[ArrayShape(['errors' => "array", 'arr' => "array"])] public static function preparation($arr): array
     {
         $errors = [];
-//        say($arr);
         $ids = array_column($arr['products'], 'product_id');
-//        say($ids);
         $rows = SHOP::get_products_list_at_id((int)$arr['shop_id'], $ids, true);
         $ids = array_column($rows, 'id_product');
         $rows = array_combine($ids, $rows);
 
-//        say($rows);
         $total_summ = 0;
-//
-//        say($arr['products']);
-//        say($rows);
 
         foreach($arr['products'] as $k=>$v) {
             if(isset($rows[$v['product_id']])) {
@@ -116,7 +110,20 @@ class BUY {
         }
         end_transaction();
 
-        say($arr);
+        $order_code = [
+            'products'=>$arr['products'],
+            'delivery_info'=>[
+                'promocode'=>$arr['promocode'] ?? '-',
+                'type_pay'=>$arr['type_pay'] ?? '-',
+                'city'=>$arr['city'] ?? '-',
+                'type_obtaining'=>$arr['obtaining'] ?? '-',
+                'address_of_delivery'=>$arr['address'] ?? '-',
+                'comment'=>$arr['comment'] ?? '-',
+                'total_summ'=>$arr['total_summ'] ?? '-',
+                'fio'=>$arr['fio'] ?? '-',
+                'phone'=>$arr['phone'] ?? '-',
+            ]
+        ];
 
         q("
         INSERT INTO orders SET
@@ -127,7 +134,7 @@ class BUY {
         datatime='".date('Y-m-d H:i:s')."',
         shop_id=".(int)$arr['shop_id'].",
         total_summ=".(float)$arr['total_summ'].",
-        order_code='".serialize($arr['products'])."'
+        order_code='".serialize($order_code)."'
         ");
         return SUBD::get_last_id();
     }

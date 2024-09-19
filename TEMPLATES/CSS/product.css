@@ -477,7 +477,6 @@
         background-color: #F8F7F7!important;
     }
     .likes-carts {
-        position: absolute;
         right: 50px;
         top: 5px;
         min-width: 71px;
@@ -487,5 +486,18 @@
     }
     .likes-carts .favourites span:nth-child(2) {
         display: none;
+    }
+    #in-basket-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+    #in-basket-container .likes-carts {
+        flex-wrap: nowrap;
+        padding-right: 25px;
+    }
+    #in-basket-container .likes-carts .svg-wrapper img {
+        width: 30px;
+        height: 27px;
     }
 }

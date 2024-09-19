@@ -81,6 +81,7 @@ $(document).ready(function(e) {
         $('.img-table.b-2').after($('.right-side'));
         $('.img-table.b-2').after($('h1'));
         $('.map-controlers').after($('#map-place-mobile'));
-        $('.profil-btn-action').before($('.likes-carts'));
+
+        $('#in-basket-container button').after($('.likes-carts'));
     }
 });

@@ -16,6 +16,9 @@ foreach($rows as $k=>$v) {
         $auto_recived_orders_ids[] = (int)$v['id'];
     }
 }
+
+//wtf($rows, 1);
+
 if(count($auto_recived_orders_ids) > 0) {
     INCLUDE_CLASS('shops', 'shop');
     INCLUDE_CLASS('shops', 'pay');
@@ -32,6 +35,9 @@ if(count($auto_recived_orders_ids) > 0) {
     }
     .my-orders-list {
         max-width: 600px;
+    }
+    .align-center {
+        align-self: center!important;
     }
     .order-item {
         position: relative;
@@ -52,6 +58,10 @@ if(count($auto_recived_orders_ids) > 0) {
         border-right: 3px solid #ccffcc;
         border-bottom: 3px solid #12561229;
         border-left: 3px solid #12561229;
+    }
+    a b,
+    .total-summ {
+        white-space: nowrap;
     }
     .order-item:hover {
         opacity: 1;
@@ -203,8 +213,8 @@ if(count($auto_recived_orders_ids) > 0) {
             </div>
             <div class="flex between width100perc" style="align-items: end;">
                 <ul class="items">
-                    <?php foreach($v['order_code'] as $vv) { ?>
-                    <li><a target="_blank" href="/<?=$vv['link']?>" class="flex gap-10 align-center">
+                    <?php foreach($v['order_code']['products'] as $vv) { ?>
+                    <li><a target="_blank" href="/<?=$vv['link']?>" class="flex gap-5 align-center">
                             <img width="20" height="20" src="/IMG/img100x100/<?=$vv['img']?>">
                             <span class="count-lines-1 name-of-product"><?=$vv['name']?></span>
                             <span><?=$vv['count']?> шт.</span>
@@ -219,6 +229,9 @@ if(count($auto_recived_orders_ids) > 0) {
                     </li>
                     <?php } ?>
                 </ul>
+                <div style="margin-bottom: 5px">
+<!--                 тут копируем код из shop_orders.php - для отображения кнопки-->
+                </div>
                 <div class="flex column" style="align-items: end">
                     <span class="type-pay"><?=$v['type_pay']?></span>
                     <?php
