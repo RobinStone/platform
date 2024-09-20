@@ -62,7 +62,7 @@
         <main>
             <?php
             if(isMobile()) {
-                echo render('header_phone', ['user_img'=>$user_img]);
+                echo render('header_phone', ['user_img'=>$user_img, 'count_in_basket'=>$count_in_basket]);
             } else {
                 echo render('header_desctop', [
                         'user_img'=>$user_img,

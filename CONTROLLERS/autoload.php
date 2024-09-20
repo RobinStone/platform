@@ -256,6 +256,7 @@ function crypter($var) {
     return crypt(md5($salt2.$var.$salt1), $salt2);
 }
 function render($tpl, $arr=[]): bool|string {
+    SITE::$params['TEMPLATES'][] = $tpl;
     if($tpl === '') {
         return '';
     }

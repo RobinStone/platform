@@ -271,4 +271,19 @@ li .phone-book ul {
         width: 24px;
         height: 24px;
     }
+    #q-profil {
+        position: relative;
+    }
+    #basket-count {
+        display: inline-block;
+        position: absolute;
+        background-color: yellow;
+        border-radius: 50%;
+        padding: 2px 5px;
+        font-size: 14px;
+        border: 1px solid orange;
+        font-weight: 600;
+        right: -9px;
+        top: -7px;
+    }
 }

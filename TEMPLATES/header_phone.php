@@ -19,12 +19,14 @@
             </button>
         <?php } ?>
     </div>
+    <?php
+    if(isset(SITE::$params['TEMPLATES'][2]) && SITE::$params['TEMPLATES'][2] !== 'product') { ?>
     <div class="find-field flex align-center between gap-10">
         <input id="finder" oninput="finder(this)" placeholder="Поиск по сайту" type="text">
         <button id="btn-finder" onclick="search_context(this)" class="btn flex align-center between gap-15">Найти</button>
     </div>
+    <?php } ?>
     <button onclick="create_my_order()" class="btn flex align-center between visually-hidden" style="width: 100%; min-height: 48px">Разместить объявление</button>
-<!--    --><?php //include_once './TEMPLATES/menu.php'; ?>
 </header>
 
 <div class="quick_access flex around align-center show">
@@ -35,7 +37,14 @@
         <?=RBS::SVG('q-mess.svg')?>
         <span id="count-alert"></span>
     </a>
-    <a id="q-profil" href="/profil" class="quick-btn svg-wrapper action-btn"><?=RBS::SVG('q-profil.svg')?></a>
+    <a id="q-profil" href="/basket" class="quick-btn svg-wrapper action-btn">
+        <?=RBS::SVG('20230609-193649_id-2-923913.svg')?>
+        <?php
+        if($count_in_basket > 0) {
+            echo '<span id="basket-count">'.$count_in_basket.'</span>';
+        }
+        ?>
+    </a>
     <a class="action-btn" onclick="theme_checker()">
         <img width="30" height="30" src="/DOWNLOAD/20240705-121447_id-2-736237.svg">
     </a>
