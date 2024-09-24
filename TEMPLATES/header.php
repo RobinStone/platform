@@ -9,6 +9,8 @@
     <meta name="description" content="<?=Core::$description?>">
     <meta name="keywords" content="<?=Core::$keywords?>">
 
+    <meta name="google-site-verification" content="7_P-rSlfw_UUxYzgYbdApCRxN77Y8F7xFiXTFA2yZqU" />
+
     <?php
     if (count(Core::$META) > 0) {
         echo implode("\r\n", Core::$META);

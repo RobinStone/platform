@@ -690,7 +690,7 @@ class SHOP {
             $direct = 'DESC';
         }
         $limit = " LIMIT ".(int)$limit[0].",".(int)$limit[1];
-        $ids = "id > 0 ";
+        $ids = "indexer.id > 0 ";
         if(!empty($indexer_ids)) {
 
             $indexer_ids = array_map(function($value) {
@@ -720,6 +720,7 @@ class SHOP {
         indexer.id,
         CONCAT(indexer.shop_id, '_', indexer.prod_id) AS code,
         indexer.city_id,
+        city.name AS city_name,
         indexer.shop_id,
         indexer.prod_id,
         indexer.status, 
@@ -731,7 +732,8 @@ class SHOP {
         indexer.shops_lists AS action_list,
         indexer.count,
         indexer.created,
-        indexer.active_to FROM indexer
+        indexer.active_to FROM indexer LEFT JOIN `city`
+        ON indexer.city_id = city.id_city 
         WHERE ".$ids." ".$sorted_by." ".$direct." ".$limit."
         "));
 

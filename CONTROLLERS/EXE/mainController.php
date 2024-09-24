@@ -154,6 +154,10 @@ if(Access::userID() > 0) {
 
 $preview_products = SHOP::get_mix_products_at_all_shops(true, [0,4], $city_index, -1, -1, -1, []);
 
+//if(Access::user('robin')) {
+//    wtf($preview_products);
+//}
+
 $my_place = SITE::$my_place;
 
 if(!empty($preview_products)) {

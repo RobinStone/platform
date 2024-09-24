@@ -10,8 +10,10 @@ if($v['LIKE'] == 1) {
     $hart = 'hart-red';
 }
 
+$city = VALUES::translit($v['city_name'] ?? '-') ?? '-';
+
 echo '<div class="text-info">';
-echo '<div class="wrapper-link flex between gap-5"><a href="/'.$v['main_cat_trans'].'/'.$v['under_cat_trans'].'/'.VALUES::translit($v['action_list_trans']).'/'.$v['trans'].'?s='.$shop_id.'&prod='.$product_id.'">'.$v['name'].'</a>';
+echo '<div class="wrapper-link flex between gap-5"><a href="/'.$v['main_cat_trans'].'/'.$v['under_cat_trans'].'/'.VALUES::translit($v['action_list_trans']).'/'.$v['trans'].'?s='.$shop_id.'&prod='.$product_id.'&city='.$city.'">'.$v['name'].'</a>';
 if(!SHOP::is_my_shop($shop_id) && Access::userID() > 0) {
     echo '<button onclick="favorite_check(this, ' . $shop_id . ', ' . $product_id . ')" class=" action-btn like"><span class="svg-wrapper ' . $hart . '">' . RBS::SVG('hart_white') . '</span></button>';
 } else {
