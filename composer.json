@@ -9,6 +9,7 @@
       "ext-mysqli": "*",
       "ext-curl": "*",
         "phpoffice/phpspreadsheet": "^2.1",
-      "ext-fileinfo": "*"
+      "ext-fileinfo": "*",
+        "sanmai/cdek-sdk": "^0.7.7"
     }
 }
