@@ -61,10 +61,13 @@ class TOTALCOMANDER {
         }
         error('Попытка доступа к запрещённой директории...');
     }
-    public static function get_dir_catalog_of_user(string $path = "/"): bool|array
+    public static function get_dir_catalog_of_user(string $path = "/", int $user_id=-1): bool|array
     {
-        if(!is_dir('./APPLICATIONS/SHOPS/user_storages/'.Access::userID())) {
-            mkdir('./APPLICATIONS/SHOPS/user_storages/'.Access::userID());
+        if($user_id === -1) {
+            $user_id = Access::userID();
+        }
+        if(!is_dir('./APPLICATIONS/SHOPS/user_storages/'.$user_id)) {
+            mkdir('./APPLICATIONS/SHOPS/user_storages/'.$user_id);
         }
         if($path !== '/' && $path !== "") {
             if($path[0] !== "/") {
@@ -72,7 +75,7 @@ class TOTALCOMANDER {
             }
         }
         if($path === "/SYSIMGS/") {
-            $rows = SQL_ROWS(q("SELECT id, sys_name, user_name, created FROM file WHERE owner=".Access::userID()." AND type='image' "));
+            $rows = SQL_ROWS(q("SELECT id, sys_name, user_name, created FROM file WHERE owner=".$user_id." AND type='image' "));
             $contents = [];
             foreach($rows as $v) {
                 $contents[] = [
@@ -86,8 +89,14 @@ class TOTALCOMANDER {
             }
             return $contents;
         }
-        if(is_dir('./APPLICATIONS/SHOPS/user_storages/'.Access::userID().$path)) {
-            $directoryPath = './APPLICATIONS/SHOPS/user_storages/'.Access::userID().$path;
+        if(is_dir('./APPLICATIONS/SHOPS/user_storages/'.$user_id.$path)) {
+            $directoryPath = './APPLICATIONS/SHOPS/user_storages/'.$user_id.$path;
+
+            $CACHE_INFO_DIR = "./RESURSES/CACHE_FILES_INFO/";
+            if(!is_dir($CACHE_INFO_DIR)) {
+                mkdir($CACHE_INFO_DIR);
+            }
+
             $contents = [];
             if($path === '/') {
                 $contents[] = [
@@ -99,27 +108,68 @@ class TOTALCOMANDER {
                 ];
             }
             if(is_dir($directoryPath)) {
+
+                $thumbnail_dir = './RESURSES/THUMBNAIL/'.md5($directoryPath);
+                if(!is_dir($thumbnail_dir)) {
+                    mkdir($thumbnail_dir);
+                }
+                $thumbnail_dir .= "/";
+
                 $items = scandir($directoryPath);
                 $small_path = explode('/',$directoryPath);
                 for($i=0;$i<=4;$i++) {
                     unset($small_path[$i]);
                 }
                 $small_path = implode('/',$small_path);
+
+                if(file_exists($CACHE_INFO_DIR.md5($directoryPath).".cache")) {
+                    $info = unserialize(file_get_contents($CACHE_INFO_DIR.md5($directoryPath).".cache"));
+                } else {
+                    $info = [];
+                }
+
+                $count = count($info);
+
                 foreach ($items as $item) {
                     if ($item === '.' || $item === '..') {
                         continue;
                     }
-                    $itemPath = $directoryPath . $item;
-                    $itemStats = stat($itemPath);
-                    $contents[] = [
-                        'name' => $item,
-                        'type' => is_dir($itemPath) ? 'D' : 'F',
-                        'size' => $itemStats['size'],
-                        'created' => date('Y-m-d H:i:s', $itemStats['ctime']),
-                        'path' => $small_path.$item,
-                        'info'=>mime_content_type($directoryPath.$item)
-                    ];
+
+                    if (!isset($info[$item])) {
+                        $itemPath = $directoryPath . $item;
+
+                        // Проверяем, является ли файл изображением и существует ли миниатюра
+                        if (preg_match('/\.(jpg|jpeg|png|gif)$/i', $item) && !file_exists($thumbnail_dir . $item)) {
+                            $thumbnail_img = new S_IMG($itemPath);
+                            $thumbnail_img->bestFit(30, 30)->toFile($thumbnail_dir . $item);
+                        }
+
+                        // Получаем статистику файла
+                        $itemStats = stat($itemPath);
+
+                        $info_item = [
+                            'name' => $item,
+                            'thumbnail' => $thumbnail_dir . $item,
+                            'type' => is_dir($itemPath) ? 'D' : 'F',
+                            'size' => $itemStats['size'],
+                            'created' => date('Y-m-d H:i:s', $itemStats['ctime']),
+                            'path' => $small_path . $item,
+                            'info' => mime_content_type($itemPath)
+                        ];
+
+                        $contents[] = $info_item;
+
+                        $info[$item] = $info_item;
+
+                    } else {
+                        $contents[] = $info[$item];
+                    }
                 }
+
+                if($count !== count($contents)) {
+                    file_put_contents($CACHE_INFO_DIR.md5($directoryPath).".cache", serialize($info));
+                }
+
             }
             return $contents;
         } else {
@@ -320,10 +370,15 @@ class TOTALCOMANDER {
                                 case 'bmp':
                                 case 'webp':
                                     file_type = 'image';
+                                    data_file_name = "./APPLICATIONS/SHOPS/user_storages/<?=SITE::$user_id?>/"+arr[i]['path'];
                                     if(gallery) {
                                         ico = "./IMG/img100x100/"+arr[i]['path'];
                                     } else {
-                                        ico = "./APPLICATIONS/SHOPS/user_storages/<?=SITE::$user_id?>/"+arr[i]['path'];
+                                        if(typeof arr[i]['thumbnail'] !== 'undefined') {
+                                            ico = arr[i]['thumbnail'];
+                                        } else {
+                                            ico = "./APPLICATIONS/SHOPS/user_storages/<?=SITE::$user_id?>/"+arr[i]['path'];
+                                        }
                                     }
                                     size = 30;
                                     break;
@@ -332,7 +387,7 @@ class TOTALCOMANDER {
                             if(size > 14) {
                                 mg = 'mg-5';
                             }
-                            item = $('<div data-id="'+i+'" data-file-name="'+data_file_name+'" draggable="true" data-file-type="'+file_type+'" data-type="file" class="t-row flex gap-5 '+mg+'"><img width="'+size+'" height="'+size+'" src="'+ico+'"><span class="count-lines-1">'+arr[i]['name']+'</span></div>');
+                            item = $('<div data-id="'+i+'" data-file-name="'+data_file_name+'" draggable="true" data-file-type="'+file_type+'" data-type="file" class="t-row flex gap-5 '+mg+'"><img style="object-fit: contain" width="'+size+'" height="'+size+'" src="'+ico+'"><span class="count-lines-1">'+arr[i]['name']+'</span></div>');
                         }
                         panel.append(item);
                     }
@@ -461,7 +516,7 @@ class TOTALCOMANDER {
                             let info_type = get_extention(item['name']);
                             switch(info_type) {
                                 case 'image':
-                                    open_popup('imger', {path: obj.find('img').attr('src')});
+                                    open_popup('imger', {path: obj.attr('data-file-name')});
                                     break;
                                 case 'word':
                                     open_popup('word', {path: obj.attr('data-file-name')});
@@ -681,11 +736,11 @@ class TOTALCOMANDER {
         ob_start(); ?>
         <div class="flex bread-crumbs-total"></div>
         <div class="flex btn-panel-total">
-            <button onclick="refrash_total()" class="action-btn" title="Обновить"><img src="./DOWNLOAD/20231204-130112_id-2-713791.svg" width="18" height="18"></button>
+            <button onclick="refrash_total()" class="action-btn" title="Обновить"><img src="./DOWNLOAD/refrash.svg" width="18" height="18"></button>
             <button onclick="" class="action-btn" title=""><img src="./DOWNLOAD/20230516-125207_id-2-411008.svg" width="18" height="18"></button>
             <button onclick="del_sellect_items('<?=$side?>')" class="action-btn" title="Удалить один или несколько выделенных объектов"><img src="./DOWNLOAD/20230907-213237_id-2-475996.svg" width="18" height="18"></button>
             <button onclick="loading('<?=$side?>')" class="action-btn" title=""><img src="./DOWNLOAD/20231103-082136_id-2-879966.svg" width="18" height="18"></button>
-            <button onclick="create_folder('<?=$side?>')" class="action-btn" title="Создать новую папку"><img src="./DOWNLOAD/55a6ce68a76d9efd78145205520ff5d7.svg" width="18" height="18"></button>
+            <button onclick="create_folder('<?=$side?>')" class="action-btn" title="Создать новую папку"><img src="./DOWNLOAD/folder_plus.svg" width="18" height="18"></button>
         </div>
         <?php echo ob_get_clean();
     }

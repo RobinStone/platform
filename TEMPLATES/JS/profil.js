@@ -104,7 +104,8 @@ function open_tab(name, params={}, call_back=function() {}) {
         case 'messenger':
         case 'storage':
         case 'banners':
-        case 'purchases': // покупки
+        case 'delivery':    // доставка
+        case 'purchases':   // покупки
         case 'shop_orders': // мои продажи (контроль)
         case 'settings':
         case 'favorite':

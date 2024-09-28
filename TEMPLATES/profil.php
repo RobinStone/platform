@@ -68,6 +68,10 @@
                 <span class="svg-wrapper"><?=RBS::SVG('tech_help')?></span>
                 <span>Обратиться в поддержку</span>
             </button>
+            <button onclick="open_tab('delivery')" class="action-btn flex align-center gap-10 not-border">
+                <span class="svg-wrapper"><?=RBS::SVG('2ba4151da62de7168bc969855314debc.svg')?></span>
+                <span>Доставка</span>
+            </button>
             <button class="action-btn flex align-center gap-10 not-border">
                 <span class="svg-wrapper"><?=RBS::SVG('docs')?></span>
                 <span>Добавить документы</span>
