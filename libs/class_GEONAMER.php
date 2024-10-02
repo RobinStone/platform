@@ -130,6 +130,21 @@ class GEONAMER {
             return explode('|', $geo);
         }
     }
+    public static function get_local_position($city_name): array
+    {
+            $my_place = SITE::$my_place;
+            $city = $my_place[0]; // Название населенного пункта
+            $apiKey = Core::$YANDEXGEOCODER;
+            $url = "https://geocode-maps.yandex.ru/1.x/?apikey=$apiKey&format=json&geocode=" . urlencode($city);
+            $response = file_get_contents($url);
+            $data = json_decode($response, true);
+            // Получаем координаты первого найденного объекта
+            $coords = $data['response']['GeoObjectCollection']['featureMember'][0]['GeoObject']['Point']['pos'];
+            // Разбиваем координаты на широту и долготу
+            list($longitude, $latitude) = explode(' ', $coords);
+
+            return [$latitude, $longitude];
+    }
 
     public static function generate_scheama_array($indexer_id): array
     {

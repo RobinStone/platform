@@ -4,10 +4,17 @@ use CdekSDK\Requests;
 class CDEK {
     private static $client;
     public static array $errors = [];
+    private static bool $test = true;
 
     private static function client_set() {
         require_once 'vendor/autoload.php';
-        self::$client = new \CdekSDK\CdekClient(getParam('sdec_name'), getParam('sdec_pass'));
+        if(self::$test) {
+            self::$client = new \CdekSDK\CdekClient('wqGwiQx0gg8mLtiEKsUinjVSICCjtTEP', 'RmAmgvSgSl1yirlz9QupbzOJVqhCxcP5', new \GuzzleHttp\Client([
+                'base_uri' => 'https://integration.cdek.ru',
+            ]));
+        } else {
+            self::$client = new \CdekSDK\CdekClient(getParam('sdec_name'), getParam('sdec_pass'));
+        }
     }
 
     private static function errors_reporting($response) {
@@ -43,9 +50,15 @@ class CDEK {
 
         foreach ($response as $item) {
             $itm = [
-                'CODE'=>$item->Code,
+                'CITY_CODE'=>$item->Code,
                 'NAME'=>$item->Name,
                 'ADDRESS'=>$item->Address,
+                'ADDR_COMMENT'=>$item->AddressComment,
+                'PHONE'=>$item->Phone,
+                'WORK_TIME'=>$item->WorkTime,
+                'COORD_X'=>$item->coordX,
+                'COORD_Y'=>$item->coordY,
+//                'ALL'=>$item
             ];
             foreach ($item->OfficeImages as $image) {
                 $itm['IMAGES'][] = '<img loading="lazy" src="'.$image->getUrl().'" width="200" height="150">';
@@ -54,5 +67,10 @@ class CDEK {
             $rows[] = $itm;
         }
         return $rows;
+    }
+
+    public static function get_code_city(string $city_name) {
+        self::client_set();
+        return self::$client->sendCitiesRequest($city_name);
     }
 }

@@ -1,28 +1,5 @@
-<section class="wrapper">
-    <input id="finder-s">
-    <button onclick="work()">SEND</button>
-    <div class="line"></div>
-    <input type="number" id="finder-p">
-    <button onclick="get_points()">GET POINTS</button>
-</section>
-
-
-<script>
-    function work() {
-        get_citys($('#finder-s').val(), function(results) {
-            console.dir(results);
-        });
-    }
-
-    function get_points() {
-        BACK('cdek', 'get_points', {cdek_city_id: $('#finder-p').val()}, function(mess) {
-            mess_executer(mess, function(mess) {
-                console.dir(mess.params);
-            });
-        });
-    }
-
-    function get_citys(city, callback) {
+class class_cdek {
+    get_citys(city, callback) {
         let res = [];
         if (city) {
             const url = 'https://api.cdek.ru/city/getListByTerm/jsonp.php?q='+city+'&callback=?';
@@ -42,4 +19,23 @@
             // say('Пожалуйста, введите город.');
         }
     }
-</script>
+
+    get_points_of_city_name(city_name, callback) {
+        this.get_citys(city_name, (mess) => {
+            if(typeof mess !== 'undefined' && mess.length > 0) {
+                let point = mess[0];
+                this.get_points(point.id, callback);
+            } else {
+                say('По локлизации "'+city_name+'" пунктов выдачи CDEK - не найдено...', 2);
+            }
+        });
+    }
+
+    get_points(cdek_city_id, callback) {
+        BACK('cdek', 'get_points', {cdek_city_id: cdek_city_id}, function (mess) {
+            mess_executer(mess, (mess) => {
+                callback(mess);
+            });
+        });
+    }
+}
