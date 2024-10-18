@@ -1,6 +1,10 @@
 <?php
 $city = $city ?? GEO2IP::IP2STRING(SITE::$ip);
-$delivery = PROFIL::init(Access::userID())->get_attachment('delivery_info', '');
+if(SITE::$profil) {
+    $delivery = PROFIL::init(Access::userID())->get_attachment('delivery_info', '');
+} else {
+    $delivery = '';
+}
 //wtf($delivery, 1);
 if($delivery === '') {
     $delivery = [
@@ -96,6 +100,16 @@ if(!isset($delivery['comment'])) {
         <fieldset data-num-id="5">
             <legend>Коментарий к заказу</legend>
             <textarea class="fields" placeholder="Коментарий к заказу" name="comment"><?=@$delivery['comment']?></textarea>
+        </fieldset>
+        <fieldset data-num-id="6">
+            <legend>Службы доставки</legend>
+            <table class="delitery-list">
+                <tr>
+                    <td><input type="radio" name="delivery-item"></td>
+                    <td><img src="./DOWNLOAD/20240930-122950_id-2-143035.png"></td>
+                    <td>Служба доставки СДЭК</td>
+                </tr>
+            </table>
         </fieldset>
 
         <div class="flex" style="width: 100%; margin-top: 1em; justify-content: right">

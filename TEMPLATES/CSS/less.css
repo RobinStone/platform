@@ -1,0 +1,52 @@
+header{
+    height: 100px;
+    padding: 20px;
+    position: relative;
+    
+   
+
+}
+.header_wrapper{
+    
+  
+}
+.up_wrapper{
+    width: 100%;
+ 
+}
+.buttom_wrapper{
+    width: 100%;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    
+    
+  
+} 
+.type{
+    display: flex;
+    gap: 30px;
+    
+}
+header nav{
+    width: 40%;
+    float: right;
+    display: flex;
+    
+
+}
+header nav ul{
+    width: 50%;
+    display: flex;
+    list-style: none;
+    gap: 10px;
+}
+.btn3{
+background: linear-gradient(90deg, rgba(20,209,16,1) 0%, rgba(8,143,25,1) 35%, rgba(4,22,1,1) 100%);
+border-radius: 5px;
+padding: 10px 14px;
+font-size: 14px;
+border: none;
+cursor: pointer;
+text-decoration: none;
+}

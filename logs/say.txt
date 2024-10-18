@@ -1,14 +1,14 @@
 Array
 (
-    [0] => Array
-        (
-            [id] => 623
-            [actor] => fa0c43731827cc7d76cd3b31953690f9
-            [datatime] => 2024-09-18 12:06:53
-            [action] => значение
-            [params] => count=1|code=57668|phone=375447725949
-            [active] => 1
-            [target] => fa0c43731827cc7d76cd3b31953690f9
-            [datas] => 
-        )
-
+    [cdek_city_id] => 9220
+    [is_test] => false
+    [com] => get_points
+    [back] => cdek
+)
+Array
+(
+    [cdek_city_id] => 9220
+    [is_test] => false
+    [com] => get_points
+    [back] => cdek222555oleg
+)

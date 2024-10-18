@@ -23,6 +23,8 @@ class class_cdek {
     get_points_of_city_name(city_name, callback) {
         this.get_citys(city_name, (mess) => {
             if(typeof mess !== 'undefined' && mess.length > 0) {
+                console.log('POINTS ---------');
+                console.dir(mess);
                 let point = mess[0];
                 this.get_points(point.id, callback);
             } else {
@@ -32,7 +34,16 @@ class class_cdek {
     }
 
     get_points(cdek_city_id, callback) {
-        BACK('cdek', 'get_points', {cdek_city_id: cdek_city_id}, function (mess) {
+        BACK('cdek', 'get_points', {cdek_city_id: cdek_city_id, is_test: false}, function (mess) {
+            mess_executer(mess, (mess) => {
+                callback(mess);
+            });
+        });
+    }
+
+    set_start_point(callback) {
+        let arr = {};
+        BACK('cdek', 'set_start_point', {arr: arr}, function (mess) {
             mess_executer(mess, (mess) => {
                 callback(mess);
             });

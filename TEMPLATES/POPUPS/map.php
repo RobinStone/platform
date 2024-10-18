@@ -1,7 +1,49 @@
-let myMap;
+<?php
+$COORDS = GEONAMER::get_local_position(SITE::$my_place[0]);
+$city = SITE::$my_place[0] ?? '';
 
-function map_coder_init(longitude, latitude, label_img, address='', hint='', baloon='') {
-    if(!$('#cdek-details').hasAttr('open')) {
+include_JS_once('/TEMPLATES/JS/class_cdek.js');
+?>
+<style>
+    .place-popap.showed {
+        width: 900px;
+        height: 600px;
+        max-width: calc(100% - 20px);
+        max-height: calc(100dvh - 50px);
+    }
+
+    .place-popap.showed #map {
+        top: 90px;
+        min-height: calc(100% - 90px);
+    }
+
+    @media screen and (max-width: 950px) {
+
+    }
+
+</style>
+
+<section class="message">
+
+</section>
+    <h2 class="h2">Укажите пункт выдачи СДЭК, в котором Вам будет удобно забрать посылку ?</h2>
+    <div id="map"></div>
+<script>
+    myMap = null;
+
+    points = [];
+    CDEK = new class_cdek();
+
+    CDEK.get_points_of_city_name('<?=SITE::$my_place[0]?>', function(mess) {
+        points = mess.params;
+        console.dir(points);
+    });
+
+    setTimeout(function(){
+        map_coder_init(<?=$COORDS[0]?>, <?=$COORDS[1]?>, '20240930-123402_id-2-197100.png')
+    }, 1000);
+
+    function map_coder_init(longitude, latitude, label_img, address='', hint='', baloon='') {
         if ($('#map').children().length === 0) {
 
             // get_cdek_points()
@@ -31,7 +73,7 @@ function map_coder_init(longitude, latitude, label_img, address='', hint='', bal
                         for(let i in points) {
                             let loc = points[i]['location'];
                             console.dir(loc);
-                            add_placemark(loc.latitude, loc.longitude, label_img, loc.address, points[i].code);
+                            add_placemark(loc.latitude, loc.longitude, label_img, "Забрать на :<br><b>"+loc.address+"</b>", points[i].code);
                         }
                     }, 100);
                 }
@@ -65,7 +107,21 @@ function map_coder_init(longitude, latitude, label_img, address='', hint='', bal
                     });
 
                     myPlacemark.events.add('click', function (e) {
-                        say('click');
+                        info_qest(undefined, function() {
+                            // say(baloon, 2);
+                            BACK('cdek', 'set_end_point_cdek', {point: baloon}, function(mess) {
+                                mess_executer(mess, function(mess) {
+                                    close_popup('map');
+                                    setTimeout(function() {
+                                        let url = new URL(location.href);
+                                        url.searchParams.set('delivery', 'places');
+                                        location.href = url.toString();
+                                    }, 1000);
+                                });
+                            });
+                        }, function() {
+                            location.reload();
+                        }, 'Подтвердите, что вы хотите забрать посылку по адресу<br><b>'+hint+'</b> ?');
                         console.log(hint);
                     });
 
@@ -74,10 +130,6 @@ function map_coder_init(longitude, latitude, label_img, address='', hint='', bal
 
             }, 10);
         }
-
-    } else {
-        // тут когда закрывается details
-        say(sity_name);
     }
-}
+</script>
 
