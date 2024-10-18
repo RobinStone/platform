@@ -4,3 +4,5 @@ CONTROLLERS/config.php
 RESURSES/SQL/*
 .idea
 .htaccess
+.vs/
+.vscode/
