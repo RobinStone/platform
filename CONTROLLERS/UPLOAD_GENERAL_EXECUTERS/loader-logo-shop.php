@@ -31,6 +31,10 @@ switch($type) {
     case 'EXECUTE':
         $counts = GENERAL_UPLOADER::plus_counts_uploaded_files();
         q("UPDATE `shops` SET `logo`='".$sys_name."' WHERE `id`=".(int)$shop['id']);
+        INCLUDE_CLASS('shops', 'shop');
+        if($owner_id = SHOP::get_owner_of_shop($shop['id'])) {
+            PROFIL::get_profil($owner_id)->delete_alert(ALERT_TYPE::ATTANTION, 'not_shop_logo');
+        }
         $ans = [        // ВАЖНЫЙ !!!
             'status'=>'ok',
             'type'=>'load',
