@@ -1,4 +1,6 @@
 <?php
+Access::auto_cookies_auth();
+
 include_CSS('profil');
 include_CSS('basket');
 
@@ -39,6 +41,7 @@ if($shop_id !== -1) {
             $city_location_id = PROPS_COMMANDER::get_prop($v['shop_id'], $v['product_id'], 'city_id');
             $cdek_city = GEONAMER::id_citys_to_names([$city_location_id]);
             if(isset($cdek_city[$city_location_id])) {
+                $city_name_from = $cdek_city[$city_location_id]['name'];
                 if($cdek_city = CDEK2::get_CDEK_city($cdek_city[$city_location_id]['name'])) {
                     $cdek_city_id_from = (int)$cdek_city['code'];
                 }
@@ -60,10 +63,11 @@ if(SITE::$profil) {
         include_JS('maps_controller');
         $cdek_city_id_to = (int)$cdek['city_code'];
         if($cdek_city_id_from !== -1 && $cdek_city_id_to !== -1) {
-            $cdek_price_list = CDEK2::get_tarif($cdek_city_id_from, $cdek_city_id_to, 500);
+            $cdek_price_list = CDEK2::get_all_tarifs($cdek_city_id_from, $cdek_city_id_to, 500);
             if(isset($cdek_price_list['Экспресс склад-склад'])) {
                 $cdek_price_params = $cdek_price_list['Экспресс склад-склад'];
             }
+            $city_name_to = SITE::$my_place[0];
         }
     }
 }

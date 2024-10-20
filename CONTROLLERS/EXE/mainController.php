@@ -134,6 +134,8 @@ include_CSS('swipper');
 include_once './APPLICATIONS/SHOPS/libs/class_CATALOGER.php';
 include_once './APPLICATIONS/SHOPS/libs/class_SHOP.php';
 
+Access::auto_cookies_auth();
+
 $dt = Core::$DT;
 $CAT = new CATALOGER();
 $main_cats = $CAT->main_cats;

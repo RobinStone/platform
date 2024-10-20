@@ -8,6 +8,30 @@ class BUY {
         if(count($result['errors']) === 0) {
             $arr = $result['arr'];
             if (count($arr['products']) > 0) {
+
+                // Проверяем всё по оплатам СДЭК-а
+                if(isset($arr['obtaining']) && $arr['obtaining'] === 'places') {
+                    if(isset($arr['cdek_city_points']) &&
+                        !empty($arr['cdek_city_points']['cdek_city_code_from']) &&
+                        !empty($arr['cdek_city_points']['cdek_city_code_to'])) {
+
+                        if($delivery_price = CDEK2::get_tarif_price_from_cities(
+                            $arr['cdek_city_points']['cdek_city_code_from'],
+                            $arr['cdek_city_points']['cdek_city_code_to'],
+                            500
+                        )) {
+                            // тут добавляем цену доставки по СДЭК, если всё хорошо
+                            (float)$arr['total_summ'] += $delivery_price;
+                            $arr['delivery_price'] = (int)$delivery_price;
+                        } else {
+                            error('Ошибка расчёта цены доставки');
+                        }
+
+                    } else {
+                        error('Ошибка. Не коректно указаны точки отправки и доставки посылки');
+                    }
+                }
+
                 if(PAY::is_payed_correct_summ(Access::userID(), (float)$arr['total_summ'])) {
                     $codes_prods = [];
                     foreach($arr['products'] as $v) {
@@ -124,6 +148,11 @@ class BUY {
                 'phone'=>$arr['phone'] ?? '-',
             ]
         ];
+
+        if(isset($arr['cdek_city_points'])) {
+            $order_code['delivery_info']['cdek_city_points'] = $arr['cdek_city_points'];
+            $order_code['delivery_info']['delivery_price'] = $arr['delivery_price'];
+        }
 
         q("
         INSERT INTO orders SET

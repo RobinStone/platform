@@ -89,7 +89,7 @@ class CDEK2 {
         return false;
     }
 
-    public static function get_tarif(int $from_cityCDEKid, int $to_cityCDEKid, int $weight, bool $is_test=false): array
+    public static function get_all_tarifs(int $from_cityCDEKid, int $to_cityCDEKid, int $weight, bool $is_test=false): array
     {
         $D = new CDEK2($is_test);
         $ans = $D->get_tarif_price($from_cityCDEKid, $to_cityCDEKid, $weight);
@@ -100,6 +100,28 @@ class CDEK2 {
             }
         }
         return $rows;
+    }
+
+    public static function get_tarif_price_from_cities(
+        int $id_city_cdek_from,
+        int $id_city_cdek_to,
+        int $weight=100,
+        TARIF_CDEK $tarif=TARIF_CDEK::EXPRESS_W_W,
+        bool $is_test=false
+    ): bool|int
+    {
+        $D = new CDEK2($is_test);
+        $ans = $D->get_tarif_price($id_city_cdek_from, $id_city_cdek_to, $weight);
+        if(isset($ans['tariff_codes'])) {
+            $rows = [];
+            foreach($ans['tariff_codes'] as $item) {
+                $rows[$item['tariff_name']] = $item;
+            }
+            if(isset($rows[$tarif->value])) {
+                return (int)$rows[$tarif->value]['delivery_sum'];
+            }
+        }
+        return false;
     }
 
     private function get_tarif_price(int $from_cityCDEKid, int $to_cityCDEKid, int $weight) {

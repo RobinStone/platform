@@ -53,6 +53,24 @@ enum PRODUCT_GROUP:string {
     case ACTION_LIST = 'shops_lists';
 }
 
+enum TARIF_CDEK:string {
+    case EXPRESS_D_D = 'Экспресс дверь-дверь';
+    case EXPRESS_D_W = 'Экспресс дверь-склад';
+    case EXPRESS_W_D = 'Экспресс склад-дверь';
+    case EXPRESS_W_W = 'Экспресс склад-склад';
+    case EXPRESS_D_P = 'Экспресс дверь-постамат';
+    case EXPRESS_W_P = 'Экспресс склад-постамат';
+    case EXPRESS_P_D = 'Экспресс постамат-дверь';
+    case EXPRESS_P_W = 'Экспресс постамат-склад';
+    case EXPRESS_P_P = 'Экспресс постамат-постамат';
+    case M_EXPRESS_D_D = 'Магистральный экспресс дверь-дверь';
+    case M_EXPRESS_D_W = 'Магистральный экспресс дверь-склад';
+    case M_EXPRESS_W_D = 'Магистральный экспресс склад-дверь';
+    case M_EXPRESS_W_W = 'Магистральный экспресс склад-склад';
+    case M_EXPRESS_D_P = 'Магистральный экспресс дверь-постамат';
+    case M_EXPRESS_W_P = 'Магистральный экспресс склад-постамат';
+}
+
 Core::$DT = date('Y-m-d H:i:s');
 Core::$SESSIONCODE = md5(session_id().Core::$CRYPTER_SALT_1);
 SITE::set('CODE', Core::$SESSIONCODE);
@@ -127,6 +145,26 @@ function SQL_ROWS_FIELD($ask, $field_name): array
         }
     }
     return $arr;
+}
+
+/**
+ * Получает на вход результат функции q (query), например
+ * SELECT name FROM users WHERE id = 2 LIMIT 1
+ * возвращает первое поле, которое встретит или false
+ *
+ * @param $ask
+ * @return mixed
+ */
+function SQL_ONE_FIELD($ask): mixed
+{
+    if ($ask->num_rows) {
+        $row = $ask->fetch_assoc();
+        if(count($row) > 0) {
+            return $row[array_key_first($row)];
+        }
+        return $row;
+    }
+    return false;
 }
 
 function wtf($array, $stop = false) {
@@ -205,7 +243,12 @@ function say($val) {
         if(is_object($val)) {
             $val->FILE_INFO = $info;
         } else {
-//            $val['FILE_INFO'] = $info;
+            foreach($info as &$item_info) {
+                if(isset($item_info['args'])) {
+                    unset($item_info['args']);
+                }
+            }
+            $val['FILE_INFO'] = $info;
         }
         $mess = print_r($val, true);
     }

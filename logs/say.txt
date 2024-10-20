@@ -1,14 +1,77 @@
 Array
 (
-    [cdek_city_id] => 9220
-    [is_test] => false
-    [com] => get_points
-    [back] => cdek
-)
-Array
-(
-    [cdek_city_id] => 9220
-    [is_test] => false
-    [com] => get_points
-    [back] => cdek222555oleg
+    [errors] => Array
+        (
+        )
+
+    [arr] => Array
+        (
+            [fio] => Корнаухов Олег
+            [phone] => +375(44)772-59-49
+            [shop_id] => 238
+            [products] => Array
+                (
+                    [0] => Array
+                        (
+                            [product_id] => 1
+                            [count] => 1
+                            [name] => букет 15 роз
+                            [link] => cvety/rozy/spisok/buket-15-roz?s=238&prod=1
+                            [price] => 1500
+                            [img] => 20240807-093317_id-5-257017.jpg
+                            [discount] => 50
+                            [price_with_discount] => 750
+                        )
+
+                )
+
+            [promocode] => 
+            [type_pay] => со счёта
+            [city] => Орловский
+            [obtaining] => places
+            [address] => ул. Ломоносова д.8 корп.2 кв.67
+            [comment] => тута вот так то !!!
+            [total_summ] => 750
+            [cdek_city_points] => Array
+                (
+                    [cdek_city_code_from] => 278
+                    [cdek_city_code_to] => 6668
+                )
+
+        )
+
+    [FILE_INFO] => Array
+        (
+            [0] => Array
+                (
+                    [file] => /var/www/www-root/data/www/rumbra.ru/APPLICATIONS/SHOPS/libs/class_BUY.php
+                    [line] => 8
+                    [function] => say
+                )
+
+            [1] => Array
+                (
+                    [file] => /var/www/www-root/data/www/rumbra.ru/APPLICATIONS/SHOPS/ajax.php
+                    [line] => 285
+                    [function] => execute_buy_from_cash
+                    [class] => BUY
+                    [type] => ::
+                )
+
+            [2] => Array
+                (
+                    [file] => /var/www/www-root/data/www/rumbra.ru/CONTROLLERS/router.php
+                    [line] => 14
+                    [function] => include_once
+                )
+
+            [3] => Array
+                (
+                    [file] => /var/www/www-root/data/www/rumbra.ru/index.php
+                    [line] => 18
+                    [function] => require_once
+                )
+
+        )
+
 )

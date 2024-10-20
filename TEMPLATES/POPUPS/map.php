@@ -37,11 +37,11 @@ include_JS_once('/TEMPLATES/JS/class_cdek.js');
     CDEK.get_points_of_city_name('<?=SITE::$my_place[0]?>', function(mess) {
         points = mess.params;
         console.dir(points);
-    });
 
-    setTimeout(function(){
-        map_coder_init(<?=$COORDS[0]?>, <?=$COORDS[1]?>, '20240930-123402_id-2-197100.png')
-    }, 1000);
+        setTimeout(function(){
+            map_coder_init(<?=$COORDS[0]?>, <?=$COORDS[1]?>, '20240930-123402_id-2-197100.png')
+        }, 1000);
+    });
 
     function map_coder_init(longitude, latitude, label_img, address='', hint='', baloon='') {
         if ($('#map').children().length === 0) {
