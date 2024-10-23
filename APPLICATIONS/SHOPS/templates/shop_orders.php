@@ -1,13 +1,21 @@
 <?php
+$page = (int)($page ?? 0);
+
 $rows = SQL_ROWS_FIELD(q("
 SELECT orders.*, shops.owner as shop_owner FROM orders
 LEFT JOIN shops ON
 orders.shop_id = shops.id 
 WHERE shops.owner=".Access::userID()." 
-ORDER BY id DESC LIMIT 40
+ORDER BY id DESC LIMIT ".$page.",10
 "), 'id');
 foreach($rows as $k=>$v) {
-    $rows[$k]['order_code'] = unserialize($v['order_code']);
+    $order = unserialize($v['order_code']);
+    $rows[$k]['order_code'] = $order;
+    if($order['delivery_info']['type_obtaining'] === 'places') {
+        if(isset($order['delivery_info']['cdek_city_points']) && empty($order['delivery_info']['cdek_point_from'])) {
+            $rows[$k]['status_cdek'] = CDEK_ORDER_STATUS::EMPTY->name;
+        }
+    }
 }
 ?>
 <style>
@@ -193,10 +201,12 @@ foreach($rows as $k=>$v) {
                 </div>
                 <div style="margin-bottom: 5px">
                     <?php
+                    $class = "";
+                    if(isset($v['status_cdek'])) { $class = $v['status_cdek']; }
                     if(isMobile()) {
-                        echo '<button onclick="get_delivery_info('.$k.')" class="gray-btn margin-not"><img width="16" height="35" src="/DOWNLOAD/20230729-164009_id-2-778703.svg"></button>';
+                        echo '<button onclick="get_delivery_info('.$k.', this)" class="gray-btn margin-not '.$class.'"><img width="16" height="35" src="/DOWNLOAD/20230729-164009_id-2-778703.svg"></button>';
                     } else {
-                        echo '<button onclick="get_delivery_info('.$k.')" class="gray-btn margin-not" style="padding: 7px 10px">Информация о доставке</button>';
+                        echo '<button onclick="get_delivery_info('.$k.', this)" class="gray-btn margin-not '.$class.'" style="padding: 7px 10px">Информация о доставке</button>';
                     }
                     ?>
                 </div>
@@ -225,9 +235,19 @@ foreach($rows as $k=>$v) {
 </section>
 
 <script>
-    function get_delivery_info(order_id) {
+    function get_delivery_info(order_id, obj=null) {
+        if(obj) {
+            $(obj).removeClass('EMPTY');
+        }
         open_popup('former', {order_id: order_id, type: 'delivery_info'}, function() {
             
         });
+    }
+
+    function set_cdek_start_point(order_id) {
+        close_popup('former');
+        setTimeout(function() {
+            open_popup('map_cdek_from', {order_id: order_id});
+        }, 1000);
     }
 </script>

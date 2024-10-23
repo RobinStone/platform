@@ -37,6 +37,29 @@ enum ALERT_TYPE:string {
     case ERROR = 'error';
 }
 
+enum ORDER_STATUS:string {
+    case EMPTY = 'готовится';
+    case WAITING = 'в ожидании';
+    case WAITING_SENDER = 'ожидает отправки';
+    case CREATED = 'создан';
+    case PAYED = 'оплачен';
+    case SENDED = 'отправлен';
+    case TRACKED = 'в пути (отслеживается)';
+    case RECEIVED = 'получен';
+    case CLOSED = 'закрыт';
+    case ABORTED = 'отменён';
+}
+
+enum CDEK_ORDER_STATUS:string {
+    case EMPTY = 'ожидает подтверждения';
+    case READY = 'подготовлен';
+    case CREATED = 'создан';
+    case FORMED = 'сформирован';
+    case IN_START_POINT = 'в точке отправки';
+    case TRACKED = 'в пути (отслеживается)';
+    case IN_FINISH_POINT = 'в точке прибытия';
+}
+
 enum MODALITY:string {
     case empty = 'empty';
     case user = 'user';
@@ -233,7 +256,7 @@ function isMobile() {
     return false;
 }
 
-function say($val) {
+function say($val, bool $with_params=false) {
     if(!is_array($val) && !is_object($val)) {
         $info = debug_backtrace();    // откуда вызывалась функция полная информация
         $mess = date('H:i:s') . "\n" . htmlspecialchars_decode($val) . "\n" .
@@ -248,7 +271,9 @@ function say($val) {
                     unset($item_info['args']);
                 }
             }
-            $val['FILE_INFO'] = $info;
+            if($with_params) {
+                $val['FILE_INFO'] = $info;
+            }
         }
         $mess = print_r($val, true);
     }

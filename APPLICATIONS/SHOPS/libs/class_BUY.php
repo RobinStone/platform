@@ -7,6 +7,7 @@ class BUY {
         $result = self::preparation($arr);
         if(count($result['errors']) === 0) {
             $arr = $result['arr'];
+            $arr['payed'] = $arr['total_summ'];
             if (count($arr['products']) > 0) {
 
                 // Проверяем всё по оплатам СДЭК-а
@@ -21,7 +22,7 @@ class BUY {
                             500
                         )) {
                             // тут добавляем цену доставки по СДЭК, если всё хорошо
-                            (float)$arr['total_summ'] += $delivery_price;
+                            (float)$arr['payed'] += $delivery_price;
                             $arr['delivery_price'] = (int)$delivery_price;
                         } else {
                             error('Ошибка расчёта цены доставки');
@@ -32,14 +33,14 @@ class BUY {
                     }
                 }
 
-                if(PAY::is_payed_correct_summ(Access::userID(), (float)$arr['total_summ'])) {
+                if(PAY::is_payed_correct_summ(Access::userID(), (float)$arr['payed'])) {
                     $codes_prods = [];
                     foreach($arr['products'] as $v) {
                         $codes_prods[$arr['shop_id']."_".$v['product_id']] = 0;
                     }
                     $id = self::create_end_order_pay($arr);
                     self::set_status_order($id, 'оплачен');
-                    PAY::buy(Access::userID(), (float)$arr['total_summ'], 'Покупка товара', 'Кошелёк', self::create_description_order($arr)."\r\nНомер операции: ".$id);
+                    PAY::buy(Access::userID(), (float)$arr['payed'], 'Покупка товара', 'Кошелёк', self::create_description_order($arr)."\r\nНомер операции: ".$id);
                     if(Access::scanLevel() < 1) {
                         $basket = $_COOKIE['basket'] ?? '';
                     } else {
@@ -61,7 +62,13 @@ class BUY {
         }
     }
 
-    #[ArrayShape(['errors' => "array", 'arr' => "array"])] public static function preparation($arr): array
+    /**
+     * @param $arr
+     * @param bool $dont_see_at_count - функция будет игнорировать, если товаров уже нет === 0
+     * @return array
+     */
+    #[ArrayShape(['errors' => "array", 'arr' => "array"])]
+    public static function preparation($arr, bool $dont_see_at_count=false): array
     {
         $errors = [];
         $ids = array_column($arr['products'], 'product_id');
@@ -75,7 +82,7 @@ class BUY {
             if(isset($rows[$v['product_id']])) {
                 $obj = $rows[$v['product_id']];
                 $count_all = (int)$obj['count'];
-                if($count_all === -1 || $count_all >= (int)$v['count']) {
+                if($count_all === -1 || $count_all >= (int)$v['count'] || $dont_see_at_count) {
                     $v['name'] = $obj['name'];
                     $pages = [];
                     if (isset($obj['main_cat_trans']) && $obj['main_cat_trans'] !== '-' && $obj['main_cat_trans'] !== '') {
@@ -134,6 +141,8 @@ class BUY {
         }
         end_transaction();
 
+        $total_complite_summ = (float)$arr['payed'];
+
         $order_code = [
             'products'=>$arr['products'],
             'delivery_info'=>[
@@ -151,6 +160,13 @@ class BUY {
 
         if(isset($arr['cdek_city_points'])) {
             $order_code['delivery_info']['cdek_city_points'] = $arr['cdek_city_points'];
+            $order_code['delivery_info']['cdek_point_to'] = SITE::$profil->get_attachment('delivery_info.cdek');
+            PROFIL::get_profil(
+                SHOP::get_owner_of_shop((int)$arr['shop_id']))->add_alert(ALERT_TYPE::ATTANTION,
+                ['text'=>'Поступил новый заказ, пожалуйста уточните точку отправки посылки.', 'link'=>'/profil?title=shop_orders'],
+                'new_order'
+            );
+            $order_code['delivery_info']['cdek_point_from'] = [];
             $order_code['delivery_info']['delivery_price'] = $arr['delivery_price'];
         }
 
@@ -163,6 +179,7 @@ class BUY {
         datatime='".date('Y-m-d H:i:s')."',
         shop_id=".(int)$arr['shop_id'].",
         total_summ=".(float)$arr['total_summ'].",
+        payed=".$total_complite_summ.",
         order_code='".serialize($order_code)."'
         ");
         return SUBD::get_last_id();

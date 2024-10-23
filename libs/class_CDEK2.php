@@ -161,6 +161,28 @@ class CDEK2 {
         return $responser;
     }
 
+    public function delete_order(string $guid) {
+        $path = "https://api.cdek.ru/v2/orders/".$guid;
+        if($this->is_test) {
+            $path = "https://api.edu.cdek.ru/v2/orders/".$guid;
+        }
+        if($curl2 = curl_init() ) {
+            curl_setopt($curl2, CURLOPT_URL, $path);
+            curl_setopt($curl2, CURLOPT_RETURNTRANSFER,true);
+            curl_setopt($curl2, CURLOPT_FOLLOWLOCATION,true);
+            curl_setopt($curl2, CURLOPT_ENCODING,'');
+            curl_setopt($curl2, CURLOPT_MAXREDIRS,10);
+            curl_setopt($curl2, CURLOPT_TIMEOUT,0);
+            curl_setopt($curl2, CURLOPT_HTTP_VERSION,CURL_HTTP_VERSION_1_1);
+            curl_setopt($curl2, CURLOPT_HTTPHEADER, $this->header);
+            curl_setopt($curl2, CURLOPT_CUSTOMREQUEST, 'DELETE');
+            $response2 = curl_exec($curl2);
+            curl_close($curl2);
+            return json_decode($response2, true);
+        }
+        return false;
+    }
+
     public function create_bar_code(string $order_uuid) {
         $arr = [
             "orders"=> [
@@ -348,7 +370,7 @@ class CDEK2 {
         return false;
     }
 
-    public function get_place_params(string $city_name, int $count_answers=1000, string $country_code="RU") {
+    public function get_place_params(string $city_name, int $count_answers=1000) {
         $city_name = urlencode($city_name);
 
         $path = "https://api.cdek.ru/v2/location/cities/";
@@ -358,8 +380,7 @@ class CDEK2 {
 
         $comm = [
             "city"=>$city_name,
-            "country_codes"=>$country_code,
-            "size"=>$country_code
+            "size"=>$count_answers
         ];
         foreach($comm as $k=>$v) {
             $arr[] = $k."=".$v;

@@ -18,7 +18,8 @@ header{
     width: 100%;
     padding-top: 30px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+   
     
     
   
@@ -26,6 +27,7 @@ header{
 .type{
     display: flex;
     gap: 30px;
+    float: right;
     
 }
 header nav{
@@ -49,4 +51,12 @@ font-size: 14px;
 border: none;
 cursor: pointer;
 text-decoration: none;
+}
+.btn2{
+    background: linear-gradient(90deg, rgba(20,209,16,1) 0%, rgba(8,143,25,1) 35%, rgba(4,22,1,1) 100%);
+border-radius: 5px;
+}
+.btn1{
+    background: linear-gradient(90deg, rgba(20,209,16,1) 0%, rgba(8,143,25,1) 35%, rgba(4,22,1,1) 100%);
+border-radius: 5px;
 }
