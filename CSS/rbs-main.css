@@ -78,9 +78,21 @@ body * {
 .scroll-config::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+details summary {
+    cursor: pointer;
+}
+details summary:hover *:not(button) {
+    text-decoration: underline;
+}
 /*==================================================================*/
 /*OPTIONS*/
 /*==================================================================*/
+.unselect {
+    user-select: none; /* Для большинства браузеров */
+    -webkit-user-select: none; /* Для Safari */
+    -moz-user-select: none; /* Для Firefox */
+    -ms-user-select: none; /* Для Internet Explorer/Edge */
+}
 .options fieldset {
     border: 1px solid rgba(0, 128, 0, 0.31);
     border-radius: 7px;
@@ -328,6 +340,76 @@ html ,body, body * {
     width: 100%;
     height: 100%;
 }
+.float-left {
+    float: left;
+}
+.float-right {
+    float: right;
+}
+.margin-right-10 {
+    margin-right: 10px!important;
+}
+details.details {
+    transition: 0.4s;
+    border-radius: 5px;
+    margin: 5px 0;
+    max-height: 40px;
+}
+details.details[open] {
+    margin-bottom: 10px;
+    max-height: 500px;
+}
+details.details > div {
+    transition: 0.4s;
+    background-color: #ffffff00;
+    max-height: 0;
+    padding: 0;
+    height: 0;
+}
+details.details[open] > div {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.16);
+    min-height: 60px;
+    max-height: 460px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    padding: 5px 10px;
+    height: 100%;
+    overflow-y: auto;
+}
+details.details summary {
+    position: relative;
+    display: flex;
+    padding: 4px 5px 4px 40px;
+    font-weight: 600;
+    font-family: monospace, monospace!important;
+    border-radius: 14px;
+    text-shadow: 0 1px 0 #fff;
+    white-space: nowrap;
+    background: #f3f3f3;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#cccccc));
+    background: -webkit-linear-gradient(top, #ffffff, #cccccc);
+    background: -moz-linear-gradient(top, #ffffff, #cccccc);
+    background: -ms-linear-gradient(top, #ffffff, #cccccc);
+    background: -o-linear-gradient(top, #ffffff, #cccccc);
+    border-bottom: 1px solid #d9d9d9;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+details.details summary:before {
+    content: '⇩';
+    position: absolute;
+    left: 14px;
+    top: 4px;
+    transition: 0.2s;
+}
+details.details[open] summary:before {
+    transform: rotate(180deg);
+}
+details.details[open] summary {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
 
 @media screen and (max-width: 950px) {
     .svg-wrapper {
@@ -511,11 +593,32 @@ body a.h2:active {
 }
 .fieldset {
     border-radius: 5px;
-    border: 1px solid #7c7c7c;
+    border: 1px solid rgb(166 166 166);
+    box-shadow: inset -1px -1px 1px #fff;
+    padding: 5px 10px;
+    text-shadow: 0 1px 0 #fff;
 }
-.fieldset input {
+
+.fieldset legend {
+    font-weight: 800;
+    padding: 3px 10px 0
+}
+
+.fieldset input[type="text"] {
     display: inline-block;
     width: 300px;
+}
+.fieldset label {
+    cursor: pointer;
+    padding: 3px 0;
+}
+.fieldset label:hover {
+    background-color: rgba(129, 195, 255, 0.23);
+}
+.fieldset input[type="radio"] {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
 }
 .win-up-panel {
     position: absolute;
@@ -1092,6 +1195,13 @@ body a.h2:active {
     width: 100%;
     height: 1px;
 }
+.line-dotted {
+    display: block;
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.56);
+    /*height: 1px;*/
+}
 
 .loader:before {
     content: '';
@@ -1463,7 +1573,23 @@ input[type="file"] {
 .night .info-panel {
     background: url("/IMG/SYS/20210817-220435_id-2-723041.png");
 }
-
+.info-info.info-panel {
+    padding: 0!important;
+    width: 480px!important;
+    max-width: calc(100vw - 20px)!important;
+    background-image: none;
+    background-color: antiquewhite!important;
+}
+.info-info.info-panel h4 {
+    background-color: #ffffff!important;
+    margin-bottom: 12px!important;
+}
+.info-info.info-panel .info-content {
+    text-align: left;
+    padding: 0 10px 15px 10px;
+    font-size: 18px;
+    white-space: pre-wrap;
+}
 .mess-itm .mess-btn {
     font-weight: bold;
     font-size: 18px;
@@ -1530,6 +1656,14 @@ div.m-3 h3 {
 }
 .info-qest .close-map-btn {
     visibility: hidden;
+}
+.info-qest {
+    padding-top: 15px!important;
+}
+.info-llists.info-panel button.btn-gray {
+    border-radius: 50% !important;
+    padding: 4px 6px 3px !important;
+    line-height: 15px;
 }
 
 .info-panel h4 {
@@ -1623,6 +1757,22 @@ h1.h1 {
 }
 .info-panel {
     z-index: 999999!important;
+}
+.info-panel.info-llists {
+    padding: 0!important;
+}
+.info-panel.info-llists h4 {
+    margin: 0!important;
+    padding-left: 10px;
+    background-color: #fff!important;
+}
+.info-llists table {
+    border: 1px solid #ddd;
+    padding: 2px 5px;
+    text-align: left;
+}
+.info-llists table tr td:first-child {
+    width: 100%;
 }
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

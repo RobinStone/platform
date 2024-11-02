@@ -169,6 +169,34 @@ function SQL_ROWS_FIELD($ask, $field_name): array
     }
     return $arr;
 }
+function SQL_INSERT_ROW(string $table_name, array $arr): bool|int
+{
+    $query = [];
+    foreach($arr as $k=>$v) {
+        $query[] = "`".db_secur($k)."`='".db_secur($v)."'";
+    }
+    if(!empty($query)) {
+        if(q("INSERT INTO `".db_secur($table_name)."` SET ".implode(",",$query))) {
+            return SUBD::get_last_id();
+        }
+    }
+    return false;
+}
+function SQL_UPDATE_ROW(string $table_name, array $arr): bool|int
+{
+    $query = [];
+    $id = (int)$arr['id'];
+    unset($arr['id']);
+    foreach($arr as $k=>$v) {
+        $query[] = "`".db_secur($k)."`='".db_secur($v)."'";
+    }
+    if(!empty($query)) {
+        if(q("UPDATE `".db_secur($table_name)."` SET ".implode(",",$query). " WHERE id=".$id)) {
+            return $id;
+        }
+    }
+    return false;
+}
 
 /**
  * Получает на вход результат функции q (query), например

@@ -3,6 +3,12 @@ stay_hidden = new EventRBS();
 
 let functions = [];
 
+setInterval(function() {
+    $('.window').each(function(e,t) {
+        border_corector(t);
+    });
+}, 3000);
+
 function edit_profil() {
     let win = create_window(transform_pos('right', {x:-150, y:-100}), 'Редактор профиля:');
     open_card(win, 'users', user_id, {}, function() {

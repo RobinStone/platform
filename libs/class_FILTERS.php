@@ -310,5 +310,52 @@ class FILTERS {
         }
         echo ob_get_clean();
     }
+
+    public static function create_new_from_json(array $arr): bool|int
+    {
+        if($arr['field'] !== 'input' && $arr['field'] !== 'text') {
+            $arr['default'] = serialize($arr['default']);
+        }
+        $access = ['alias','order','type','field','default','block','visible','required','field_name'];
+        if(isset($arr['id'])) {
+            unset($arr['id']);
+        }
+        if(VALUES::isset_columns($arr, $access)) {
+            if(!self::isset($arr)) {
+                return SQL_INSERT_ROW('filters', $arr);
+            } else {
+                Message::addError('Параметр с такими ALIAS или FIELD_NAME - существует. Или указанные поля не были переданы...');
+                return false;
+            }
+        } else {
+            Message::addError('Не переданы нужные параметры...');
+            return false;
+        }
+    }
+
+    public static function update_filter_from_json(array $arr): bool|int
+    {
+        if($arr['field'] !== 'input' && $arr['field'] !== 'text') {
+            $arr['default'] = serialize($arr['default']);
+        }
+        $access = ['id','alias','order','type','field','default','block','visible','required','field_name'];
+        if(VALUES::isset_columns($arr, $access)) {
+            return SQL_UPDATE_ROW('filters', $arr);
+        } else {
+            Message::addError('Не переданы нужные параметры...');
+            return false;
+        }
+    }
+
+    public static function isset(array $arr): bool
+    {
+        if(isset($arr['alias']) && isset($arr['field_name'])) {
+            if($id = SQL_ONE_FIELD(q("SELECT id FROM filters WHERE `alias`='".db_secur($arr['alias'])."' OR `field_name`='".db_secur($arr['field_name'])."' LIMIT 1"))) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
 }
 

@@ -33,11 +33,13 @@
     <link rel="stylesheet" href="/CSS/style.css?<?= filemtime('./CSS/style.css') ?>">
     <link rel="stylesheet" href="/CSS/rbs-main.css?<?= filemtime('./CSS/rbs-main.css') ?>">
     <link rel="stylesheet" href="/TEMPLATES/CSS/menu.css?<?= filemtime('./TEMPLATES/CSS/menu.css') ?>">
+    <link rel="stylesheet" href="/CSS/html.css?<?= filemtime('./CSS/html.css') ?>">
 
     <script src="/JS/jquery-3.6.0.min.js"></script>
     <script src="/JS/jquery.cookie.js"></script>
     <script src="/JS/sysMessages.js?<?= filemtime('./JS/sysMessages.js') ?>"></script>
     <script src="/JS/informator.js?<?= filemtime('./JS/informator.js') ?>"></script>
+    <script src="/JS/html.js?<?= filemtime('./JS/html.js') ?>"></script>
 
     <?php
     if (count(Core::$CSS) > 0) {

@@ -219,8 +219,14 @@ class CATALOGER {
     public function get_all_action_list(int $id_main_cat, $id_under_cat):array {
         $ans = [];
         foreach($this->action_lists as $v) {
-            if($v['main_cat'] == $id_main_cat && $v['undercat'] == $id_under_cat) {
-                $ans[$v['id']] = $v;
+            if($id_main_cat !== -1) {
+                if ($v['main_cat'] == $id_main_cat && $v['undercat'] == $id_under_cat) {
+                    $ans[$v['id']] = $v;
+                }
+            } else {
+                if ($v['undercat'] == $id_under_cat) {
+                    $ans[$v['id']] = $v;
+                }
             }
         }
         return $ans;

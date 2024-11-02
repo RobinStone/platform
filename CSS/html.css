@@ -1,0 +1,138 @@
+.html-toggler {
+    display: flex;
+    flex-wrap: nowrap;
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid rgb(166 166 166);
+    box-shadow: inset 2px 0 18px #737373;
+    border-radius: 50px;
+    height: 28px;
+    min-width: 60px;
+    margin-top: 5px;
+    max-width: fit-content;
+    cursor: pointer;
+    overflow: hidden;
+    transition: 0.4s;
+}
+.html-toggler.traffic-light[data-status="1"] {
+    box-shadow: inset 1px 0 10px #737373;
+}
+.html-toggler * {
+    pointer-events: none;
+}
+.html-toggler .itms {
+    position: relative;
+    z-index: 2;
+    min-width: 30px;
+}
+.html-toggler .itms span {
+    transition: 0.3s;
+    position: relative;
+    z-index: 3;
+    display: inline-block;
+    line-height: 20px;
+}
+.html-toggler .itm-1 {
+    padding: 2px 8px 2px 8px;
+}
+.html-toggler .itm-2 {
+    padding: 2px 8px 2px 8px
+}
+.html-toggler .itms:before {
+    content: '';
+    transition: 0.1s;
+    display: inline-block;
+    position: absolute;
+    transform: translateX(0);
+    top: 1px;
+    width: calc(100% - 1px);
+    height: calc(100% - 2px);
+    z-index: 0;
+    border-radius: 50px;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.89);
+
+    text-shadow: 0 1px 0 #fff;
+    background: #f3f3f3;
+    background-size: 100% 100%;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#cccccc));
+    background: -webkit-linear-gradient(top, #ffffff, #cccccc);
+    background: -moz-linear-gradient(top, #ffffff, #cccccc);
+    background: -ms-linear-gradient(top, #ffffff, #cccccc);
+    background: -o-linear-gradient(top, #ffffff, #cccccc);
+}
+.html-toggler .itm-1:before {
+    right: 0;
+}
+.html-toggler .itm-2:before {
+    left: 0;
+}
+.html-toggler[data-status="1"] .itm-2 span {
+    opacity: 0.4;
+}
+.html-toggler[data-status="1"] .itm-2:before {
+    width: 50%;
+    opacity: 0;
+    transform: translateX(-30px);
+}
+.html-toggler[data-status="0"] .itm-1 span {
+    opacity: 0.4;
+}
+.html-toggler[data-status="1"] .itm-1 span {
+    text-shadow: 0 0 1px #000;
+}
+.html-toggler[data-status="0"] .itm-2 span {
+    text-shadow: 0 0 1px #000;
+}
+.html-toggler[data-status="0"] .itm-1:before {
+    width: 50%;
+    opacity: 0;
+    transform: translateX(30px);
+}
+.html-toggler.traffic-light[data-status="0"] {
+    background-color: #ffa9a9;
+}
+.html-toggler.traffic-light[data-status="1"] {
+    background-color: #70ff70;
+}
+
+.filter-item-win .off {
+    position: relative;
+    background-color: rgb(255 255 255 / 56%);
+    opacity: 0.7;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.44);
+    filter: grayscale(100%);
+}
+.filter-item-win .off:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0.6;
+    background: url(/DOWNLOAD/glass.png);
+    filter: drop-shadow(0px 0px 0px black);
+    z-index: 5;
+}
+.filter-item-win .off:after {
+    content: "";
+    position: absolute;
+    right: 50%;
+    bottom: -7px;
+    transform: translateX(50%);
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    background-color: #ffffff1f;
+    background-image: url("/DOWNLOAD/lock.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    z-index: 10
+}
+.filter-item-win .off * {
+    background: none;
+    pointer-events: none;
+}
+
+
