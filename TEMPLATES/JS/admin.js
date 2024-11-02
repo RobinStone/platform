@@ -58,6 +58,19 @@ function on_off(table_name) {
     });
 }
 
+dropped_element_action = function() {};
+
+$(document).on('dragover', '.center-wrapper-scroller', function(e) {
+    e.preventDefault();
+});
+$(document).on('drop', '.center-wrapper-scroller', function(e) {
+    const poss = {
+        x : e.originalEvent.pageX,
+        y : e.originalEvent.pageY
+    }
+    dropped_element_action(poss);
+});
+
 ///////////////////////////////////////////////////////////////////////
 ///                          ADMIN FUNCTIONS                         //
 ///////////////////////////////////////////////////////////////////////

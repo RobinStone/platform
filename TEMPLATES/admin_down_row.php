@@ -27,6 +27,7 @@
                 <?php if(Access::scanLevel() >= 6) { ?>
                 <button onclick="chat_activator(); $('.phone-book').toggleClass('showed')" class="svg-wrapper btn-gray btn-gray-text not-border micro-btn"><?=RBS::SVG('20230608-152503_id-2-821538.svg')?></button>
                 <button onclick="sms_agregator()" title="Остаток балланса по SMS-AERO" class="svg-wrapper btn-gray btn-gray-text not-border micro-btn"><?=RBS::SVG('20240416-185410_id-2-813950.svg')?></button>
+                <button onclick="open_popup('unicodes')" title="Показать символы юникода" class="svg-wrapper btn-gray btn-gray-text not-border micro-btn"><?=RBS::SVG('smile_black.svg')?></button>
                 <?php } ?>
             </div>
         </th>
@@ -35,7 +36,7 @@
                 <?php if(Access::scanLevel() >= 6) { ?>
                 <button onclick="change_table('NEW TABLE', null, {x: window.innerWidth-150, y: window.innerHeight-150})" class="btn-gray btn-gray-text not-border micro-btn" title="Создаёт новую таблицу"><span class="img-wrapper"><img src="./IMG/SYS/plus_rect.svg"></span></button>
                 <button onclick="tables_list(transform_pos('center'))" class="btn-gray btn-gray-text not-border micro-btn" title="Открывает список доступных таблиц"><span class="img-wrapper"><img src="./IMG/SYS/table.svg"></span></button>
-                <? } ?>
+                <?php } ?>
             </div>
         </th>
     </tr>

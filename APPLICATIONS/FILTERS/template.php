@@ -18,6 +18,7 @@
             </summary>
         </details>
     </div>
+    <?php HTML::line(12, 10, '#00000066'); ?>
     <div>
         <details class="details my-presets">
             <summary onclick="open_my_presets($(this).parent())">
@@ -28,7 +29,7 @@
     </div>
     <div class="flex between gap-10 search-block">
         <fieldset class="fieldset">
-            <legend style="text-align: right">Поиск или создание нового параметра</legend>
+            <legend style="text-align: right">Поиск или создание нового прессета</legend>
             <div class="text-input-wrapper flex gap-10 between">
                 <input onchange="selected_input(this)" oninput="find_or_create(this)" list="filters" type="text">
                 <button onclick="selected_input($(this).closest('div').find('input'))" class="btn-gray btn-gray-text not-border micro-btn padding-btn">Ok</button>

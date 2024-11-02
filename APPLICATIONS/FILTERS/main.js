@@ -16,6 +16,17 @@ $(document).on('dblclick', '.preff', function(e) {
     open_editor_filter(id, name)
 });
 
+// $(document).on('mouseenter', '.button-timer-activator .scroll-list button', function(e) {
+//     let obj = this;
+//     timer_lock2 = setTimeout(function() {
+//         console.log('-----------');
+//         const event = $(obj);
+//         console.log(event);
+//     }, 800);
+// }).on('mouseleave', '.button-timer-activator .scroll-list button', function() {
+//     clearTimeout(timer_lock2);
+// });
+
 $(document).on('dblclick', '.off', function(e) {
     let obj = $(this);
     info_qest(undefined, function() {
@@ -45,6 +56,12 @@ let buffer_preff = -1;
 $(document).on('dragstart', '.my-presets .preff', function(e) {
     let obj = $(this);
     buffer_preff = obj.attr('data-id');
+    dropped_element_action = function(poss) {
+        let name = obj.find('b').text();
+        let id = obj.attr('data-id');
+        open_editor_filter(id, name, poss)
+        console.log('Координаты мыши при сбросе:', cursorPos);
+    }
 });
 
 $(document).on('contextmenu', '.filter-editor .content.pre', function(e) {
@@ -241,8 +258,13 @@ function selected_input(obj) {
     open_editor_filter(id, txt);
 }
 
-function open_editor_filter(id, txt) {
-    let win = create_window(undefined, "Редактор элемента фильтра: <i style='display: inline-block; margin-left: 4px; background-color: rgba(255,255,0,0.46); padding: 3px 6px; border-radius: 40px'>«"+txt+"»</i>", function() {  //«»
+function open_editor_filter(id, txt, coords = {}) {
+    let poss = undefined;
+    if (Object.keys(coords).length !== 0) {
+        poss = coords;
+    }
+
+    let win = create_window(poss, "Редактор элемента фильтра: <i style='display: inline-block; margin-left: 4px; background-color: rgba(255,255,0,0.46); padding: 3px 6px; border-radius: 40px'>«"+txt+"»</i>", function() {  //«»
         setTimeout(function() {
             let main = $(win).closest('.window');
             $(win).closest('.window').find('h4 button:nth-child(2)').remove();
@@ -343,19 +365,19 @@ function sel_mask() {
                     _class = " isset ";
                 }
                 let key = '<div class="flex gap-15 '+_class+'"><img width="20" height="20" src="./DOWNLOAD/'+mess.params[i].logo+'"><span>'+i+'</span></div>';
-                lst[key] = function() {
-                    main_cat_quest(mess.params[i].id, i, _class);
-                };
+                lst[key] = {
+                    click: function() { main_cat_quest(mess.params[i].id, i, _class); },
+                    hover: function() { set_sel_under_cat(mess.params[i].id, i, true) } ,
+                }
             }
-            info_variants(transform_pos('center'), lst);
+            info_variants(transform_pos('center'), lst, 'Укажите категорию:', 'menu-info-panel', true);
         });
     });
 }
 function main_cat_quest(id, name, _class) {
+    all_menu_panels_close();
+
     let lst = {};
-    lst['Выбрать <i style="font-weight: 600">под категорию</i>'] = function() {
-        set_sel_under_cat(id, name);
-    };
     if(_class === '') {
         lst['Создать фильтр для категории <b style="font-weight: 800">"'+name+'"</b>'] = function() {
             edit_filter(id, 'main', name);
@@ -372,9 +394,9 @@ function main_cat_quest(id, name, _class) {
             }, 'Подтвердите безвозвратное удаление фильтра у <b>категории <i style="background-color: yellow">"'+name+'"</i></b> ?', 'Да - УДАЛИТЬ', 'Нет - не удалять');
         };
     }
-    info_variants(transform_pos('center'), lst, 'Работа <b>с категорией <i style="background-color: yellow">"'+name+'"</i></b>');
+    info_variants(undefined, lst, 'Работа <b>с категорией <i style="background-color: yellow">"'+name+'"</i></b>');
 }
-function set_sel_under_cat(id_main_cat, name_main_cat) {
+function set_sel_under_cat(id_main_cat, name_main_cat, is_menu=false) {
     BACK('filters_app', 'get_under', {id_main_cat: id_main_cat}, function(mess) {
         mess_executer(mess, function(mess) {
             let lst = {};
@@ -384,19 +406,19 @@ function set_sel_under_cat(id_main_cat, name_main_cat) {
                     _class = " isset ";
                 }
                 let key = '<div class="flex gap-15 '+_class+'"><img width="20" height="20" src="./DOWNLOAD/'+mess.params[i].logo+'"><span>'+i+'</span></div>';
-                lst[key] = function() {
-                    under_cat_quest(mess.params[i].id, i, _class);
-                };
+                lst[key] = {
+                    'click': function() { under_cat_quest(mess.params[i].id, i, _class); },
+                    'hover': function() { set_sel_action_list(mess.params[i].id, i, true); }
+                }
             }
-            info_variants(transform_pos('center'), lst, 'Укажите под-категорию, <b>категории <i style="background-color: yellow">"'+name_main_cat+'"</i>"</b>');
+            info_variants(undefined, lst, 'Укажите под-категорию, <b>категории <i style="background-color: yellow">"'+name_main_cat+'"</i>"</b>', 'menu-info-panel', true);
         });
     });
 }
 function under_cat_quest(id, name, _class) {
+    all_menu_panels_close();
+
     let lst = {};
-    lst['Выбрать <i style="font-weight: 600">активный лист</i>'] = function() {
-        set_sel_action_list(id, name);
-    };
     if(_class === '') {
         lst['Создать фильтр для под-категории <b style="font-weight: 800">"'+name+'"</b>'] = function() {
             edit_filter(id, 'under', name);
@@ -413,9 +435,9 @@ function under_cat_quest(id, name, _class) {
             }, 'Подтвердите безвозвратное удаление фильтра у <b>под-категории <i style="background-color: yellow">"'+name+'"</i></b> ?', 'Да - УДАЛИТЬ', 'Нет - не удалять');
         };
     }
-    info_variants(transform_pos('center'), lst, 'Работа <b>с под-категорией <i style="background-color: yellow">"'+name+'"</i></b>');
+    info_variants(undefined, lst, 'Работа <b>с под-категорией <i style="background-color: yellow">"'+name+'"</i></b>');
 }
-function set_sel_action_list(id_under_cat, name_under_cat) {
+function set_sel_action_list(id_under_cat, name_under_cat, is_menu=false) {
     BACK('filters_app', 'get_action_list', {id_under_cat: id_under_cat}, function(mess) {
         mess_executer(mess, function(mess) {
             let lst = {};
@@ -425,15 +447,18 @@ function set_sel_action_list(id_under_cat, name_under_cat) {
                     _class = " isset ";
                 }
                 let key = '<div class="flex gap-15 '+_class+'"><img width="20" height="20" src="./DOWNLOAD/'+mess.params[i].logo+'"><span>'+i+'</span></div>';
-                lst[key] = function() {
-                    action_list_quest(mess.params[i].id, i, _class);
-                };
+                lst[key] = {
+                    'click': function() { action_list_quest(mess.params[i].id, i, _class); },
+                    'hover': function() {},
+                }
             }
-            info_variants(transform_pos('center'), lst, 'Активный лист, <b>под-категории <i style="background-color: yellow">"'+name_under_cat+'"</i>"</b>');
+            info_variants(undefined, lst, 'Активный лист, <b>под-категории <i style="background-color: yellow">"'+name_under_cat+'"</i>"</b>', 'menu-info-panel', true);
         });
     });
 }
 function action_list_quest(id, name, _class) {
+    all_menu_panels_close();
+
     let lst = {};
     if(_class === '') {
         lst['Создать фильтр для листа <b style="font-weight: 800">"'+name+'"</b>'] = function() {
@@ -451,7 +476,7 @@ function action_list_quest(id, name, _class) {
             }, 'Подтвердите безвозвратное удаление фильтра у <b>активного листа <i style="background-color: yellow">"'+name+'"</i></b> ?', 'Да - УДАЛИТЬ', 'Нет - не удалять');
         };
     }
-    info_variants(transform_pos('center'), lst, 'Работа <b>с активным листом <i style="background-color: yellow">"'+name+'"</i></b>');
+    info_variants(undefined, lst, 'Работа <b>с активным листом <i style="background-color: yellow">"'+name+'"</i></b>');
 }
 function delete_filter(id, type="main|under|list") {
     BACK('filters_app', 'delete_filter', {id: id, type: type}, function (mess) {
@@ -556,8 +581,17 @@ function enter_name(obj, is_id_field=false) {
         }
         title_obj.text("«" + txt + "»");
     }
-
 }
+timer_scaner_sender = null;
+
+function timer_name_alias_exist_scaner(name, alias) {
+    clearTimeout(timer_scaner_sender);
+    timer_scaner_sender = setTimeout(()=>{
+        say('ok');
+        clearTimeout(timer_scaner_sender);
+    }, 3000);
+}
+
 function validate_param_form(obj) {
     let valid_params = true;
     obj = $(obj);

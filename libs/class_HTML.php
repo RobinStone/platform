@@ -40,10 +40,33 @@ class HTML {
         <?php echo ob_get_clean();
     }
 
+    /**
+     * Кнопка для вызова текстовой стравки
+     *
+     * @param string $txt
+     * @param string $header
+     * @param string $btn_ok
+     * @param string $img_sys_name
+     * @return void
+     */
     public static function info_help_btn(string $txt, string $header='Информация', string $btn_ok='Ok', string $img_sys_name='') {
         ob_start(); ?>
         <button class="btn-gray btn-gray-text not-border micro-btn padding-btn" onclick="info_info(undefined, <?=$txt?>, '<?=$header?>', '<?=$btn_ok?>', '<?=$img_sys_name?>')">❓</button>
         <?php echo ob_get_clean();
+    }
+
+    /**
+     * Горизонтальная разделительная линия
+     *
+     * @param int $margin_top
+     * @param int $margin_bottom
+     * @param string $color
+     * @param int $line_height
+     * @param LINE_TYPE $line_type
+     * @return void
+     */
+    public static function line(int $margin_top=10, int $margin_bottom=10, string $color="#000000", int $line_height=1, LINE_TYPE $line_type=LINE_TYPE::SOLID) {
+        echo "<div style='margin-top: {$margin_top}px; margin-bottom: {$margin_bottom}px; border-bottom: {$line_height}px {$line_type->value} {$color}'></div>";
     }
 
     /**
