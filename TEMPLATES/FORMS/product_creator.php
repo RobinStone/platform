@@ -144,7 +144,6 @@ $count = (int)$count;
 function render_rows(array $rows, $cats, $descr='') {
     global $place;
     ob_start();
-    wtf($rows);
     foreach($rows as $field_name=>$params) {
 
         $params['field_name'] = $field_name;
@@ -370,4 +369,5 @@ function render_rows(array $rows, $cats, $descr='') {
     load_JSscript_once('/APPLICATIONS/SHOPS/JS/product_creator.js?<?=filemtime('./APPLICATIONS/SHOPS/JS/product_creator.js')?>');
 
     console.log('PHONES');
-    console.dir(ph
+    console.dir(phones);
+</script>

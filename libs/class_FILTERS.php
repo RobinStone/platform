@@ -320,6 +320,15 @@ class FILTERS {
         if(isset($arr['id'])) {
             unset($arr['id']);
         }
+
+        $sch = get_product_schema();
+        foreach($sch as $item) {
+            if($item['field_name'] === $arr['field_name'] || $item['alias'] === $arr['alias']) {
+                Message::addError('Параметр с такими ALIAS или FIELD_NAME - существует (система).');
+                return false;
+            }
+        }
+
         if(VALUES::isset_columns($arr, $access)) {
             if(!self::isset($arr)) {
                 return SQL_INSERT_ROW('filters', $arr);

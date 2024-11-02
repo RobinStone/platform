@@ -11,6 +11,24 @@ switch($_POST['com']) {
         }
         echo 'Тут находится тестовое сообщение для настройки информационнфх панелей на несколько строк';
         break;
+    case 'check_valid_exist_name_and_alias':
+        $err = isset_columns($_POST, ['name', 'alias']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        $sch = get_product_schema();
+        foreach($sch as $item) {
+            if($item['field_name'] === $post['name'] || $item['alias'] === $post['alias']) {
+                ans('isset', ['alias'=>$item['alias'], 'field_name'=>$item['field_name']]);
+            }
+        }
+
+        if($row = SQL_ONE_ROW(q("SELECT field_name, alias FROM filters WHERE field_name='".db_secur($post['name'])."' OR alias='".db_secur($post['alias'])."' LIMIT 1"))) {
+            ans('isset', $row);
+        } else {
+            ans('ok');
+        }
+        break;
     case 'add_last_filter':
         $err = isset_columns($_POST, ['name', 'id', 'type']);
         if(is_array($err)) {

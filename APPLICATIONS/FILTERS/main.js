@@ -581,15 +581,29 @@ function enter_name(obj, is_id_field=false) {
         }
         title_obj.text("«" + txt + "»");
     }
+    timer_name_alias_exist_scaner(obj, obj.closest('.param-names').find('input:first-child').val(), obj.closest('.param-names').find('input:last-child').val())
 }
 timer_scaner_sender = null;
 
-function timer_name_alias_exist_scaner(name, alias) {
+function timer_name_alias_exist_scaner(obj, name, alias) {
     clearTimeout(timer_scaner_sender);
     timer_scaner_sender = setTimeout(()=>{
-        say('ok');
+        BACK('filters_app', 'check_valid_exist_name_and_alias', {name: name, alias: alias}, function(mess) {
+            mess_executer(mess, function(mess) {
+                if(mess.body === 'isset') {
+                    if(name === mess.params.field_name) {
+                        $(obj).closest('.param-names').find('input:first-child').addClass('red-border');
+                        say('Такое имя, уже зарегистрировано', 2);
+                    }
+                    if(alias === mess.params.alias) {
+                        $(obj).closest('.param-names').find('input:last-child').addClass('red-border');
+                        say('Такой ID, уже зарегистрирован', 2);
+                    }
+                }
+            });
+        });
         clearTimeout(timer_scaner_sender);
-    }, 3000);
+    }, 1000);
 }
 
 function validate_param_form(obj) {
