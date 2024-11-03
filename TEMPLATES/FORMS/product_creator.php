@@ -186,6 +186,14 @@ function render_rows(array $rows, $cats, $descr='') {
                         </tr>
                     <?php }
                     break;
+                case 'text':
+                    if($params['type'] === 'text') { ?>
+                        <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>"  data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                            <td><?=$field_name?></td>
+                            <td colspan="2"><textarea><?=$params['value'] ?? $params['default'];?></textarea></td>
+                        </tr>
+                    <?php }
+                    break;
                 case 'input-object-place':
                     ?>
                     <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">

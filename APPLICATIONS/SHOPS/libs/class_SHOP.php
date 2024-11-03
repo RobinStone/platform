@@ -1404,7 +1404,7 @@ class SHOP {
 
         $products_limit = $products_limit[0].",".$products_limit[1];
         $products_limit = " LIMIT ".$products_limit;
-
+//say($schema);
         foreach ($arr as $condition) {
             if (preg_match($pattern, $condition, $matches)) {
                 $field = trim($matches[1]);
@@ -1442,7 +1442,21 @@ class SHOP {
         $main_query = "";
         $query_counts = [];
         $props_ids = [];
-//say($buff);
+
+        /*
+         * Происходит дополнение запроса извне (когда, наапример, необходимо ограничить в выдачу
+         * особыми правилами или теми полями, которые через фильтр изменить запрос не могут)
+         */
+        if(!empty($_SESSION['injected_filter_query_array'])) {
+            foreach($_SESSION['injected_filter_query_array'] as $itm) {
+                $querys[] = $itm;
+            }
+            unset($_SESSION['injected_filter_query_array']);
+        }
+        /*
+         * ////////////////////////////////////////////////////////////////////////////////////
+         */
+
         foreach($buff as $v) {
             if($v['is_main_table'] === 1) {
                 $querys[] = "indexer.".$v['column']." ".$v['value'];
@@ -1625,6 +1639,14 @@ class SHOP {
                             </tr>
                         <?php } elseif($params['type'] === 'int' || $params['type'] === 'float') { ?>
                             <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
+                                <td><?=$field_name?></td>
+                                <td colspan="2"><?=$params['value'] ?? $params['default'];?></td>
+                            </tr>
+                        <?php }
+                        break;
+                    case 'text':
+                        if($params['type'] === 'text') { ?>
+                            <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>"  data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
                                 <td><?=$field_name?></td>
                                 <td colspan="2"><?=$params['value'] ?? $params['default'];?></td>
                             </tr>

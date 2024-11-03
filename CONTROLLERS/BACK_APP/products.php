@@ -37,6 +37,16 @@ switch($_POST['com']) {
         }
 
         $sorte_direct = db_secur($sorte_direct);
+
+        /**
+         * Позволяет внедрить часть запроса в фильтр выдачи товаров,
+         * для отсечения результатов.
+         * (в данном случае отбираются только активные товары, количество которых или
+         * бесконечное или > 0).
+         * После применения фильтра он сразу сбрасывается.
+         */
+        $_SESSION['injected_filter_query_array'][] = "(indexer.active=1 AND indexer.status='active' AND (indexer.count>0 OR indexer.count=-1))";
+
         $rows = SHOP::filter($arr);
         if(count($rows) > 0) {
             $rows = SHOP::get_products_list_at_code_array($rows, true, $sorted_by, $sorte_direct, [0, 50]);

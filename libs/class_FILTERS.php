@@ -148,6 +148,15 @@ class FILTERS {
         return $result;
     }
 
+    /**
+     * На вход принимает 3 параметра ID главной категории, ID подкатегории и ID
+     * активного листа
+     *
+     * @param $main_cat_id
+     * @param $under_cat_id
+     * @param $action_list_id
+     * @return void
+     */
     public static function render($main_cat_id, $under_cat_id, $action_list_id) {
         $schema = get_product_schema();
         $additional_fields = SHOP::get_additional_fields_for_cats($main_cat_id, $under_cat_id, $action_list_id);
