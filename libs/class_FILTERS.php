@@ -19,7 +19,9 @@ class FILTERS {
     {
         $ans = [];
         if($row = SQL_ONE_ROW(q("SELECT * FROM `filters` WHERE id=".$id." LIMIT 1"))) {
-            $row['default'] = unserialize($row['default']);
+            if($row['field'] === 'list' || $row['field'] === 'bool') {
+                $row['default'] = unserialize($row['default']);
+            }
             $ans = $row;
         }
         return $ans;
@@ -149,6 +151,64 @@ class FILTERS {
     }
 
     /**
+     * Трансформирует одиночное поле "Стоимость" в одноимённый диапазон
+     *
+     * @param array $rows
+     * @return void
+     */
+    public static function price_diapasone(array &$rows) {
+        if(isset($rows['Стоимость'])) {
+            $price_arr = $rows['Стоимость'];
+
+            $rows['Стоимость'] = [];
+
+            $from = $price_arr;
+            $from['compare'] = ">=";
+            $from['original-name'] = "Стоимость";
+
+            $to = $price_arr;
+            $to['compare'] = "<=";
+            $to['original-name'] = "Стоимость";
+            $to['psevdo'] = 1;
+
+            $rows['Стоимость'] = [
+                'От'=>$from,
+                'До'=>$to
+            ];
+        }
+    }
+
+    /**
+     * Трансформирует любое integer поле в диапазон полей
+     * "От" и "До"
+     *
+     * @param array $rows
+     * @param string $field_name
+     * @return void
+     */
+    public static function integer_to_range_transform_fields(array &$rows, string $field_name) {
+        if(isset($rows[$field_name])) {
+            $price_arr = $rows[$field_name];
+
+            $rows[$field_name] = [];
+
+            $from = $price_arr;
+            $from['compare'] = ">=";
+            $from['original-name'] = $field_name;
+
+            $to = $price_arr;
+            $to['compare'] = "<=";
+            $to['original-name'] = $field_name;
+            $to['psevdo'] = 1;
+
+            $rows[$field_name] = [
+                'От'=>$from,
+                'До'=>$to
+            ];
+        }
+    }
+
+    /**
      * На вход принимает 3 параметра ID главной категории, ID подкатегории и ID
      * активного листа
      *
@@ -160,11 +220,21 @@ class FILTERS {
     public static function render($main_cat_id, $under_cat_id, $action_list_id) {
         $schema = get_product_schema();
         $additional_fields = SHOP::get_additional_fields_for_cats($main_cat_id, $under_cat_id, $action_list_id);
+//        wtf($additional_fields);
         if($additional_fields) {
             $rows = array_merge($schema, $additional_fields);
         } else {
             $rows = $schema;
         }
+        self::price_diapasone($rows);
+
+        foreach($rows as $item) {
+            if(isset($item['range']) && $item['range'] == 1) {
+                self::integer_to_range_transform_fields($rows, $item['field_name']);
+            }
+        }
+
+//        wtf($rows);
         echo '<table class="filter-table">';
         self::render_tmp($rows);
         echo '<tr style="position: sticky; bottom: 10px"><td></td><td style="padding-top: 15px"><button onclick="apply_filter()" class="btn-send-filter">Применить фильтр</button></td></tr>';
@@ -217,10 +287,19 @@ class FILTERS {
                                 <td><?=$field_name?></td>
                                 <td colspan="2"><input value="" type="text"></td>
                             </tr>
-                        <?php } elseif($params['type'] === 'int' || $params['type'] === 'float') { ?>
+                        <?php } elseif($params['type'] === 'int' || $params['type'] === 'float') {
+                            $min = "";
+                            $max = "";
+                            $place_holder = "";
+                            if(isset($params['min'])) { $min = " min=\"".$params['min']."\" "; }
+                            if(isset($params['max'])) { $max = " max=\"".$params['max']."\" "; }
+                            if(isset($params['min']) && isset($params['max'])) {
+                                $place_holder = " (".$params['min']." - ".$params['max'].")";
+                            }
+                            ?>
                             <tr class="<?=$class?>" data-id-i="<?=($params['id_i'] ?? '')?>" <?=$compare?> <?=$compare_field?> data-param-id="<?=$params['id']?>" data-field="<?=$params['field']?>" data-real="<?=$params['value'] ?? $params['default']?>">
-                                <td><?=$field_name?></td>
-                                <td colspan="2"><input placeholder="число" value="" type="number"></td>
+                                <td data-real-name="<?=($params['original-name'] ?? $field_name)?>"><?=$field_name?></td>
+                                <td colspan="2"><input placeholder="число<?=$place_holder?>" value="" <?=$min?> <?=$max?> type="number"></td>
                             </tr>
                         <?php }
                         break;

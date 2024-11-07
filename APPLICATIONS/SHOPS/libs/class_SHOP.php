@@ -121,8 +121,6 @@ class SHOP {
             return false;
         }
 
-
-
         if(!SHOP::is_my_shop($shop_id, SITE::$user_id)) {
             Message::addError('Нельзя работать с товарами не своего магазина!..');
             return false;
@@ -138,6 +136,7 @@ class SHOP {
         $coords = [];
 
 //        say($props);
+        $changed = false;
 
         foreach($props as $alias=>$prop_item) {
             switch($alias) {
@@ -169,6 +168,7 @@ class SHOP {
                             ");
                         }
                     }
+                    $changed = true;
                     break;
                 case 'product_name':
                     $querys[] = " `name`='".db_secur($prop_item['value'])."' ";
@@ -217,6 +217,7 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_bool');
                             }
+                            $changed = true;
                             break;
                         case 'json':
                             if(!empty($prop_item['id_i'])) {
@@ -232,6 +233,7 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_json');
                             }
+                            $changed = true;
                             break;
                         case 'char':
                             if(!empty($prop_item['id_i'])) {
@@ -247,6 +249,7 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_char');
                             }
+                            $changed = true;
                             break;
                         case 'string':
                             if(!empty($prop_item['id_i'])) {
@@ -262,6 +265,7 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_string');
                             }
+                            $changed = true;
                             break;
                         case 'float':
                             if(!empty($prop_item['id_i'])) {
@@ -277,6 +281,7 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_float');
                             }
+                            $changed = true;
                             break;
                         case 'text':
                             if(!empty($prop_item['id_i'])) {
@@ -292,6 +297,7 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_text');
                             }
+                            $changed = true;
                             break;
                         case 'int':
                             if(!empty($prop_item['id_i'])) {
@@ -307,14 +313,20 @@ class SHOP {
                                 val='".db_secur($prop_item['value'])."'");
                                 say('Заполнена новая ячейка i_int');
                             }
+                            $changed = true;
                             break;
                     }
                     break;
             }
         }
 
-        if(!empty($querys)) {
-            q("UPDATE indexer SET ".implode(',',$querys).", changed='".SITE::$dt."' WHERE id=".(int)$old['id']);
+        if(!empty($querys) || $changed === true) {
+            if(empty($querys)) {
+                $querys = "";
+            } else {
+                $querys = implode(',',$querys).", ";
+            }
+            q("UPDATE indexer SET ".$querys." changed='".SITE::$dt."' WHERE id=".(int)$old['id']);
         }
 
         if(!empty($coords)) {
@@ -620,6 +632,7 @@ class SHOP {
             case 'prod_id':
             case 'count':
             case 'created':
+            case 'changed':
             case 'active_to':
 
                 break;
@@ -909,8 +922,7 @@ class SHOP {
         return (int)SQL_ONE_ROW(q("SELECT COUNT(*) FROM `indexer` WHERE `owner_id`=".Access::userID()))['COUNT(*)'];
     }
 
-    public static function get_count_status_all_my_products($id_owner, $main_cat_id=-1) {
-        $main_cat_id = (int)$main_cat_id;
+    public static function get_count_status_all_my_products(int $id_owner, int $main_cat_id=-1) {
         $rows = [
             'active'=>[],
             'not_show'=>[],
@@ -919,7 +931,7 @@ class SHOP {
         ];
             $dt = SITE::$dt;
             q("UPDATE indexer SET `status` = 'archive' WHERE `active_to` < '".$dt."' AND `status` = 'active' ");
-            $all = SQL_ROWS(q("SELECT prod_id, shop_id, status, shops_categorys FROM indexer WHERE owner_id=".Access::userID()));
+            $all = SQL_ROWS(q("SELECT prod_id, shop_id, status, shops_categorys, changed FROM indexer WHERE owner_id=".$id_owner." ORDER BY changed DESC"));
             foreach($all as $vv) {
                 if($main_cat_id === -1) {
                     $rows[$vv['status']][] = [

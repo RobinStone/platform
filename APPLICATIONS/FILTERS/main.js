@@ -2,6 +2,16 @@ filters = $('#filters');
 filters_items = {};
 prefabs = {};               // переменная для хранения шаблонов
 
+/**
+ * В переменную data вложен объект со следующими полями
+ * data = {
+ *     lst - список кнопок с их обработчиками
+ *     obj - главная панель (html) в котором хранятся все свойства
+ * }
+ *
+ */
+const menu_panel_json = new EventRBS();
+
 types_list = {
     '-':'-',
     'Поле ввода':'input',
@@ -103,6 +113,8 @@ $(document).on('contextmenu', '.filter-editor .content.pre', function(e) {
         },
     }
 
+    menu_panel_json.action({lst: lst, obj: buffer_obj_filter});
+
     if(buffer_fragment !== '') {
         lst['➔⊙ Вставить в главный класс'] = function() {
             let new_fr = $('<div class="inner-class main-class"></div>');
@@ -121,7 +133,27 @@ $(document).on('contextmenu', '.filter-editor .content.pre', function(e) {
         };
     }
 
-    info_variants(undefined, lst);
+    let pnl = null;
+
+    navigator.clipboard.readText()
+        .then(text => {
+            try {
+                JSON.parse(text);
+                const btn = $('<button class="presser">+ JSON из буфера в главный класс</button>');
+                $(pnl).find('.scroll-list').append(btn);
+                btn.on('click', function() {
+                    create_form(JSON.parse(text), buffer_obj_filter.get(0));
+                });
+            } catch (e) {
+
+            }
+        })
+        .catch(err => {
+            console.error('Ошибка при чтении текста: ', err);
+        });
+
+
+    pnl = info_variants(undefined, lst);
 });
 
 function get_last_filters(container_obj) {
@@ -295,6 +327,7 @@ function open_editor_filter(id, txt, coords = {}) {
                                 break;
                             case 'text':
                                 win.find('select[data-name="type_element"]').val('Текстовый блок');
+                                open_value_text(id, arr.default, main);
                                 break;
                             case 'bool':
                                 win.find('select[data-name="type_element"]').val('Переключатель (ДА/НЕТ)');
@@ -354,6 +387,11 @@ function open_value(id, value_default, main) {
     main.find('.json').addClass('off');
     main.find('.json .right-panel').append('<div class="type-marker">STR</div>');
     main.find('.json .left-panel').append('<div style="padding: 6px 8px; min-height: 86px"><input class="" value="'+value_default+'"></div>');
+}
+function open_value_text(id, value_default, main) {
+    main.find('.json').addClass('off');
+    main.find('.json .right-panel').append('<div class="type-marker">TXT</div>');
+    main.find('.json .left-panel').append('<div style="padding: 6px 8px; min-height: 86px"><textarea placeholder="значение по умолчанию" class="filter-text">'+value_default+'</textarea></div>');
 }
 function sel_mask() {
     BACK('filters_app', 'get_main', {}, function(mess) {
@@ -539,6 +577,42 @@ function edit_json_filter(json, table_name, id) {
                 create_form(json, $(cont).get(0));
             }
             $(cont).closest('.window').append(win_up_panel);
+
+            /**
+             * Тут я "вешаю" на кнопки меню (в редакторе фильтров) дополнительные функции
+             */
+            menu_json.subscribe(function(data) {
+                const type = $(data.obj).find('.inner-element[data-row-name="type"] input').val();
+                switch(type) {
+                    case 'int':
+                        const range = get_field_from_json_obj(data.obj, 'range');
+                        if(range !== false) {
+                            if(range === '1') {
+                                data.lst['<b style="color: blue;">⏏ ⤋ Отключить преобразование числа в диапазон</b>'] = function() {
+                                    add_json_param_in_editor_panel(data.obj, 'range', '0');
+                                }
+                                data.lst['<b style="color: blue;">⏏ ✕ Удалить преобразование числа в диапазон</b>'] = function() {
+                                    delete_json_param_in_editor_panel(data.obj, 'range');
+                                }
+                            } else {
+                                data.lst['<b style="color: blue;">⏏ ⤊ Включить преобразование числа в диапазон</b>'] = function() {
+                                    add_json_param_in_editor_panel(data.obj, 'range', '1');
+                                }
+                            }
+                        } else {
+                            data.lst['<b style="color: blue;">⏏ Преобразовать в поиске число в диапазон</b>'] = function() {
+                                const llist = ['0', '100'];
+                                info_list_editor(undefined, llist, function(ans){
+                                    add_json_param_in_editor_panel(data.obj, 'range', '1', false);
+                                    add_json_param_in_editor_panel(data.obj, 'min', ans[0], false);
+                                    add_json_param_in_editor_panel(data.obj, 'max', ans[1]);
+                                }, 'Отредактируйте MIN и MAX значения:', false);
+                            }
+                        }
+                        break;
+                }
+            });
+
         }, 100);
     }, 'filter-editor');
 }
