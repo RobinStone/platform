@@ -157,8 +157,20 @@
 }
 
 @media screen and (max-width: 950px) {
+    #banner {
+        border-radius: 0;
+        margin-bottom: 10px;
+    }
+    #body-s .wrapper.banner-wrapper {
+        padding: 0!important;
+        margin-bottom: 15px!important;
+    }
     #banner .swiper-slide {
-        background-size: 590px 140px;
+        background-size: 100% 100%;
+    }
+    #banner .swiper-slide-prev {
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
     }
     .banners-list li {
         background-size: 100% 100%;
@@ -167,7 +179,7 @@
         border-radius: 10px;
         background: #F8F7F7;
         padding: 0;
-        margin: 10px 10px 0;
+        margin: 10px 10px 10px;
         width: 100%;
         height: 140px;
     }
