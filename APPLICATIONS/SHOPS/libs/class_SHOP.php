@@ -609,11 +609,18 @@ class SHOP {
      * @param bool $all_props - добавлять ли в выдачу все найденные свойства
      * @return array
      */
-    public static function get_products_list_at_code_array(array $code_of_products, bool $with_categorys=true, string $sorted_by='name', string $direct='ASC', array $limit=[0, 50], bool $all_props=false): array
+    public static function get_products_list_at_code_array(array $code_of_products, bool $with_categorys=true, string $sorted_by='', string $direct='', array $limit=[0, 50], bool $all_props=false): array
     {
-        if($direct !== 'ASC') {
-            $direct = 'DESC';
+        switch($direct) {
+            case 'ASC':
+            case 'DESC':
+                // $direct = $direct;
+                break;
+            default:
+                $direct = '';
+                break;
         }
+
         $limit = " LIMIT ".(int)$limit[0].",".(int)$limit[1];
         $ids = "id > 0 ";
         if(!empty($code_of_products)) {
@@ -631,15 +638,19 @@ class SHOP {
             case 'shop_id':
             case 'prod_id':
             case 'count':
+            case 'price':
+            case 'name':
             case 'created':
             case 'changed':
             case 'active_to':
 
                 break;
-            default: $sorted_by = 'name';
+            default: $sorted_by = '';
         }
 
-        $sorted_by = " ORDER BY ".$sorted_by;
+        if($sorted_by !== '') {
+            $sorted_by = " ORDER BY ".$sorted_by;
+        }
 
         $rows = SQL_ROWS(q("
         SELECT 
@@ -1084,12 +1095,11 @@ class SHOP {
     }
 
     /**
-     * Нужно дописать этот метод...
+     * Отбирает ближайшие объявления к введённым координатам $lat и $lng
      */
-    public static function get_near_position_products_list($lat, $lng, $count=10): array
+    public static function get_near_position_products_list(float $lat, float $lng, int $count=10, int $main_cat=-1, int $under_cat=-1, int $action_list=-1, bool $only_active=true): array
     {
-        $arr = DISTANCE::find_near_points($lat, $lng, $count);
-        return $arr;
+        return DISTANCE::find_near_points($lat, $lng, $count, $main_cat, $under_cat, $action_list, $only_active);
     }
 
     /**
@@ -1380,9 +1390,10 @@ class SHOP {
      * @param string $query_shops (УСЛОВИЯ ОТБОРА МАГАЗИНОВ) прим. - "owner = 2 AND active = 1"
      * @param array $shops_limit (ПАГИНАЦИЯ ДЛЯ МАГАЗИНОВ) прим. - [0, 50]
      * @param array $products_limit (ПАГИНАЦИЯ ДЛЯ ТОВАРОВ) прим. - [0, 50]
+     * @param array $orders_by массив из полей, по которым будет происходить сортировка, напр. (['indexer.price'=>'ASC', 'indexer.changed'=>'DESC'])
      * @return array (возвращает массив кодов товаров вида) - ["205_34", "123_44", "12_54"] (где первая цифра id-магазина, 2-ая id-товара)
      */
-    public static function filter(array $arr, string $query_shops="", array $shops_limit=[0,50], array $products_limit=[0,50]): array
+    public static function filter(array $arr, string $query_shops="", array $shops_limit=[0,50], array $products_limit=[0,50], array $orders_by=[]): array
     {
         $buff = [];
         $querys = [];
@@ -1525,6 +1536,19 @@ class SHOP {
             $main_query = " AND ".$main_query;
         }
 
+        $ORD_BY = "";
+        if(!empty($orders_by)) {
+            $buff_arr = [];
+            foreach($orders_by as $field=>$item_direct) {
+                if($field !== '' && $item_direct !== '') {
+                    $buff_arr[] = db_secur($field)." ".$item_direct;
+                }
+            }
+            if(!empty($buff_arr)) {
+                $ORD_BY = " ORDER BY ".implode(", ", $buff_arr);
+            }
+        }
+
         $limit = $products_limit;
 
         if(count($counts) > 0) {
@@ -1532,13 +1556,13 @@ class SHOP {
             SELECT indexer.id, CONCAT(indexer.shop_id, '_', indexer.prod_id) AS CODE FROM indexer " . implode(' ', $joins) . " WHERE
             " . implode(' AND ', $query_arr) . " " . $main_query . "
             GROUP BY indexer.id
-            HAVING " . implode(' AND ', $counts) . $limit . "
+            HAVING " . implode(' AND ', $counts) . $ORD_BY . $limit . "
             ";
         } else {
             $query = "
             SELECT indexer.id, CONCAT(indexer.shop_id, '_', indexer.prod_id) AS CODE FROM indexer " . implode(' ', $joins) . " WHERE
             " . $main_query . "
-            GROUP BY indexer.id ".$limit."
+            GROUP BY indexer.id ". $ORD_BY . $limit."
             ";
         }
 

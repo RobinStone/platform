@@ -708,6 +708,7 @@ function s_crypt_scan($string, $hash): bool
 }
 
 SITE::$my_place  = $my_place;
+SITE::$my_place_city_code = GEONAMER::city_name_to_id($my_place[0]);
 SITE::$profil = PROFIL::init(Access::userID());
 SITE::$GEO = GEONAMER::get_current_position();
 

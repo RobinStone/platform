@@ -220,6 +220,9 @@ class FILTERS {
     public static function render($main_cat_id, $under_cat_id, $action_list_id) {
         $schema = get_product_schema();
         $additional_fields = SHOP::get_additional_fields_for_cats($main_cat_id, $under_cat_id, $action_list_id);
+//        wtf($main_cat_id, 1);
+//        wtf($under_cat_id, 1);
+//        wtf($action_list_id);
 //        wtf($additional_fields);
         if($additional_fields) {
             $rows = array_merge($schema, $additional_fields);

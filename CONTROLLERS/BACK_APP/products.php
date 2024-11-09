@@ -28,8 +28,8 @@ switch($_POST['com']) {
         INCLUDE_CLASS('shops', 'shop');
         $arr = $post['arr'];
 
-        $sorted_by = $post['sorted_by'] ?? 'name';
-        $sorte_direct = $post['sorted_direct'] ?? 'ASC';
+        $sorted_by = $post['sorted_by'] ?? '';
+        $sorte_direct = $post['sorted_direct'] ?? '';
         $items_type = $post['items_type'] ?? 'list';
 
         if($items_type !== 'card' && $items_type !== 'list') {
@@ -47,7 +47,8 @@ switch($_POST['com']) {
          */
         $_SESSION['injected_filter_query_array'][] = "(indexer.active=1 AND indexer.status='active' AND (indexer.count>0 OR indexer.count=-1))";
 
-        $rows = SHOP::filter($arr);
+        $rows = SHOP::filter($arr, "", [0,50], [0,50], [$sorted_by=>$sorte_direct]);
+
         if(count($rows) > 0) {
             $rows = SHOP::get_products_list_at_code_array($rows, true, $sorted_by, $sorte_direct, [0, 50]);
 
