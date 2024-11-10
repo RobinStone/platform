@@ -56,6 +56,13 @@ switch($_POST['com']) {
             error('Отсутствуют следующие поля: ', $err);
         }
         $rows = FILTERS::find_filter_preset($post['txt']);
+        if(isset($post['need_types']) && !empty($post['need_types'])) {
+            foreach($rows as $k=>$v) {
+                if(!in_array($v['field'], $post['need_types'])) {
+                    unset($rows[$k]);
+                }
+            }
+        }
         ob_start();
         foreach($rows as $k=>$v) {
             echo "<option data-value='".$v['alias']."&nbsp;&nbsp;&nbsp;&nbsp;".$v['field']."&nbsp;&nbsp;&nbsp;&nbsp;".$v['field_name']."' data-id='".$v['id']."'>".$v['alias']."&nbsp;&nbsp;&nbsp;&nbsp;".$v['field']."&nbsp;&nbsp;&nbsp;&nbsp;".$v['field_name']."</option>";

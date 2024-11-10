@@ -26,16 +26,53 @@ $(document).on('dblclick', '.preff', function(e) {
     open_editor_filter(id, name)
 });
 
-// $(document).on('mouseenter', '.button-timer-activator .scroll-list button', function(e) {
-//     let obj = this;
-//     timer_lock2 = setTimeout(function() {
-//         console.log('-----------');
-//         const event = $(obj);
-//         console.log(event);
-//     }, 800);
-// }).on('mouseleave', '.button-timer-activator .scroll-list button', function() {
-//     clearTimeout(timer_lock2);
-// });
+$(document).on('dragover', '.insert-container', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).addClass('drag-over');
+});
+$(document).on('dragleave', '.insert-container', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).removeClass('drag-over');
+});
+$(document).on('drop', '.insert-container', function(e) {
+    let obj = $(this);
+    e.preventDefault();
+    e.stopPropagation();
+    obj.removeClass('drag-over');
+    obj.empty();
+    // say('dropped-'+buffer_preff);
+    let new_panel = buffer_preff_obj.get(0).cloneNode(true);
+    if($(new_panel).attr('data-type') === 'list') {
+        $(new_panel).find('button').attr('onclick', '');
+        $(new_panel).find('button').on('click', function() {
+            scan_access_add_lists(obj);
+            $(this).closest(".preff").remove();
+        }).addClass('micro-closer');
+        obj.append(new_panel);
+    } else {
+        say('Данное поле может принять только прессеты типа "Список 🧾"', 2);
+    }
+    scan_access_add_lists(obj);
+});
+
+function scan_access_add_lists(obj) {
+    setTimeout(()=>{
+        let pnls = [];
+        $(obj).closest('div.flex').find('.insert-container').each(function(e,t) {
+            let pnl = $(t).find('.preff');
+            if(pnl.length > 0) {
+                pnls.push(pnl.attr('data-id'));
+            }
+        });
+        if(pnls.length === 2) {
+            $(obj).closest('.content').find('.micro-btn').removeClass('disabled');
+        } else {
+            $(obj).closest('.content').find('.micro-btn').addClass('disabled');
+        }
+    }, 100);
+}
 
 $(document).on('dblclick', '.off', function(e) {
     let obj = $(this);
@@ -63,8 +100,11 @@ $(document).on('drop', '.filter-editor .content.pre', function(e) {
 });
 
 let buffer_preff = -1;
+let buffer_preff_obj = null;
+
 $(document).on('dragstart', '.my-presets .preff', function(e) {
     let obj = $(this);
+    buffer_preff_obj = obj;
     buffer_preff = obj.attr('data-id');
     dropped_element_action = function(poss) {
         let name = obj.find('b').text();
@@ -185,19 +225,24 @@ function update_my_presets(obj) {
                 let all = arr['_all'];
                 let flo = arr['flows']
                 for (let i in flo) {
-                    let type = '';
                     let ind = flo[i];
-                    switch(all[ind]['field']) {
-                        case 'bool': type='Переключатель'; break
-                        case 'input': type='Поле ввода'; break
-                        case 'text': type='Текст'; break
-                        case 'list': type='Список'; break
-                    }
-                    obj.append('<div draggable="true" data-id="'+ind+'" class="preff flex column not-selected"><b>'+all[ind]['field_name']+'</b><i>'+type+'</i><button onclick="del_param(this, '+ind+')">✕</button></div>');
+                    create_preset_panel(obj, all[ind]['field'], flo[i], all[ind]['field_name']);
                 }
             }
         });
     });
+}
+
+function create_preset_panel(parrent, field, id, field_name) {
+    let data_type = '';
+    let type = '';
+    switch(field) {
+        case 'bool': type=' Переключатель 🗜'; data_type='toggler'; break
+        case 'input': type='Поле ввода ✏️ '; data_type='input'; break
+        case 'text': type='Текст 📒'; data_type='text'; break
+        case 'list': type='Список 🧾'; data_type='list'; break
+    }
+    $(parrent).append('<div data-type="'+data_type+'" draggable="true" data-id="'+id+'" class="preff flex column not-selected"><b>'+field_name+'</b><i style="width: 100%; text-align: right; display: inline-block; padding: 5px 0 0">'+type+'</i><button class="micro-closer" onclick="del_param(this, '+id+')">✕</button></div>');
 }
 
 function open_my_filters(obj) {
@@ -582,7 +627,8 @@ function edit_json_filter(json, table_name, id) {
              * Тут я "вешаю" на кнопки меню (в редакторе фильтров) дополнительные функции
              */
             menu_json.subscribe(function(data) {
-                const type = $(data.obj).find('.inner-element[data-row-name="type"] input').val();
+                const type = $(data.obj).find('> .inner-element[data-row-name="type"] input').val();
+                console.log(data.obj);
                 switch(type) {
                     case 'int':
                         const range = get_field_from_json_obj(data.obj, 'range');
@@ -610,12 +656,99 @@ function edit_json_filter(json, table_name, id) {
                             }
                         }
                         break;
+                    case 'bool':
+                        const isset_items = get_field_from_json_obj(data.obj, 'ITEMS');
+                        if(isset_items === false) {
+                            data.lst['<b style="color: #d000ff;">📃 📃 Добавить в переключатель 2 списка</b>'] = function() {
+                            let slots = create_window(undefined, 'Настройка переключателя ⟪<b style="background-color: yellow">'+data.txt+'</b>⟫', function() {
+                                setTimeout(()=>{
+                                    slots.closest('.window').css('background-color', '#ffffff').css('background-image', 'none');
+                                    slots.append('<div class="flex between gap-10" style="padding: 10px; width: 100%"><div ondblclick="insert_in_container(this)" class="insert-container"></div><div ondblclick="insert_in_container(this)" class="insert-container"></div></div>');
+
+                                    let btn = $('<button style="margin-left: auto" class="disabled save-btn btn-gray btn-gray-text not-border micro-btn">Применить</button>');
+                                    btn.on('click', function() {
+                                        apply_lists_in_toggler(this, data.obj);
+                                    });
+
+                                    let div = $('<div class="flex" style="width: 100%; padding: 0 20px 5px"></div>');
+                                    div.append(btn);
+
+                                    slots.append(div);
+                                }, 10);
+                            }, 'no-minimazed');
+
+                            }
+                        } else {
+                            data.lst['<b style="color: #d000ff;">✕ ✕ Удалить списки из переключателя</b>'] = function() {
+                                info_qest(undefined, function() {
+                                    delete_json_param_in_editor_panel(data.obj, 'checker', false);
+                                    delete_json_param_in_editor_panel(data.obj, 'ITEMS');
+                                }, function() {
+
+                                }, 'Подтвердите удаление списков из этого переключателя <b class="yellow">'+data.txt+'</b>. Удалять ?');
+                            }
+                        }
+                        break;
                 }
             });
 
         }, 100);
     }, 'filter-editor');
 }
+
+function insert_in_container(obj) {
+    let win = create_window(undefined, 'Пресеты. Для поиска, начните вводить');
+    let pnl = $('<div style="padding: 5px"></div>');
+    let fs = $('<fieldset class="fieldset"><legend>Поиск</legend></fieldset>');
+    let inpt = $('<input style="width: 300px" oninput="update_preset_list(this, [\'list\'])" list="preset-list">');
+    $(inpt).on('change', function() {
+        insert_in_container_set(obj, this);
+    });
+    fs.append(inpt);
+    pnl.append(fs);
+
+    $(win).append('<datalist id="preset-list"></datalist>');
+    $(win).append(pnl);
+    setTimeout(function() {
+        $(win).find('input').focus();
+        // get_last_filters(pnl);
+    }, 300);
+}
+
+function insert_in_container_set(container, obj) {
+    let opt = $('option[data-value="'+$(obj).val()+'"]').attr('data-id');
+    $(obj).closest('.window').remove();
+    BACK('filters_app', 'get_filter_name', {id: opt}, function (mess) {
+        mess_executer(mess, function(mess) {
+            create_preset_panel(container, 'list', opt, mess.params);
+            $(container).find('.preff').removeAttr('draggable');
+            scan_access_add_lists(container);
+        });
+    });
+}
+
+function apply_lists_in_toggler(obj, parrent_obj) {
+    let pnls = [];
+    $(obj).closest('div.content').find('.insert-container').each(function(e,t) {
+        let pnl = $(t).find('.preff');
+        if(pnl.length > 0) {
+            pnls.push(pnl.attr('data-id'));
+        }
+    });
+
+    if(pnls.length === 2 && pnls[0] !== pnls[1]) {
+        BACK('filters_app', 'get_filter_params', {ids: pnls}, function (mess) {
+            mess_executer(mess, function(mess) {
+                add_obj_json_param_in_editor_panel(parrent_obj, {ITEMS:mess.params});
+                add_json_param_in_editor_panel(parrent_obj, 'checker', 1, true);
+                close_window($(obj).closest('.window'));
+            });
+        });
+    } else {
+        say('Оба слота должны быть заполнены и прессеты не должны быть одинаковыми...', 2);
+    }
+}
+
 function del_all_json_filter(obj_container) {
     info_qest(undefined, function(){
         obj_container = $(obj_container).closest('.window').find('.pre');
@@ -824,7 +957,7 @@ function change_stat(obj) {
     setTimeout(()=>{
         let stat = parseInt($(obj).attr('data-status'));
         if(stat === 1) { arr.preset = 1; }
-        if(stat === 0) { arr.preset = 2; }
+        if(stat === 0) { arr.preset = 0; }
         json_to_panel(arr, panel, true);
     }, 50);
 }

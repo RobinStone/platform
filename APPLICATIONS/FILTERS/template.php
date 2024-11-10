@@ -108,9 +108,9 @@
     <div class="tmp tmp-bool">
         <button onclick="change_bool_list(this)" class="btn-gray btn-gray-text not-border micro-btn padding-btn">Состав ДА / НЕТ</button>
         <div class="flex between">
-            <?php HTML::toggler('preset', 'сост. 0:', 'сост. 1:', '', 'change_stat(this)', 1); ?>
+            <?php HTML::toggler('preset', 'сост. ⇦', 'сост. ⇨', '', 'change_stat(this)', 1); ?>
         </div>
-        <div style="margin-top: 10px" class="micro-text">Внимание! Переменная <b style="background-color: yellow">"preset"</b> указывает не на индекс <b style="background-color: yellow">"states"</b>, а именно на порядок, начиная с 1-цы</div>
+        <div style="margin-top: 10px" class="micro-text">Внимание! Переменная <b style="background-color: yellow">"preset"</b> указывает не на индекс <b style="background-color: yellow">"states"</b>, а на переключатель 1<sub>(влево)</sub> - Да, 0<sub>(вправо)</sub> - Нет</div>
     </div>
 </template>
 <template id="tmp-list">

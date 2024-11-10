@@ -11,6 +11,13 @@ switch($_POST['com']) {
         }
         echo 'Тут находится тестовое сообщение для настройки информационнфх панелей на несколько строк';
         break;
+    case 'get_filter_name':
+        $err = isset_columns($_POST, ['id']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        ans('ok', SQL_ONE_FIELD(q("SELECT field_name FROM filters WHERE id=".(int)$post['id']." LIMIT 1")));
+        break;
     case 'check_valid_exist_name_and_alias':
         $err = isset_columns($_POST, ['name', 'alias']);
         if(is_array($err)) {
@@ -196,6 +203,28 @@ switch($_POST['com']) {
                 $row['default'] = '-';
             }
             ans('ok', $row);
+        }
+        error('Не найден параметр по такому ID...');
+        break;
+    case 'get_filter_params':
+        $err = isset_columns($_POST, ['ids']);
+        if(is_array($err)) {
+            error('Отсутствуют следующие поля: ', $err);
+        }
+        if($rows = SQL_ROWS_FIELD(q("SELECT * FROM filters WHERE id IN(".implode(',', $post['ids']).")"), 'field_name')) {
+            foreach($rows as $key=>&$item) {
+                if($item['field'] !== 'list') {
+                    unset($rows[$key]);
+                } else {
+                    $item['default'] = unserialize($item['default']);
+                }
+            }
+            if(count($rows) !== 2) {
+                error('Ошибка типа. Затребован тип, который не является списком!..');
+            } else {
+                $rows = array_reverse($rows);
+                ans('ok', $rows);
+            }
         }
         error('Не найден параметр по такому ID...');
         break;

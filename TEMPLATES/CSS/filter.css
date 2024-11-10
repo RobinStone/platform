@@ -417,15 +417,24 @@ body .swiper-button-prev svg {
     .swiper .swiper-wrapper {
         padding: 10px 0;
     }
-    .filter-shore summary {
-        display: flex;
-        justify-content: center;
-        box-sizing: border-box;
-        align-items: center;
-        width: 100%;
-        font-weight: 600;
-        font-size: 1.5em;
-        padding: 10px 0 25px;
+    .filter-shore {
+        position: fixed;
+        z-index: 99;
+        background-color: antiquewhite;
+        width: 100vw;
+        height: calc(100dvh - 60px);
+        left: 100vw;
+        top: 34px;
+        transition: 0.3s;
+    }
+    .filter-shore.open {
+        left: 0;
+        height: calc(100dvh - 85px);
+        overflow: hidden;
+    }
+    .filter.grey-panel {
+        max-height: calc(100dvh - 160px);
+        overflow-y: auto;
     }
     #cat-list {
         margin-top: 35px!important;
